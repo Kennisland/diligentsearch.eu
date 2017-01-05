@@ -59,20 +59,14 @@ html_dataModelEditor = `
 `;
 
 
-
-
 countries = ['Netherlands', 'Germany'];
 selectedCountry = '';
 works = ['Audiovisual', 'painting'];
 selectedWork = '';
 data = [];
 
-
-
-
-
 function injectDataModelEditor(){
-	$('#data-model-editor').html(html_dataModelEditor);
+	$('#data-editor').html(html_dataModelEditor);
 }
 
 
