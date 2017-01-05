@@ -77,6 +77,11 @@ function injectDataModelEditor(){
 
 
 function getCountry(){
+	// Hide unecessary divs
+	$('#select-work').hide();
+	$('#display-data-model').hide();
+
+
 	// Ajax call to get data from server
 	// countries = ....
 
@@ -100,6 +105,7 @@ function getCountry(){
 function getWork(countryIdx){
 	// Hide unecessary divs
 	$('#select-country').hide();
+	$('#display-data-model').hide();
 
 
 	selectedCountry = countries[countryIdx];
