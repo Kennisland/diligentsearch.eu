@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Menu</title>
+
+	<!-- jQuery -->
+	<script src="../js/lib/jquery-1.11.0.min.js"></script>
+	<link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
+  	<script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/design.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
+
+	<!-- Templates simulation -->
+	<link rel="stylesheet" href="../css/editor.css">
+	<script type="text/javascript" src="template-controller/data-model-editor.js"></script>
+	<script type="text/javascript" src="template-controller/user-input-modal.js"></script>
+	<script type="text/javascript" src="template-controller/ref-value-modal.js"></script>
+	<script type="text/javascript" src="template-controller/question-modal.js"></script>
+	<script type="text/javascript" src="template-controller/result-modal.js"></script>
+	<script type="text/javascript" src="template-controller/block-modal.js"></script>
+
+
+	<!-- Dependecies -->
+	<script type="text/javascript" src="js/lib/d3.v3.min.js"></script>
+	<script type="text/javascript" src="js/lib/dagre-d3.min.js"></script>
+	<!-- <script type="text/javascript" src="js/editor-development.js"></script> -->
+
+</head>
+
+<body class="container-fluid">
+	<div style="text-align:center">
+		<h1>Editor Development Template</h1>
+		<p>
+			The objective is to provide functionalities of the OutOfCOpyright project and additionnal features such as block of questions, free text, links, etc...
+		</p>
+	</div>
+
+	<div class="row main-panel">
+		<div id="data-model-editor" class="left-panel"></div>
+
+		<div id="decision-tree-editor" class="right-panel">
+			Decision Tree Editor
+		</div>
+
+		<!-- 
+		<div id="editor-left-panel" class="col-md-6 left-panel"></div>
+
+		<div id="editor-content" class="col-md-6 right-panel">
+			<h3>Graphical editor</h3>
+			<svg id="graphical-editor" class="svg-css"></svg> 
+		</div> -->
+
+
+	</div>
+
+	<div id="modal-section"></div>
+
+</body>
+
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		injectDataModelEditor();
+		injectUserInputModal();
+		injectRefValueModal();
+		injectResultModal();
+		injectQuestionModal();
+		injectBlockModal();
+
+
+		injectUserInputData(-1, {
+			id: 0,
+			name: "Date_publication",
+			question: "When was the work published ?",
+			information: "",
+			value : undefined
+		});
+		injectUserInputData(-1, {
+			id: 1,
+			name: "Date_birth_author",
+			question: "When is the author born",
+			information: "This is good to know for further computations",
+			value : undefined
+		});
+
+
+
+		injectRefValueData(-1, {
+			id: 0,
+			name: "NOW",
+			value: "Now",
+			information: "Current year"
+		});
+		injectRefValueData(-1, {
+			id: 1,
+			name: "Book_protection",
+			value: 75,
+			information: "Number of years during the time a book is protected"
+		});
+
+
+		injectResultData(-1, {
+			id: 0,
+			name: "Result_work_free",
+			content: "It appears this work is totally free"
+		});
+		injectResultData(-1, {
+			id: 1,
+			name: "Result_not_orphan",
+			content: "This work doesn't appear to be an orphan work"
+		});
+
+
+
+
+
+
+
+
+
+		injectQuestionData(-1, {
+			id: 0,
+			name: "Broadcaster's_name_&_successors'_names",
+			title: "Broadcaster name and all of its legal successors: ",
+			type: "text",
+			numerical: undefined,
+			outputs : ['set']
+		});
+		injectQuestionData(-1, {
+			id: 1,
+			name: "Broadcaster_/_successors_in_business",
+			title: "Broadcaster, or any of its legal succesors, still in business?",
+			type: "list",
+			numerical: undefined,
+			outputs : ['Yes', 'No']
+		});
+		injectQuestionData(-1, {
+			id: 2,
+			name: "Broadcaster_public",
+			title: "Is this broadcaster, or any of its legal succesors, a public broadcaster?",
+			type: "list",
+			numerical: undefined,
+			outputs : ['Yes', 'No']
+		});
+		injectQuestionData(-1, {
+			id: 3,
+			name: "Instructions_followed",
+			title: "I followed the instructions.",
+			type: "check",
+			numerical: undefined,
+			outputs : ['Checked', 'Not checked']
+		});
+		injectQuestionData(-1, {
+			id: 4,
+			name: "Contact_details",
+			title: "Please fill any contact details you found: ",
+			type: "text",
+			numerical: undefined,
+			outputs : ['set']
+		});
+		injectBlockData(-1, {
+			id: 0,
+			name: "Broadcaster_informations",
+			introduction: "Please input the details below: ",
+			questions: [0, 1, 2, 3, 4]
+		});
+		
+
+
+		injectQuestionData(-1, {
+			id: 5, 
+			name: "Numerical_computation_example",
+			title: "This is an example of computation between referenced data",
+			type: "numeric",
+			numerical: {
+				refId: 0,
+				condition: "==",
+				expression: [{
+					sources: userInputs,
+					idx: 0
+				},{
+					sources: userInputs,
+					idx: 1
+				}],
+				operations: ['+']
+			},
+			outputs : ['True', 'False']
+		});
+	});
+</script>
+
+
+
+<!-- 
+<script type="text/javascript">
+
+
+	$(document).ready(function(){
+		injectLeftPanel();
+		initSVG();
+		render();
+		$('#node-editor-generate').click(function(){
+			var nodeId = $('#node-editor-id').val(),
+				dtElt = getElement();
+			updateNode(nodeId, dtElt);
+
+
+
+			// var nodeData = dumpEditedNode();
+			// if(nodeData != null){
+			// 	updateNode(nodeData);
+			// 	lpReset();
+			// 	lpHideDisplay();				
+			// }
+		});
+		$('#node-editor-delete').click(function(){
+			deleteNode();			
+			lpReset();
+			lpHideDisplay();
+		});
+
+	});
+
+</script>
+ -->
+</html>
