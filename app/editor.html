@@ -26,6 +26,8 @@
 	<script type="text/javascript" src="template-controller/data-modal/result-modal.js"></script>
 	<script type="text/javascript" src="template-controller/data-modal/block-modal.js"></script>
 
+	<script type="text/javascript" src="template-controller/graph-editor.js"></script>
+
 
 	<!-- Dependecies -->
 	<script type="text/javascript" src="js/lib/d3.v3.min.js"></script>
@@ -47,12 +49,10 @@
 		</p>
 	</div>
 
-	<div class="row main-panel">
-		<div id="data-model-editor" class="left-panel"></div>
+	<div class="main-panel">
+		<div id="data-editor" class="left-panel"></div>
 
-		<div id="decision-tree-editor" class="right-panel">
-			Decision Tree Editor
-		</div>
+		<div id="graph-editor" class="right-panel"></div>
 
 		<!-- 
 		<div id="editor-left-panel" class="col-md-6 left-panel"></div>
@@ -84,6 +84,11 @@
 
 		// Get working set of data
 		loadExample();
+
+		// Inject graph editor
+		injectGraphEditor();
+
+
 	});
 </script>
 
