@@ -89,17 +89,39 @@ function configSVG(){
 	d3.select("svg g").selectAll("g.node").each(function(v){
 		$(this).off('click')
 				.on('click', function(event) {
-					console.log("Node clicked");
-
-
-					// $(leftPanelNodeSelector).val($(this).context.id)
-					// 						.trigger('change');
+					$('#config-nodeModal').modal('show');
+					$('#node-grahic-id').val($(this).context.id); //trigger('change')
 				});
 	});
 }
 
+graphicNodes = [];
+function injectGraphicNodeData(index, graphicNodeElt){
+	if(index != -1){
+		// Rewrite 
+		graphicNodes[index] = graphicNodeElt;
+		index++;
+	}
+	else{
+		// Push and add html content
+		index = graphicNodes.push(graphicNodeElt);
 
+	}
 
+	// Update graphic render
+	var node = graphic.nodes($('#node-grahic-id').val());
+	node.label = graphicNodeElt.dataName;
+
+	// Update click behaviour to laod defined node
+	d3.select("svg g").selectAll("g.node").each(function(v){
+		if($(this).context.id == $('#node-graphic-id').val()){
+			$(this).off('click').on('click', function(event){
+				$('#node-grahic-id').val($(this).context.id);
+				loadGraphicNode(index-1, graphicNodeElt);
+			});
+		}
+	});
+}
 
 
 

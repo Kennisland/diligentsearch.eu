@@ -281,9 +281,6 @@ function dumpQuestion(){
 		return;
 	}
 
-	console.log("dumping : ", question);
-	
-
 	injectQuestionData(currentQuestionIndex, question);
 	dismissQuestionModal();
 };
