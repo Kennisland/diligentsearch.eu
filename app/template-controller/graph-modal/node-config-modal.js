@@ -48,8 +48,8 @@ html_nodeConfig = `
 			</div>
 
 			<div class="modal-footer">
+				<button type="button" class="btn btn-danger pull-left" onclick="deleteNode()">Delete</button>
 				<button type="button" class="btn btn-default" onclick="dismissNodeModal()">Close</button>
-
 				<button type="button" class="btn btn-primary" onclick="dumpNode()">Save changes</button>
 			</div>
 		</div>
@@ -123,6 +123,36 @@ function GraphicNodeElt(){
 	this.dataName 	= $('#node-data').val();
 	this.targets	= [];
 }
+
+
+function deleteNode(){
+	var nodeId = $('#node-graphic-id').val();
+
+	// Root node case
+	if(graphic.predecessors(nodeId).length == 0){
+		alert('You cannot delete the root node.');
+		return;
+	}
+
+	// Find this node within the graphic node model
+	var found = false;
+	for (var i = 0; i < graphicNodes.length; i++) {
+		if(graphicNodes[i].id == nodeId){
+			found = true;
+			break;
+		}
+	}
+
+	// Not saved node case
+	if(!found){
+		alert('The node you try to delete has not been saved yet.\nTry to delete the parent node instead');
+		return;
+	}
+
+	// Delete recursively all successors nodes
+	deleteGraphicNode(nodeId);
+}
+
 
 
 /* 

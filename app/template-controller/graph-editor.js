@@ -28,7 +28,7 @@ function injectGraphEditor(){
 
 function loadGraph(){
 	initSVG();
-	createNode('lvl_0');
+	createGraphicNode('lvl_0');
 	render();
 }
 
@@ -105,8 +105,8 @@ function configSVG(){
 
 
 graphicNodes = [];
-function createNode(id){
-	graphic.setNode(id, {id:id, index:undefined, label:'Click to dit'});
+function createGraphicNode(id){
+	graphic.setNode(id, {id:id, index:undefined, label:'Click to edit'});
 }
 
 
@@ -156,7 +156,7 @@ function setNewGraphicNode(parentNodeId, edgeLabel){
 		parentLvl = parseInt(raw[1]),
 		childLvl = parentLvl + 1;
 
-
+	// Get the position, to prevent node erasing
 	var childPosition = 0,
 		nodesList = graphic.nodes();
 	for (var i = 0; i < nodesList.length; i++) {
@@ -168,7 +168,7 @@ function setNewGraphicNode(parentNodeId, edgeLabel){
 
 	var nodeId = base+'_'+childLvl+'_'+childPosition;
 	// console.log("creating node :", nodeId);
-	createNode(nodeId);
+	createGraphicNode(nodeId);
 	graphic.setEdge(parentNodeId, nodeId, {label:edgeLabel});
 }
 
@@ -178,4 +178,54 @@ function targetGraphicNode(originId, targetId, edgeLabel){
 }
 
 
+function deleteGraphicNode(nodeId){
+	recursiveDelete(nodeId, 0);
+	render();
+}
 
+
+// Delete recursively this node
+function recursiveDelete(nodeId, depth){
+	// Child node, with at least 2 parents : don't delete it
+	if(depth != 0 && graphic.predecessors(nodeId).length > 1){
+		return;
+	}
+
+	// Look at all children
+	var children = graphic.successors(nodeId);
+	if(children.length > 0){
+		children.map(function(childId){
+			recursiveDelete(childId, depth+1);
+		});
+	}
+
+	// Start node : update predecessors
+	if(depth == 0){
+		// For all predecessors, remove the question which points to this current node
+		graphic.predecessors(nodeId).map(function(parentId){
+			// Look for this parent in the model and its targets
+			var parentIndex = graphic.node(parentId).index,
+				targets = graphicNodes[parentIndex].targets;
+		
+			// Update its targets list
+			targets.forEach(function(t, idx){
+				if(t == nodeId){
+					targets.splice(idx, 1);
+				}
+			});
+		});
+	}
+
+	// If this node is a cluster, delete parent node 
+	// var nodeData = questionNodes[nodeId],
+	// 	clusterId = questionNodes[nodeId].question.clusterNode;
+	// if(nodeData.isBlock && clusterId != ""){
+	// 	delete questionNodes[clusterId];
+	// 	graphic.removeNode(clusterId);
+	// }
+
+	// Delete this node as we have not yet return from this call
+	var nodeIndex = graphic.node(nodeId).index;
+	delete graphicNodes[nodeIndex];
+	graphic.removeNode(nodeId);	
+}
