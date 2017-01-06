@@ -17,12 +17,10 @@ function injectGraphEditor(){
 	$('#display-data-model').bind("DOMAttrModified",function(event){
 
 		if($(this).is(':visible') && last_state == -1){
-			console.log("visible");
 			loadGraph();
 			last_state = 1;
 		}
 		else if( ! $(this).is(':visible') && last_state == 1){
-			console.log("! visible");
 			resetGraph();
 			last_state = -1;
 		}
@@ -31,7 +29,7 @@ function injectGraphEditor(){
 
 function loadGraph(){
 	initSVG();
-	graphic.setNode("Coucou", {label:"click me"});
+	graphic.setNode("Coucou", {id:"Coucou", label:"click me"});
 	render();
 }
 
@@ -89,8 +87,8 @@ function configSVG(){
 	d3.select("svg g").selectAll("g.node").each(function(v){
 		$(this).off('click')
 				.on('click', function(event) {
+					$('#node-graphic-id').val($(this).context.id);
 					$('#config-nodeModal').modal('show');
-					$('#node-grahic-id').val($(this).context.id); //trigger('change')
 				});
 	});
 }
@@ -105,22 +103,24 @@ function injectGraphicNodeData(index, graphicNodeElt){
 	else{
 		// Push and add html content
 		index = graphicNodes.push(graphicNodeElt);
-
 	}
 
 	// Update graphic render
-	var node = graphic.nodes($('#node-grahic-id').val());
+	var node = graphic.node($('#node-graphic-id').val());
 	node.label = graphicNodeElt.dataName;
 
-	// Update click behaviour to laod defined node
+
+	// Update click behaviour to load defined graphicNodeElt
 	d3.select("svg g").selectAll("g.node").each(function(v){
 		if($(this).context.id == $('#node-graphic-id').val()){
 			$(this).off('click').on('click', function(event){
-				$('#node-grahic-id').val($(this).context.id);
+				$('#node-graphic-id').val($(this).context.id);
 				loadGraphicNode(index-1, graphicNodeElt);
 			});
 		}
 	});
+
+	render();
 }
 
 

@@ -61,14 +61,12 @@ html_nodeConfig = `
 function injectNodeConfigModal(){
 	$('#modal-section').append(html_nodeConfig);
 	$('#node-data-output-block').hide();
-	// Change the autocomplete according to the selected value
 	configCategorySelection();
 }
 
 currentGraphicNodeId = -1;
 currentGraphicNodeIndex = -1;
 function loadGraphicNode(index, graphicNodeElt){
-
 	currentGraphicNodeIndex = index;
 	currentGraphicNodeId = graphicNodeElt.id;
 
@@ -91,10 +89,13 @@ function dumpNode(){
 		error_log += "Node data not correctly selected\n"; 
 	}
 
+	if(error_log != ""){
+		alert(error_log);
+		return;
+	}
+
 	var node = new GraphicNodeElt();
 	node.id = getGraphicNodeId();
-
-	// Get targets
 	var targets = retrieveSection('input', 'node-data-output-target-');
 	targets.forEach(function(elt, idx){
 		var t = elt.value;
@@ -102,31 +103,19 @@ function dumpNode(){
 	});
 
 
-
-	if(error_log != ""){
-		alert(error_log);
-		return;
-	}
-
-	console.log("dumping : ", node);
-
 	injectGraphicNodeData(currentGraphicNodeIndex, node);
 	dismissNodeModal();
 }
 
 function dismissNodeModal(){
-	// Reset fields
 	$('.modal-body > input').val('');
 	delOutputs();
-
 	if(currentGraphicNodeIndex != -1){
 		currentGraphicNodeIndex = -1;
 	}
-
 	if(currentGraphicNodeId != -1){
 		currentGraphicNodeId = -1;
 	}
-
 	$('#config-nodeModal').modal('hide');
 }
 
