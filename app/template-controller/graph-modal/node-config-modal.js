@@ -66,21 +66,17 @@ function injectNodeConfigModal(){
 
 currentGraphicNodeIndex = -1;
 function loadGraphicNode(index, graphicNodeElt){
-
-	console.log("loadGraphicNode");
-
-
 	currentGraphicNodeIndex = index;
 
 	$('#node-category').val(graphicNodeElt.category);
 	$('#node-data').val(graphicNodeElt.dataName);
-	$('#node-data-id').val(graphicNodeElt.id)
-
+	$('#node-data-id').val(graphicNodeElt.dataId)
 	var dataElt = getDataSource(graphicNodeElt.category)[graphicNodeElt.dataId];
 	loadDataOutputs(graphicNodeElt.category, dataElt);
 
 	$('#config-nodeModal').modal('show');
 }
+
 
 function dumpNode(){
 	var error_log = "";
@@ -102,7 +98,6 @@ function dumpNode(){
 		var t = elt.value != "" ? elt.value : elt.placeholder;
 		node.targets[idx] = t;
 	});
-
 
 	injectGraphicNodeData(currentGraphicNodeIndex, node);
 	dismissNodeModal();
@@ -182,39 +177,34 @@ function getDataSource(category){
 }
 
 function loadDataOutputs(dataCategory, dataElt){
+	delOutputs();	// Reset exsting outputs
 
-	console.log("loading");
-
-	// Reset exsting outputs
-	delOutputs();
-
-	// If it's a result, nothing to configure
 	if(dataCategory == 'result'){
 		return;
 	}
-
-	// If block, only one output is needed
-	if(dataCategory == 'block'){
+	else if(dataCategory == 'block'){
 		addOutput();
 		$('#node-data-output-0').val('Block output');
 	}
-
-	// If question, load each predefined answers for configuration
-	if(dataCategory == 'question'){
+	else if(dataCategory == 'question'){
 		for (var i = 0; i < dataElt.outputs.length; i++) {
 			addOutput();
 			$('#node-data-output-'+i).val(dataElt.outputs[i]);			
 		}
 	}
 
-	// Display the output section fiannly
-	$('#node-data-output-block').show();
+	$('#node-data-output-block').show();	// Display output block
 }
 
 function addOutput(){
 	$('#node-data-output').append(getNewOutput());
 	var i = $('#node-data-output > tr').length - 1;
 	configOutputComplete(i);
+}
+
+function delOutputs(){
+	$('#node-data-output').html('');
+	$('#node-data-output-block').hide();
 }
 
 function getNewOutput(){
@@ -238,18 +228,14 @@ function getNewOutput(){
 }
 
 
-nodes = ['lvl_0', 'lvl_1', 'lvl_2'];
 function configOutputComplete(i){
-			// function(request, response){
-			// 	response($.map(graphic.nodes, function(value, key){
-			// 		return {
-			// 			label: value.label
-			// 		}
-			// 	}));
-			// },
 	$('#node-data-output-target-'+i).autocomplete({
 		minLength: 0,
-		source: nodes,		
+		source: function(request, response){
+			var nodes = graphic.nodes(),
+				parents = recursiveParents($('#node-graphic-id').val(), [], 0);
+			response($(nodes).not(parents).get());
+		},
 		autocomplete: true,
 		open: function() { 
 			var parent_width = $('#node-data-output-target-'+i).width();
@@ -258,7 +244,22 @@ function configOutputComplete(i){
 	});
 }
 
-function delOutputs(){
-	$('#node-data-output').html('');
-	$('#node-data-output-block').hide();
+function recursiveParents(nodeId, nodeList, depth){
+	// Push current element
+	nodeList.push(nodeId);
+
+	// Check for predecessors and recall if necessary
+	var parents = graphic.predecessors(nodeId);
+	if(parents.length > 0){
+		parents.map(function(parentId){
+			recursiveParents(parentId, nodeList, depth+1);
+		});
+	}
+
+	// If initial caller, return the appended list
+	if(depth == 0){
+		return nodeList;
+	}
 }
+
+

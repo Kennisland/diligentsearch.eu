@@ -15,7 +15,6 @@ function injectGraphEditor(){
 
 	// Configure graph display if there is data to present / manipulate
 	$('#display-data-model').bind("DOMAttrModified",function(event){
-
 		if($(this).is(':visible') && last_state == -1){
 			loadGraph();
 			last_state = 1;
@@ -84,25 +83,22 @@ function configSVG(){
 	svg.attr("height", graphic.graph().height + 40);
 
 	/* Click bindings with editor */
-	d3.select("svg g").selectAll("g.node").each(function(v){
-		
+	d3.select("svg g").selectAll("g.node").each(function(v){		
 		var node = graphic.node($(this).context.id);
 
 		// Define default click event if this node has no index yet
 		if(node.index !== undefined){
-			$(this).off('click')
-					.on('click', function(event) {
-						$('#node-graphic-id').val($(this).context.id);
-						loadGraphicNode(node.index, graphicNodes[node.index]);
-					});
+			$(this).off('click').on('click', function(event) {
+				$('#node-graphic-id').val($(this).context.id);
+				loadGraphicNode(node.index, graphicNodes[node.index]);
+			});
 		}
 		else{
 			// Define the custom click event to load node information
-			$(this).off('click')
-					.on('click', function(event) {
-						$('#node-graphic-id').val($(this).context.id);
-						$('#config-nodeModal').modal('show');
-					});
+			$(this).off('click').on('click', function(event) {
+				$('#node-graphic-id').val($(this).context.id);
+				$('#config-nodeModal').modal('show');
+			});
 		}
 	});
 }
@@ -132,22 +128,29 @@ function injectGraphicNodeData(index, graphicNodeElt){
 
 	// Regarding number of Outputs, draw new nodes if necessary
 	for (var i = 0; i < graphicNodeElt.targets.length; i++) {
+
+		// Get answer text
+		if(graphicNodeElt.category == "block"){
+			var answer = "Block output";				
+		}
+		else if(graphicNodeElt.category == "question"){
+			var answer = questions[graphicNodeElt.dataId].outputs[i];
+		}
+
+		// Create or connect to a node
 		if(graphicNodeElt.targets[i] == "New node"){
-			if(graphicNodeElt.category == "block"){
-				var answer = "Block output";				
-			}
-			else if(graphicNodeElt.category == "question"){
-				var answer = questions[graphicNodeElt.dataId].outputs[i];
-			}
-			getNewGraphicNodeId(graphicNodeElt.id, answer);
+			setNewGraphicNode(graphicNodeElt.id, answer);
+		}
+		else{
+			targetGraphicNode(graphicNodeElt.id, graphicNodeElt.targets[i], answer);
 		}
 	}
-
 	render();
 }
 
 
-function getNewGraphicNodeId(parentNodeId, edgeLabel){
+function setNewGraphicNode(parentNodeId, edgeLabel){
+	// Extract id components
 	var raw = parentNodeId.split('_'),
 		base = raw[0],
 		parentLvl = parseInt(raw[1]),
@@ -160,13 +163,18 @@ function getNewGraphicNodeId(parentNodeId, edgeLabel){
 		if(nodesList[i].indexOf(base+'_'+childLvl) == 0){
 			childPosition++;
 		}
-		console.log("nodeId :", nodesList[i], "base :", base+'_'+childLvl, "current pos :", childPosition);
+		// console.log("nodeId :", nodesList[i], "base :", base+'_'+childLvl, "current pos :", childPosition);
 	}
 
 	var nodeId = base+'_'+childLvl+'_'+childPosition;
-	console.log("creating node :", nodeId);
+	// console.log("creating node :", nodeId);
 	createNode(nodeId);
 	graphic.setEdge(parentNodeId, nodeId, {label:edgeLabel});
+}
+
+
+function targetGraphicNode(originId, targetId, edgeLabel){
+	graphic.setEdge(originId, targetId, {label:edgeLabel});
 }
 
 
