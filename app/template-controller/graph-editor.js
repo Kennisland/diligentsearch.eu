@@ -88,6 +88,7 @@ function configSVG(){
 		
 		var node = graphic.node($(this).context.id);
 
+		// Define default click event if this node has no index yet
 		if(node.index !== undefined){
 			$(this).off('click')
 					.on('click', function(event) {
@@ -96,6 +97,7 @@ function configSVG(){
 					});
 		}
 		else{
+			// Define the custom click event to load node information
 			$(this).off('click')
 					.on('click', function(event) {
 						$('#node-graphic-id').val($(this).context.id);
@@ -106,12 +108,12 @@ function configSVG(){
 }
 
 
+graphicNodes = [];
 function createNode(id){
 	graphic.setNode(id, {id:id, index:undefined, label:'Click to dit'});
 }
 
 
-graphicNodes = [];
 function injectGraphicNodeData(index, graphicNodeElt){
 	if(index != -1){
 		// Rewrite 
@@ -128,7 +130,43 @@ function injectGraphicNodeData(index, graphicNodeElt){
 	node.label = graphicNodeElt.dataName;
 	node.index = index-1;
 
+	// Regarding number of Outputs, draw new nodes if necessary
+	for (var i = 0; i < graphicNodeElt.targets.length; i++) {
+		if(graphicNodeElt.targets[i] == "New node"){
+			if(graphicNodeElt.category == "block"){
+				var answer = "Block output";				
+			}
+			else if(graphicNodeElt.category == "question"){
+				var answer = questions[graphicNodeElt.dataId].outputs[i];
+			}
+			getNewGraphicNodeId(graphicNodeElt.id, answer);
+		}
+	}
+
 	render();
+}
+
+
+function getNewGraphicNodeId(parentNodeId, edgeLabel){
+	var raw = parentNodeId.split('_'),
+		base = raw[0],
+		parentLvl = parseInt(raw[1]),
+		childLvl = parentLvl + 1;
+
+
+	var childPosition = 0,
+		nodesList = graphic.nodes();
+	for (var i = 0; i < nodesList.length; i++) {
+		if(nodesList[i].indexOf(base+'_'+childLvl) == 0){
+			childPosition++;
+		}
+		console.log("nodeId :", nodesList[i], "base :", base+'_'+childLvl, "current pos :", childPosition);
+	}
+
+	var nodeId = base+'_'+childLvl+'_'+childPosition;
+	console.log("creating node :", nodeId);
+	createNode(nodeId);
+	graphic.setEdge(parentNodeId, nodeId, {label:edgeLabel});
 }
 
 

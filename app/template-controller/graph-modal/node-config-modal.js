@@ -64,7 +64,6 @@ function injectNodeConfigModal(){
 	configCategorySelection();
 }
 
-currentGraphicNodeId = -1;
 currentGraphicNodeIndex = -1;
 function loadGraphicNode(index, graphicNodeElt){
 
@@ -72,7 +71,6 @@ function loadGraphicNode(index, graphicNodeElt){
 
 
 	currentGraphicNodeIndex = index;
-	currentGraphicNodeId = graphicNodeElt.id;
 
 	$('#node-category').val(graphicNodeElt.category);
 	$('#node-data').val(graphicNodeElt.dataName);
@@ -99,10 +97,9 @@ function dumpNode(){
 	}
 
 	var node = new GraphicNodeElt();
-	node.id = getGraphicNodeId();
 	var targets = retrieveSection('input', 'node-data-output-target-');
 	targets.forEach(function(elt, idx){
-		var t = elt.value;
+		var t = elt.value != "" ? elt.value : elt.placeholder;
 		node.targets[idx] = t;
 	});
 
@@ -117,9 +114,6 @@ function dismissNodeModal(){
 	if(currentGraphicNodeIndex != -1){
 		currentGraphicNodeIndex = -1;
 	}
-	if(currentGraphicNodeId != -1){
-		currentGraphicNodeId = -1;
-	}
 	$('#config-nodeModal').modal('hide');
 }
 
@@ -130,20 +124,6 @@ function GraphicNodeElt(){
 	this.dataId		= $('#node-data-id').val();
 	this.dataName 	= $('#node-data').val();
 	this.targets	= [];
-}
-
-function getGraphicNodeId(){
-	if(currentGraphicNodeId == -1){
-		var l = graphicNodes.length;
-		if(l == 0){
-			return 0;
-		}else{
-			return graphicNodes[l-1].id + 1;
-		}
-	}
-	else{
-		return currentGraphicNodeId;
-	}
 }
 
 
