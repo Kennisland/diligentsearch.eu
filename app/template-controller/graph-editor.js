@@ -29,7 +29,7 @@ function injectGraphEditor(){
 
 function loadGraph(){
 	initSVG();
-	graphic.setNode("Coucou", {id:"Coucou", label:"click me"});
+	createNode('lvl_0');
 	render();
 }
 
@@ -85,13 +85,31 @@ function configSVG(){
 
 	/* Click bindings with editor */
 	d3.select("svg g").selectAll("g.node").each(function(v){
-		$(this).off('click')
-				.on('click', function(event) {
-					$('#node-graphic-id').val($(this).context.id);
-					$('#config-nodeModal').modal('show');
-				});
+		
+		var node = graphic.node($(this).context.id);
+
+		if(node.index !== undefined){
+			$(this).off('click')
+					.on('click', function(event) {
+						$('#node-graphic-id').val($(this).context.id);
+						loadGraphicNode(node.index, graphicNodes[node.index]);
+					});
+		}
+		else{
+			$(this).off('click')
+					.on('click', function(event) {
+						$('#node-graphic-id').val($(this).context.id);
+						$('#config-nodeModal').modal('show');
+					});
+		}
 	});
 }
+
+
+function createNode(id){
+	graphic.setNode(id, {id:id, index:undefined, label:'Click to dit'});
+}
+
 
 graphicNodes = [];
 function injectGraphicNodeData(index, graphicNodeElt){
@@ -101,24 +119,14 @@ function injectGraphicNodeData(index, graphicNodeElt){
 		index++;
 	}
 	else{
-		// Push and add html content
+		// Push and create new graphical nodes
 		index = graphicNodes.push(graphicNodeElt);
 	}
 
-	// Update graphic render
+	// Update drawable graphic node information
 	var node = graphic.node($('#node-graphic-id').val());
 	node.label = graphicNodeElt.dataName;
-
-
-	// Update click behaviour to load defined graphicNodeElt
-	d3.select("svg g").selectAll("g.node").each(function(v){
-		if($(this).context.id == $('#node-graphic-id').val()){
-			$(this).off('click').on('click', function(event){
-				$('#node-graphic-id').val($(this).context.id);
-				loadGraphicNode(index-1, graphicNodeElt);
-			});
-		}
-	});
+	node.index = index-1;
 
 	render();
 }

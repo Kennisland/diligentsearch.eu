@@ -67,6 +67,10 @@ function injectNodeConfigModal(){
 currentGraphicNodeId = -1;
 currentGraphicNodeIndex = -1;
 function loadGraphicNode(index, graphicNodeElt){
+
+	console.log("loadGraphicNode");
+
+
 	currentGraphicNodeIndex = index;
 	currentGraphicNodeId = graphicNodeElt.id;
 
@@ -121,7 +125,7 @@ function dismissNodeModal(){
 
 
 function GraphicNodeElt(){
-	this.id 		= undefined;
+	this.id 		= $('#node-graphic-id').val();
 	this.category	= $('#node-category').val();
 	this.dataId		= $('#node-data-id').val();
 	this.dataName 	= $('#node-data').val();
@@ -195,6 +199,9 @@ function getDataSource(category){
 }
 
 function loadDataOutputs(dataCategory, dataElt){
+
+	console.log("loading");
+
 	// Reset exsting outputs
 	delOutputs();
 
