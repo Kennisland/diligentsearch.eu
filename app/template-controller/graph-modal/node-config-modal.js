@@ -109,7 +109,10 @@ function dumpNode(){
 }
 
 function dismissNodeModal(){
-	$('.modal-body > input').val('');
+	$('#node-graphic-id').val("");
+	$('#node-category').val("");
+	$('#node-data-id').val("");
+	$('#node-data').val("");
 	delOutputs();
 	if(currentGraphicNodeIndex != -1){
 		currentGraphicNodeIndex = -1;
