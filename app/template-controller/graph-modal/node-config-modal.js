@@ -36,7 +36,7 @@ html_nodeConfig = `
 							<table class"table table-responsive table-bordered table-stripped" style="width:100%">
 								<thead>
 									<th style="width:10%; text-align:center">#</th>
-									<th style="width:50%; text-align:center">Answer</th>
+									<th style="width:50%; text-align:center">Output</th>
 									<th style="width:40%; text-align:center">Target</th>
 								</thead>
 								<tbody id="node-data-output">
