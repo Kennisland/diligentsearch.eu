@@ -139,7 +139,8 @@ function injectGraphicNodeData(index, graphicNodeElt){
 
 		// Create or connect to a node
 		if(graphicNodeElt.targets[i] == "New node"){
-			setNewGraphicNode(graphicNodeElt.id, answer);
+			var targetId = setNewGraphicNode(graphicNodeElt.id, answer);
+			graphicNodeElt.targets[i] = targetId;
 		}
 		else{
 			targetGraphicNode(graphicNodeElt.id, graphicNodeElt.targets[i], answer);
@@ -160,8 +161,10 @@ function setNewGraphicNode(parentNodeId, edgeLabel){
 	var childPosition = 0,
 		nodesList = graphic.nodes();
 	for (var i = 0; i < nodesList.length; i++) {
-		if(nodesList[i].indexOf(base+'_'+childLvl) == 0){
-			childPosition++;
+
+		// Increase child position if position already taken
+		if(nodesList[i].indexOf(base+'_'+childLvl+'_'+childPosition) == 0){
+			childPosition++;		
 		}
 		// console.log("nodeId :", nodesList[i], "base :", base+'_'+childLvl, "current pos :", childPosition);
 	}
@@ -170,6 +173,9 @@ function setNewGraphicNode(parentNodeId, edgeLabel){
 	// console.log("creating node :", nodeId);
 	createGraphicNode(nodeId);
 	graphic.setEdge(parentNodeId, nodeId, {label:edgeLabel});
+
+	// Return nodeId, to reference the created/used target
+	return nodeId;
 }
 
 
@@ -210,7 +216,7 @@ function recursiveDelete(nodeId, depth){
 			// Update its targets list
 			targets.forEach(function(t, idx){
 				if(t == nodeId){
-					targets.splice(idx, 1);
+					targets[idx] = "";
 				}
 			});
 		});
@@ -224,8 +230,14 @@ function recursiveDelete(nodeId, depth){
 	// 	graphic.removeNode(clusterId);
 	// }
 
-	// Delete this node as we have not yet return from this call
+
+
+	// Update node data model
 	var nodeIndex = graphic.node(nodeId).index;
-	delete graphicNodes[nodeIndex];
+	if(nodeIndex !== undefined){
+		graphicNodes.splice(nodeIndex, 1);		
+	}
+
+	// Update graphical model
 	graphic.removeNode(nodeId);	
 }

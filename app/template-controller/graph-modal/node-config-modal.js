@@ -73,8 +73,18 @@ function loadGraphicNode(index, graphicNodeElt){
 	$('#node-data-id').val(graphicNodeElt.dataId)
 	var dataElt = getDataSource(graphicNodeElt.category)[graphicNodeElt.dataId];
 	loadDataOutputs(graphicNodeElt.category, dataElt);
+	loadGraphicNodeTarget(graphicNodeElt.targets);
 
 	$('#config-nodeModal').modal('show');
+}
+
+function loadGraphicNodeTarget(targets){
+	console.log("loadGraphicNodeTarget");
+	for (var i = 0; i < targets.length; i++) {
+		if(targets[i] != ""){
+			$('#node-data-output-target-'+i).val(targets[i]);			
+		}
+	}
 }
 
 
@@ -151,6 +161,7 @@ function deleteNode(){
 
 	// Delete recursively all successors nodes
 	deleteGraphicNode(nodeId);
+	dismissNodeModal();
 }
 
 
