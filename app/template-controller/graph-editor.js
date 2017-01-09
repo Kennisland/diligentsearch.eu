@@ -141,7 +141,7 @@ function injectGraphicNodeData(index, graphicNodeElt){
 
 	// Update drawable graphic node information
 	var node = graphic.node($('#node-graphic-id').val());
-	node.label = graphicNodeElt.dataName;
+	node.label = formatGraphicNodeLabel(graphicNodeElt.dataName);
 	node.index = index-1;
 
 
@@ -230,7 +230,7 @@ function setNewGraphicBlock(blockNodeId, blockNodeDataId){
 
 			if(idx == questions[j].id){
 				var q = questions[j];
-				graphic.setNode(questionBlockId, {id:questionBlockId, questionIndex:idx, label:q.name});
+				graphic.setNode(questionBlockId, {id:questionBlockId, questionIndex:idx, label:formatGraphicNodeLabel(q.name)});
 				graphic.setEdge(blockNodeId, questionBlockId);
 				graphic.setParent(questionBlockId, baseId);
 				graphic.node(questionBlockId).style = 'stroke: #000000; fill: #d3d7e8' ;
@@ -246,15 +246,20 @@ function targetGraphicNode(originId, targetId, edgeLabel){
 }
 
 function configGraphicNodeStyle(category, nodeId){
+	var s = '';
 	if(category == "result"){
-		graphic.node(nodeId).style = 'stroke: #57723E; stroke-width: 5;';
+		graphic.node(nodeId).style = s+'stroke: #57723E; stroke-width: 5;';
 	}
 	else if(category == "block"){
-
+		graphic.node(nodeId).style = s;	
 	}
 	else if(category == "question"){
-
+		graphic.node(nodeId).style = s;
 	}
+}
+
+function formatGraphicNodeLabel(text){
+	return text.replace(/_/g, '\r\n');
 }
 
 
@@ -295,16 +300,6 @@ function recursiveDelete(nodeId, depth){
 			});
 		});
 	}
-
-	// If this node is a cluster, delete parent node 
-	// var nodeData = questionNodes[nodeId],
-	// 	clusterId = questionNodes[nodeId].question.clusterNode;
-	// if(nodeData.isBlock && clusterId != ""){
-	// 	delete questionNodes[clusterId];
-	// 	graphic.removeNode(clusterId);
-	// }
-
-
 
 	// Update node data model
 	var nodeIndex = graphic.node(nodeId).index;
