@@ -21,7 +21,7 @@ div.main-panel{
 	width:100%;
 }
 div.left-panel{
-	width:50%;
+	width:30%;
 	padding-left: 40px;
 	padding-right: 10px;
 	float: none;
@@ -29,7 +29,7 @@ div.left-panel{
 	vertical-align: top;
 }
 div.right-panel{
-	width:50%;
+	width:70%;
 	padding-left: 10px;
 	padding-right: 40px;
 	float: none;
