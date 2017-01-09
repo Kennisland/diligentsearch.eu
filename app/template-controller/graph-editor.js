@@ -127,36 +127,32 @@ function createGraphicNode(id){
 	graphic.setNode(id, {id:id, index:undefined, label:'Click to edit'});
 }
 
-
+// Externally called by node-config-modal.js
 function injectGraphicNodeData(index, graphicNodeElt){
 	if(index != -1){
-		// Rewrite 
 		graphicNodes[index] = graphicNodeElt;
 		index++;
 	}
 	else{
-		// Push and create new graphical nodes
 		index = graphicNodes.push(graphicNodeElt);
 	}
 
 	// Update drawable graphic node information
 	var node = graphic.node($('#node-graphic-id').val());
-	node.label = formatGraphicNodeLabel(graphicNodeElt.dataName);
 	node.index = index-1;
+	node.label = graphicNodeElt.dataName;
 
+	// Update graphical node style of current node
+	configGraphicNodeStyle(graphicNodeElt.category, graphicNodeElt.id);
 
 	// Generate block of questions if necessary
 	if(graphicNodeElt.category == "block"){
 		setNewGraphicBlock(graphicNodeElt.id, graphicNodeElt.dataId);		
 	}
 
-	// Update graphical node style
-	configGraphicNodeStyle(graphicNodeElt.category, graphicNodeElt.id);
-
-
 	// Regarding number of Outputs, draw new nodes if necessary
 	for (var i = 0; i < graphicNodeElt.targets.length; i++) {
-		// Get answer text
+		// Configure/Get answer text
 		if(graphicNodeElt.category == "block"){
 			var answer = "Block output";				
 		}
@@ -174,7 +170,6 @@ function injectGraphicNodeData(index, graphicNodeElt){
 			targetGraphicNode(graphicNodeElt.id, targetId, answer);
 		}
 
-		// Configure node style for blocks & questions
 		configGraphicNodeStyle(graphicNodeElt.category, targetId);
 	}
 	render();
@@ -201,7 +196,6 @@ function setNewGraphicNode(parentNodeId, edgeLabel){
 	}
 
 	var nodeId = base+'_'+childLvl+'_'+childPosition;
-	// console.log("creating node :", nodeId);
 	createGraphicNode(nodeId);
 	graphic.setEdge(parentNodeId, nodeId, {label:edgeLabel});
 
@@ -210,31 +204,32 @@ function setNewGraphicNode(parentNodeId, edgeLabel){
 }
 
 function setNewGraphicBlock(blockNodeId, blockNodeDataId){
-	// Specific id definition
-	var baseId = blockNodeId+":";
 
 	// Register a parent node, which will help graphical identification of the block
-	graphic.setNode(baseId, {style: 'fill: #d3d7e8'});
-	graphic.setParent(blockNodeId, baseId);
+	var clusterId = blockNodeId+":";
+	graphic.setNode(clusterId);
+	graphic.setParent(blockNodeId, clusterId);
+	configGraphicNodeStyle("clusterBlock", clusterId);
 
 	// For all questions, create id, node, edge, and register them as child of the created parent
 	var blockElt = blocks[blockNodeDataId];
 	for (var i = 0; i < blockElt.questions.length; i++) {
 
-		// Generate question block id
-		var questionBlockId = baseId + i;
 
 		// Get question index to jump to question data model
 		var idx = blockElt.questions[i];
 		for (var j = 0; j < questions.length; j++) {
 
 			if(idx == questions[j].id){
-				var q = questions[j];
-				graphic.setNode(questionBlockId, {id:questionBlockId, questionIndex:idx, label:formatGraphicNodeLabel(q.name)});
+				// Dump question and create specific id for the graphical representation
+				var q = questions[j],
+					questionBlockId = clusterId + i;
+
+				// Register this question as a new node, belonging to the cluster, and child of the blockNodeId
+				graphic.setNode(questionBlockId, {id:questionBlockId, questionIndex:idx, label:q.name});
+				graphic.setParent(questionBlockId, clusterId);
 				graphic.setEdge(blockNodeId, questionBlockId);
-				graphic.setParent(questionBlockId, baseId);
-				graphic.node(questionBlockId).style = 'stroke: #000000; fill: #d3d7e8' ;
-				graphic.node(questionBlockId).shape = 'ellipse';
+				configGraphicNodeStyle('questionBlock', questionBlockId);				
 				break;
 			}
 		}
@@ -246,6 +241,10 @@ function targetGraphicNode(originId, targetId, edgeLabel){
 }
 
 function configGraphicNodeStyle(category, nodeId){
+	// format node text
+	graphic.node(nodeId).label = formatGraphicNodeLabel(graphic.node(nodeId).label);
+
+	// Configure css
 	var s = '';
 	if(category == "result"){
 		graphic.node(nodeId).style = s+'stroke: #57723E; stroke-width: 5;';
@@ -256,13 +255,22 @@ function configGraphicNodeStyle(category, nodeId){
 	else if(category == "question"){
 		graphic.node(nodeId).style = s;
 	}
+	else if(category == "questionBlock"){
+		graphic.node(nodeId).style = s+'stroke: #000000; fill: #d3d7e8' ;
+		graphic.node(nodeId).shape = 'ellipse';
+	}
+	else if(category == "clusterBlock"){
+		graphic.node(nodeId).style = s+'fill: #d3d7e8';
+	}
 }
 
+// Replace '_' by newLine characters
 function formatGraphicNodeLabel(text){
 	return text.replace(/_/g, '\r\n');
 }
 
 
+// Call from external
 function deleteGraphicNode(nodeId){
 	recursiveDelete(nodeId, 0);
 	render();

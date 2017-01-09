@@ -67,17 +67,18 @@ function injectNodeConfigModal(){
 currentGraphicNodeIndex = -1;
 function loadGraphicNode(index, graphicNodeElt){
 	currentGraphicNodeIndex = index;
-
 	$('#node-category').val(graphicNodeElt.category);
 	$('#node-data').val(graphicNodeElt.dataName);
 	$('#node-data-id').val(graphicNodeElt.dataId)
+
 	var dataElt = getDataSource(graphicNodeElt.category)[graphicNodeElt.dataId];
 	loadDataOutputs(graphicNodeElt.category, dataElt);
 	loadGraphicNodeTarget(graphicNodeElt.targets);
-
+	
 	$('#config-nodeModal').modal('show');
 }
 
+// Load targets value referencing outputs nodes
 function loadGraphicNodeTarget(targets){
 	console.log("loadGraphicNodeTarget");
 	for (var i = 0; i < targets.length; i++) {
@@ -113,6 +114,7 @@ function dumpNode(){
 	dismissNodeModal();
 }
 
+// Reset and hide the modal
 function dismissNodeModal(){
 	$('#node-graphic-id').val("");
 	$('#node-category').val("");
@@ -134,7 +136,7 @@ function GraphicNodeElt(){
 	this.targets	= [];
 }
 
-
+// Delete the current node
 function deleteNode(){
 	var nodeId = $('#node-graphic-id').val();
 
@@ -170,6 +172,7 @@ function deleteNode(){
  * HTML outputs management
 */
 
+// Configure autocomplete based on selected category
 function configCategorySelection(){
 	$('#node-category').on('change', function(){
 		// Reset necessary fields
@@ -208,6 +211,7 @@ function configCategorySelection(){
 	});
 }
 
+// Returns the specific data model
 function getDataSource(category){
 	if(category == 'question')
 		return questions;
@@ -217,8 +221,9 @@ function getDataSource(category){
 		return results;
 }
 
+// Load output texts for the dataElt defined
 function loadDataOutputs(dataCategory, dataElt){
-	delOutputs();	// Reset exsting outputs
+	delOutputs();	// Reset existing outputs
 
 	if(dataCategory == 'result'){
 		return;
@@ -237,17 +242,20 @@ function loadDataOutputs(dataCategory, dataElt){
 	$('#node-data-output-block').show();	// Display output block
 }
 
+// Add html content representing output
 function addOutput(){
 	$('#node-data-output').append(getNewOutput());
 	var i = $('#node-data-output > tr').length - 1;
 	configOutputComplete(i);
 }
 
+// Delete html content for outputs
 function delOutputs(){
 	$('#node-data-output').html('');
 	$('#node-data-output-block').hide();
 }
 
+// Create 1 HTML output content
 function getNewOutput(){
 	var i = $('#node-data-output > tr').length,
 		j = i+1,
@@ -268,7 +276,7 @@ function getNewOutput(){
 	return output;
 }
 
-
+// Configure autocomplete plugin for outputs
 function configOutputComplete(i){
 	$('#node-data-output-target-'+i).autocomplete({
 		minLength: 0,
@@ -285,6 +293,7 @@ function configOutputComplete(i){
 	});
 }
 
+// Get parents recursively, to get all ascendance
 function recursiveParents(nodeId, nodeList, depth){
 	// Push current element
 	nodeList.push(nodeId);
