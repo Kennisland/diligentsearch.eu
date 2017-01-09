@@ -48,6 +48,7 @@ function resetGraph(){
 svg = undefined;
 svgGroup = undefined;
 graphic = undefined;
+zoom = undefined;
 initialScale = 0.75;
 
 // Initiate the graphical object and the first node
@@ -82,6 +83,19 @@ function configSVG(){
 	svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
 	svg.attr("height", graphic.graph().height + 40);
 
+	/* Translation */
+	zoom.translate([xCenterOffset, 100])
+	  .scale(initialScale)
+	  .event(svg);
+	svg.attr('height', graphic.graph().height * initialScale + 40);
+
+	/* Zoom */
+	zoom.on("zoom", function() {
+		svgGroup.attr("transform", 
+			"translate(" + d3.event.translate + ")" + "scale(" + d3.event.scale + ")");
+	});
+	svg.call(zoom);
+
 	/* Click bindings with editor */
 	d3.select("svg g").selectAll("g.node").each(function(v){		
 		var node = graphic.node($(this).context.id);
@@ -92,6 +106,10 @@ function configSVG(){
 				$('#node-graphic-id').val($(this).context.id);
 				loadGraphicNode(node.index, graphicNodes[node.index]);
 			});
+		}
+		else if(node.questionIndex !== undefined){
+			// do nothing as this is a block question
+			// console.log("Question belonging to a block : ", node.questionIndex);
 		}
 		else{
 			// Define the custom click event to load node information
@@ -126,9 +144,18 @@ function injectGraphicNodeData(index, graphicNodeElt){
 	node.label = graphicNodeElt.dataName;
 	node.index = index-1;
 
+
+	// Generate block of questions if necessary
+	if(graphicNodeElt.category == "block"){
+		setNewGraphicBlock(graphicNodeElt.id, graphicNodeElt.dataId);		
+	}
+
+	// Update graphical node style
+	configGraphicNodeStyle(graphicNodeElt.category, graphicNodeElt.id);
+
+
 	// Regarding number of Outputs, draw new nodes if necessary
 	for (var i = 0; i < graphicNodeElt.targets.length; i++) {
-
 		// Get answer text
 		if(graphicNodeElt.category == "block"){
 			var answer = "Block output";				
@@ -138,13 +165,17 @@ function injectGraphicNodeData(index, graphicNodeElt){
 		}
 
 		// Create or connect to a node
-		if(graphicNodeElt.targets[i] == "New node"){
-			var targetId = setNewGraphicNode(graphicNodeElt.id, answer);
+		var targetId = graphicNodeElt.targets[i];
+		if(targetId == "New node"){
+			targetId = setNewGraphicNode(graphicNodeElt.id, answer);
 			graphicNodeElt.targets[i] = targetId;
 		}
 		else{
-			targetGraphicNode(graphicNodeElt.id, graphicNodeElt.targets[i], answer);
+			targetGraphicNode(graphicNodeElt.id, targetId, answer);
 		}
+
+		// Configure node style for blocks & questions
+		configGraphicNodeStyle(graphicNodeElt.category, targetId);
 	}
 	render();
 }
@@ -178,9 +209,52 @@ function setNewGraphicNode(parentNodeId, edgeLabel){
 	return nodeId;
 }
 
+function setNewGraphicBlock(blockNodeId, blockNodeDataId){
+	// Specific id definition
+	var baseId = blockNodeId+":";
+
+	// Register a parent node, which will help graphical identification of the block
+	graphic.setNode(baseId, {style: 'fill: #d3d7e8'});
+	graphic.setParent(blockNodeId, baseId);
+
+	// For all questions, create id, node, edge, and register them as child of the created parent
+	var blockElt = blocks[blockNodeDataId];
+	for (var i = 0; i < blockElt.questions.length; i++) {
+
+		// Generate question block id
+		var questionBlockId = baseId + i;
+
+		// Get question index to jump to question data model
+		var idx = blockElt.questions[i];
+		for (var j = 0; j < questions.length; j++) {
+
+			if(idx == questions[j].id){
+				var q = questions[j];
+				graphic.setNode(questionBlockId, {id:questionBlockId, questionIndex:idx, label:q.name});
+				graphic.setEdge(blockNodeId, questionBlockId);
+				graphic.setParent(questionBlockId, baseId);
+				graphic.node(questionBlockId).style = 'stroke: #000000; fill: #d3d7e8' ;
+				graphic.node(questionBlockId).shape = 'ellipse';
+				break;
+			}
+		}
+	}
+}
 
 function targetGraphicNode(originId, targetId, edgeLabel){
 	graphic.setEdge(originId, targetId, {label:edgeLabel});
+}
+
+function configGraphicNodeStyle(category, nodeId){
+	if(category == "result"){
+		graphic.node(nodeId).style = 'stroke: #57723E; stroke-width: 5;';
+	}
+	else if(category == "block"){
+
+	}
+	else if(category == "question"){
+
+	}
 }
 
 
@@ -235,6 +309,11 @@ function recursiveDelete(nodeId, depth){
 	// Update node data model
 	var nodeIndex = graphic.node(nodeId).index;
 	if(nodeIndex !== undefined){
+		// Block case : delete parent node
+		if(graphicNodes[nodeIndex].category == "block"){
+			graphic.removeNode(nodeId+':');
+		}
+
 		graphicNodes.splice(nodeIndex, 1);		
 	}
 
