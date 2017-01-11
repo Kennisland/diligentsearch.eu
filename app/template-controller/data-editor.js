@@ -188,11 +188,24 @@ userInputs = [];
 function injectUserInputData(index, userInputElt){
 	// Insert data at given position if there are already in
 	if(index != -1){
+		
 		// Rewrite 
 		userInputs[index] = userInputElt;
 		index++;
 	}
 	else{
+		// Save it into db
+		$.when(ajaxInsertUserInputElt(userInputElt, selectedWork.id)).then(
+			function(result){
+				console.log(result);
+			}, 
+			function(error){
+				console.log(error);
+			});
+		
+		// Update before all the userInputElt content id
+
+
 		// Push and add html content
 		index = userInputs.push(userInputElt);
 		var userInputHtml = '<li class="list-group-item"></li>';
@@ -212,11 +225,26 @@ referenceValues = [];
 function injectRefValueData(index, refValueElt){
 	// Insert data at given position if there are already in
 	if(index != -1){
+		
+
 		// Rewrite 
 		referenceValues[index] = refValueElt;
 		index++;
 	}
 	else{
+		// Save it into db
+		$.when(ajaxInsertRefValueElt(refValueElt, selectedWork.id)).then(
+			function(result){
+				console.log(result);
+			}, 
+			function(error){
+				console.log(error);
+			});
+
+		// Update before all the refValueElt content id
+
+
+
 		// Push and add html content
 		index = referenceValues.push(refValueElt);
 		var refValueHtml = '<li class="list-group-item"></li>';

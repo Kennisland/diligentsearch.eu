@@ -68,9 +68,10 @@ function dumpRefValue(){
 	}
 
 	var ref = new ReferenceElt();
-	ref.id = getRefId();
-	injectRefValueData(currentReferenceIndex, ref);
-	
+	// ref.id = getRefId();
+
+
+	injectRefValueData(currentReferenceIndex, ref);	
 	dismissRefValueModal();	
 };
 
