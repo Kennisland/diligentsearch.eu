@@ -11,11 +11,9 @@ html_dataModelEditor = `
 </ul>
 
 <div id="select-country" style="display: none">
-
 </div>
 
 <div id="select-work" style="display: none">
-
 </div>
 
 <div id="display-data-model" style="display: none">
@@ -75,30 +73,29 @@ function getCountry(){
 	$('#select-work').hide();
 	$('#display-data-model').hide();
 
-
 	// Ajax call to get data from server
-	// countries = ....
-	console.log("getting countries");
-	$.when(ajaxGetCountries()).done(function(result){
+	$.when(ajaxGetCountries()).then(
+		function(result){
+			countries = result;
 
-		countries = result;
-		console.log("done ", countries);
+			var countriesHtml = '<ul class="list-group">';
+			for (var i = countries.length - 1; i >= 0; i--) {
+				countriesHtml += '<li class="list-group-item" onclick="getWork('+i+')">'+countries[i].name+'</li>';
+			}
+			countriesHtml += '</ul>';
+			$('#select-country').html(countriesHtml);
 
-		var countriesHtml = '<ul class="list-group">';
-		for (var i = countries.length - 1; i >= 0; i--) {
-			countriesHtml += '<li class="list-group-item" onclick="getWork('+i+')">'+countries[i].Name+'</li>';
-		}
-		countriesHtml += '</ul>';
-		$('#select-country').html(countriesHtml);
-
-		selectedCountry = '';
-		$('#breadcrumb li:nth-child(1) a').text("Choose a Country");
-		selectedWork = '';
-		$('#breadcrumb li:nth-child(2) a').text("Choose a type of Work");
-		$('#breadcrumb').children().hide();
-		$('#breadcrumb li:first-child').show();
-		$('#select-country').show();
+			selectedCountry = '';
+			$('#breadcrumb li:nth-child(1) a').text("Choose a Country");
+			selectedWork = '';
+			$('#breadcrumb li:nth-child(2) a').text("Choose a type of Work");
+			$('#breadcrumb').children().hide();
+			$('#breadcrumb li:first-child').show();
+		}, 
+		function(error){
+			$('#select-country').html(error.statusText);
 	});
+	$('#select-country').show();
 }
 
 
@@ -110,17 +107,34 @@ function getWork(countryIdx){
 
 	selectedCountry = countries[countryIdx];
 	// Ajax call to get works from server for this country
-	// works = ...
+	$.when(ajaxGetWorks(selectedCountry.id)).then(
+		function(result){
+			works = result;
 
-	var worksHtml = '<ul class="list-group">';
-	for (var i = works.length - 1; i >= 0; i--) {
-		worksHtml += '<li class="list-group-item" onclick="getData('+i+')">'+works[i]+'</li>';
-	}
-	$('#select-work').html(worksHtml);
+			$.when(ajaxGetUserInputs(selectedCountry.id)).then(
+				function(result){
+					userInputs = result;
+				});
 
-	$('#breadcrumb li:nth-child(1) a').text(selectedCountry);
-	$('#breadcrumb').children().show();
-	$('#breadcrumb li:last-child').hide();
+			$.when(ajaxGetRefValues(selectedCountry.id)).then(
+				function(result){
+					refValues = result;
+				});
+
+			var worksHtml = '<ul class="list-group">';
+			for (var i = works.length - 1; i >= 0; i--) {
+				worksHtml += '<li class="list-group-item" onclick="getData('+i+')">'+works[i].name+'</li>';
+			}
+			$('#select-work').html(worksHtml);
+
+			$('#breadcrumb li:nth-child(1) a').text(selectedCountry.name).attr('onclick', 'getCountry('+countryIdx+')');
+			$('#breadcrumb').children().show();
+			$('#breadcrumb li:last-child').hide();			
+		},
+		function(error){
+			$('#select-work').html(error.statusText);
+	});
+
 	$('#select-work').show();
 }
 
@@ -130,14 +144,21 @@ function getData(workIdx){
 
 	selectedWork = works[workIdx];
 	// Ajax call to get data for a specific work
-	// data = ...
+	$.when(ajaxGetQuestions(selectedWork.id), ajaxGetBlocks(selectedWork.id), ajaxGetResults(selectedWork.id)).then(
+		function(resultQuestions, resultBlocks, resultResults){
+			questions = resultQuestions[0];
+			blocks = resultBlocks[0];
+			results = resultResults[0];
 
-	// Great mess begins here...
+			$('#breadcrumb li:nth-child(2) a').text(selectedWork.name).attr('onclick', 'getWork('+workIdx+')');;
+			$('#breadcrumb').children().show();
+		},
+		function(error){
+			$('#display-data-model').prepend(error.statusText);			
+	});
 
-
-	$('#breadcrumb li:nth-child(2) a').text(selectedWork);
-	$('#breadcrumb').children().show();
 	$('#display-data-model').show();
+
 }
 
 
