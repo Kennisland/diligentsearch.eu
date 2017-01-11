@@ -1,7 +1,11 @@
 var express   	=	require("express");
-var dbRoute		= 	"/"; //http://localhost:8000
+var bodyParser 	= 	require('body-parser');
 var mysql     	=	require('mysql');
+var dbRoute		= 	"/";
 var app       	=	express();
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
 
 var pool      	=	mysql.createPool({
 	connectionLimit : 100, //important
@@ -12,17 +16,14 @@ var pool      	=	mysql.createPool({
 	debug    :  false
 });
 
-function handle_database(req,res) {
+function get_handle_database(req,res) {
    
 	pool.getConnection(function(err,connection){
 		if (err) {
 		  res.json({"code" : 100, "status" : "Error in connection database"});
 		  return;
-		}  
+		} 
 
-		console.log('connected as id ' + connection.threadId);
-
-		console.log(req.query);
 		switch(req.query.table){
 			case 'Country':
 				connection.query("select * from Country",function(err,rows){
@@ -98,8 +99,67 @@ function handle_database(req,res) {
   });
 }
 
+function post_handle_database(req, res){
+
+	pool.getConnection(function(err,connection){
+		if (err) {
+		  res.json({"code" : 100, "status" : "Error in connection database"});
+		  return;
+		} 
+
+		switch(req.body.table){
+			case 'SharedUserInput':
+				var countryId = req.body.countryId,
+					json = req.body.json;
+				connection.query("insert into SharedUserInput (countryId,json) values ('"+countryId+"','"+json+"');", mysqlGetLastInserted(err, rows));
+				break;
+			case 'SharedRefValue':
+				var countryId = req.body.countryId,
+					json = req.body.json;
+				connection.query("insert into SharedRefValue (countryId, json) values ('"+countryId+"', '"+json+"');",mysqlGetLastInserted(err, rows));
+				break;
+			case 'Question':
+				// connection.query("insert into Question ")
+				break;
+			case 'Block':
+				// connection.query("insert into Block ")
+				break;
+			case 'Result':
+				// connection.query("insert into Result ")
+				break;
+			default:
+				console.log("default case : ",req.query.table );
+				break;
+		}
+
+		connection.on('error', function(err) {      
+			res.json({"code" : 100, "status" : "Error in connection database"});
+			return;    
+		});
+	});
+}
+
+
+// Update in the same batch the json content (id: undefined), as we have the json content just upper ;)
+function mysqlGetLastInserted(err, rows){
+	if(!err) {						
+		connection.query("SELECT LAST_INSERT_ID();", function(err, rows){
+			connection.release();
+			if(!err){
+				res.json(rows);
+			}
+		});
+	}
+}
+
+
+
 app.get(dbRoute,function(req,res){      
-	handle_database(req,res);
+	get_handle_database(req,res);
 });
+
+app.post(dbRoute, function(req, res){
+	post_handle_database(req, res);
+})
 
 app.listen(8000);
