@@ -49,35 +49,3 @@ Set the serverName used as a valid IP address
 	127.0.0.1	diligentsearch.local
 
 The index.html file located in /home/user/diligent-search will be available at the diligentsearch.local URL
-
-
-## Github Configuration
-
-The project is based on the GitHub API, requires you to have a GitHub account with an associated token.
-
-You also need to have forked at least the outofcopyright-files repo as you will pull data from its different branches
-
-### API Access 
-
-Create a file under named 'credential_github.js' inside the folder outofcopyright/js/lib/github/
-This file will have the following content :
-
-	TOKEN 		= "776378.......43b4";
-	AUTH		= "oauth";
-	USERNAME	= "your_username";
-	REPONAME	= "outofcopyright-files";
-	BRANCH 		= "Netherlands"
-
-### Test your GitHub API access
-
-Run the nodeJS server handling the route '/node'
-
-	cd outofcopyright/js/ && node github_app.js
-
-Go to diligentsearch.local/node : 
-
-	'Github Management' and further information will be displayed
-
-Go to diligentsearch.local and select the first link Countries list :
-
-	a list of countries will be displayed in the left panel and a changelog on the right side of the screen.	
