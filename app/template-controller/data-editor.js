@@ -59,7 +59,7 @@ html_dataModelEditor = `
 `;
 
 
-countries = ['Netherlands', 'Germany'];
+countries = []; //['Netherlands', 'Germany'];
 selectedCountry = '';
 works = ['Audiovisual', 'painting'];
 selectedWork = '';
@@ -78,21 +78,27 @@ function getCountry(){
 
 	// Ajax call to get data from server
 	// countries = ....
+	console.log("getting countries");
+	$.when(ajaxGetCountries()).done(function(result){
 
-	var countriesHtml = '<ul class="list-group">';
-	for (var i = countries.length - 1; i >= 0; i--) {
-		countriesHtml += '<li class="list-group-item" onclick="getWork('+i+')">'+countries[i]+'</li>';
-	}
-	countriesHtml += '</ul>';
-	$('#select-country').html(countriesHtml);
+		countries = result;
+		console.log("done ", countries);
 
-	selectedCountry = '';
-	$('#breadcrumb li:nth-child(1) a').text("Choose a Country");
-	selectedWork = '';
-	$('#breadcrumb li:nth-child(2) a').text("Choose a type of Work");
-	$('#breadcrumb').children().hide();
-	$('#breadcrumb li:first-child').show();
-	$('#select-country').show();
+		var countriesHtml = '<ul class="list-group">';
+		for (var i = countries.length - 1; i >= 0; i--) {
+			countriesHtml += '<li class="list-group-item" onclick="getWork('+i+')">'+countries[i].Name+'</li>';
+		}
+		countriesHtml += '</ul>';
+		$('#select-country').html(countriesHtml);
+
+		selectedCountry = '';
+		$('#breadcrumb li:nth-child(1) a').text("Choose a Country");
+		selectedWork = '';
+		$('#breadcrumb li:nth-child(2) a').text("Choose a type of Work");
+		$('#breadcrumb').children().hide();
+		$('#breadcrumb li:first-child').show();
+		$('#select-country').show();
+	});
 }
 
 

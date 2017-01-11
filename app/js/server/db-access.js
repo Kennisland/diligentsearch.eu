@@ -1,5 +1,5 @@
 var express   	=	require("express");
-var dbRoute		= 	"/db-access";
+var dbRoute		= 	"/"; //http://localhost:8000
 var mysql     	=	require('mysql');
 var app       	=	express();
 

@@ -27,6 +27,7 @@ Set the DirectoryRoot to the location of the index.html master main file of proj
 	<Directory /home/user/diligentsearch-website/app>
 	        Require all granted
 	</Directory>
+	Header set Access-Control-Allow-Origin "*"
 	ProxyPass "/db-access" "http://localhost:8000/"
 	ProxyPassReverse "/db-access" "http://localhost:8000/"
 
@@ -36,11 +37,17 @@ The 8000 port is used by default in several nodeJS servers.
 
 The '/db-access' route is required to perform GET & POST requests to the database.
 
+Enable the Header configuration
+	
+	a2enmod headers
+
 Enable this new apache2 configuration with the following commands
 
 	a2ensite 001-diligentsearch.conf
 
 	service apache2 reload
+
+
 
 
 Set the serverName used as a valid IP address
@@ -114,7 +121,8 @@ Refer to this if there are problems:
 
 ## Server configuration
 
-Important, the apache2 configuration exaplianed before has to match with content of the db-access.js file (especially server routes and port on which server will be listening)
+Important, the apache2 configuration explained before has to match with content of the db-access.js file (especially server port on which server will be listening)
+Besides, the Header configuration is crucial to enable ajax calls from the client to the server
 
 The server is written with nodeJs. First, download dependecies by fetching packages specified in the package.json file:
 
