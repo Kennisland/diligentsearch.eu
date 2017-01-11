@@ -23,18 +23,18 @@ Enable serverName
 
 Set the DirectoryRoot to the location of the index.html master main file of project
 	
-	DocumentRoot /home/user/diligent-search
-	<Directory /home/user/diligent-search>
+	DocumentRoot /home/user/diligentsearch-website/app
+	<Directory /home/user/diligentsearch-website/app>
 	        Require all granted
 	</Directory>
-	ProxyPass "/node" "http://localhost:8000/"
-	ProxyPassReverse "/node" "http://localhost:8000/"
+	ProxyPass "/db-access" "http://localhost:8000/"
+	ProxyPassReverse "/db-access" "http://localhost:8000/"
 
 *There is no final slash '/' at the end of the DocumentRoot*
 
 The 8000 port is used by default in several nodeJS servers.
 
-The '/node' route is required to perform POST requests to the Github api on the given repo.
+The '/db-access' route is required to perform GET & POST requests to the database.
 
 Enable this new apache2 configuration with the following commands
 
@@ -109,7 +109,12 @@ Refer to this if there are problems:
 
 	http://askubuntu.com/questions/763336/cannot-enter-phpmyadmin-as-root-mysql-5-7
 
+
+
+
 ## Server configuration
+
+Important, the apache2 configuration exaplianed before has to match with content of the db-access.js file (especially server routes and port on which server will be listening)
 
 The server is written with nodeJs. First, download dependecies by fetching packages specified in the package.json file:
 
@@ -122,3 +127,6 @@ To test if database connection is correctly set, run the following command:
 
 	//Go to app/js/server
 	node db-connection.js
+
+	//And vist the page http://localhost:8000/db-access
+	//It should display the countent of the Country tabel or '[]' if there is no data in database
