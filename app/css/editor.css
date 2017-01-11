@@ -66,11 +66,24 @@ text {
 	font-size: 14px;
 }
 
-.node rect {
-	stroke: #999;
-	fill: #fff;
-	stroke-width: 1.5px;
+.node rect{
+	fill: #999;
+	stroke: #57723E;
+	stroke-width: 1.5px;	
 }
+
+.node circle{
+	fill: #999;
+	stroke: #57723E;
+	stroke-width: 1.5px;	
+}
+
+.clusters rect {
+	fill: #fff;
+	stroke: #57723E;
+	stroke-width: 1.5px;	
+}
+
 
 .edgePath path {
 	stroke: #333;
