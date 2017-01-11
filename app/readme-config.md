@@ -108,3 +108,17 @@ Type in the following commands:
 Refer to this if there are problems:
 
 	http://askubuntu.com/questions/763336/cannot-enter-phpmyadmin-as-root-mysql-5-7
+
+## Server configuration
+
+The server is written with nodeJs. First, download dependecies by fetching packages specified in the package.json file:
+
+	// Go to app/js/server
+	npm install
+
+Database access configuration available in the file 'db-connection.js'
+
+To test if database connection is correctly set, run the following command:
+
+	//Go to app/js/server
+	node db-connection.js
