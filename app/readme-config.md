@@ -54,7 +54,11 @@ The index.html file located in /home/user/diligent-search will be available at t
 
 ## PhpMyAdmin configuration
 
-This application requires access to a MySQL database
+This application requires access to a MySQL database, to install it, type the following command:
+
+	sudo apt-get install mysql-server
+
+
 To simplifie DB management and visualization, we will use the phpmyadmin dashboard
 
 Download phpmyadmin package
@@ -86,4 +90,21 @@ Access the dashboard
 	/etc/phpmyadmin/config-db.php
 	The '$dbuser' and '$dbpass' are the login/password
 
-## MySQL 
+
+
+## MySQL Database configuration
+
+The application will require a specific database we will manage from the previsouly installed/configured dashboard.
+
+Privileges are required for your new phpmyadmin user to create databases from the dashboard. To set him privileges, open up a mysql shell as the mysql root user: 
+
+	mysql -u root -p
+
+Type in the following commands:
+
+	GRANT ALL PRIVILEGES ON *.* TO 'phpmyadmin'@'localhost' WITH GRANT OPTION;
+	FLUSH PRIVILEGES;
+	
+Refer to this if there are problems:
+
+	http://askubuntu.com/questions/763336/cannot-enter-phpmyadmin-as-root-mysql-5-7
