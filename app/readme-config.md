@@ -49,3 +49,41 @@ Set the serverName used as a valid IP address
 	127.0.0.1	diligentsearch.local
 
 The index.html file located in /home/user/diligent-search will be available at the diligentsearch.local URL
+
+
+
+## PhpMyAdmin configuration
+
+This application requires access to a MySQL database
+To simplifie DB management and visualization, we will use the phpmyadmin dashboard
+
+Download phpmyadmin package
+
+	sudo add-apt-repository ppa:nijel/phpmyadmin
+
+	sudo apt-get update
+
+	sudo apt-get install phpmyadmin
+
+Configure phpmyadmin
+
+	Choose apache2 as a default HTTP server
+	Choose to confugure the mysql db : password = diligentsearch
+
+
+Access the dashboard
+
+	Create symbolic link between phpMyAdmin and apache2 default configuration:
+	sudo ln -s /usr/share/phpmyadmin/ /var/www/html/phpmyadmin
+
+	Restart apache2 to activate changes:
+	sudo /etc/init.d/apache2 restart
+
+	To access phpmyadmin dashboard, go to 
+	http://localhost/phpmyadmin
+
+	If you have difficulties to login, refer to the following file:
+	/etc/phpmyadmin/config-db.php
+	The '$dbuser' and '$dbpass' are the login/password
+
+## MySQL 
