@@ -12,19 +12,52 @@ html_graphEditor = `
 last_state = -1;
 function injectGraphEditor(){
 	$('#graph-editor').html(html_graphEditor);
-
-	// Configure graph display if there is data to present / manipulate
-	$('#display-data-model').bind("DOMAttrModified",function(event){
-		if($(this).is(':visible') && last_state == -1){
-			loadGraph();
-			last_state = 1;
-		}
-		else if( ! $(this).is(':visible') && last_state == 1){
-			resetGraph();
-			last_state = -1;
-		}
-	});
+	configureVisibility();
 }
+
+function configureVisibility(){
+	// http://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome/13348618#13348618
+	var isChromium = window.chrome,
+		winNav = window.navigator,
+		vendorName = winNav.vendor,
+		isOpera = winNav.userAgent.indexOf("OPR") > -1,
+		isIEedge = winNav.userAgent.indexOf("Edge") > -1,
+		isIOSChrome = winNav.userAgent.match("CriOS");
+
+	if(isIOSChrome || (isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera == false && isIEedge == false) ){
+		// is Google Chrome
+		var element = $('#display-data-model')[0];
+		var observer = new WebKitMutationObserver(function (mutations) {
+		  mutations.forEach(attrModified);
+		});
+		observer.observe(element, { attributes: true, subtree: false });
+
+		function attrModified(mutation) {
+			if($('#display-data-model').is(':visible') && last_state == -1){
+				loadGraph();
+				last_state = 1;
+			}
+			else if( ! $('#display-data-model').is(':visible') && last_state == 1){
+				resetGraph();
+				last_state = -1;
+			}
+		}
+	} else { 
+		// not Google Chrome 
+		$('#display-data-model').bind("DOMAttrModified",function(event){
+			if($(this).is(':visible') && last_state == -1){
+				loadGraph();
+				last_state = 1;
+			}
+			else if( ! $(this).is(':visible') && last_state == 1){
+				resetGraph();
+				last_state = -1;
+			}
+		});
+	}
+}
+
+
 
 function loadGraph(){
 	initSVG();
@@ -154,7 +187,7 @@ function injectGraphicNodeData(index, graphicNodeElt){
 	// Update graphical node style of current node
 	styleGraphicNode(graphicNodeElt.category, graphicNodeElt.id);
 
-	
+
 	// Generate block of questions if necessary
 	if(graphicNodeElt.category == "block"){
 		setNewGraphicBlock(graphicNodeElt.id, graphicNodeElt.dataId);		
@@ -180,7 +213,6 @@ function injectGraphicNodeData(index, graphicNodeElt){
 		// Create or connect to a node
 		var targetId = graphicNodeElt.targets[i];
 		if(targetId == "New node"){
-			// console.log("setting new node : ", graphicNodeElt);
 			targetId = setNewGraphicNode(graphicNodeElt.id, answer);
 			graphicNodeElt.targets[i] = targetId;
 		}
