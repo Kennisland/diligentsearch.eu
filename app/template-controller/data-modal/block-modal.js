@@ -243,13 +243,15 @@ function configQuestionComplete(i){
 		select: function(event, ui){
 			$(this).val(ui.item.value);
 
-			// Look for the id of this question
+			// Look for the id of this question and insert it in good position
+			var rowIdx = 0;			
 			for (var i = 0; i < questions.length; i++) {
 				if($(this).val() == questions[i].name){
-					$('#block-questions-selection-type-'+i).val(questions[i].type);
-					$('#block-questions-selection-id-'+i).val(questions[i].id);
+					$('#block-questions-selection-type-'+rowIdx).val(questions[i].type);
+					$('#block-questions-selection-id-'+rowIdx).val(questions[i].id);
 
-					console.log("adding : ", questions[i].type, questions[i].id);
+					rowIdx++;	// increase row idx for next line
+					console.log("adding : ", rowIdx, i, questions[i].type, questions[i].id);
 				}
 			}
 		}
