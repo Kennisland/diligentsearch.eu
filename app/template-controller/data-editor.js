@@ -176,8 +176,6 @@ function getData(workIdx){
 
 function injectDatabaseData(){
 	userInputs.forEach(function(elt, idx){
-		console.log("injectDatabaseData : ", elt, idx, JSON.parse(elt.json));
-
 		injectUserInputData(idx, JSON.parse(elt.json));
 	});
 	refValues.forEach(function(elt, idx){
@@ -272,14 +270,17 @@ function injectRefValueData(index, refValueElt){
 // called from specific modal
 function injectResultData(index, resultElt){
 		// Insert data at given position if there are already in
-	if(index != -1){
-		// Rewrite 
+	if(index == -1){
+		index = results.push(resultElt);
+	}
+	else{
 		results[index] = resultElt;
 		index++;
 	}
-	else{
-		// Push and add html content
-		index = results.push(resultElt);
+
+	// Update html
+	// Create list element if needed
+	if($('#data-results li').length < index){
 		var resultHtml = '<li class="list-group-item"></li>';
 		$('#data-results').append(resultHtml);	
 	}
@@ -297,17 +298,20 @@ function injectResultData(index, resultElt){
 // called from specific modal
 function injectQuestionData(index, questionElt){
 		// Insert data at given position if there are already in
-	if(index != -1){
-		// Rewrite 
+	if(index == -1){
+		index = questions.push(questionElt);
+	}
+	else{
 		questions[index] = questionElt;
 		index++;
 	}
-	else{
-		// Push and add html content
-		index = questions.push(questionElt);
+	
+	// Update html
+	// Create list element if needed
+	if($('#data-questions li').length < index){
 		var questionHtml = '<li class="list-group-item"></li>';
-		$('#data-questions').append(questionHtml);	
-	}
+		$('#data-questions').append(questionHtml);
+	}	
 	
 	// Update html
 	$('#data-questions li:nth-child('+index+')').text(questionElt.name);
@@ -321,14 +325,18 @@ function injectQuestionData(index, questionElt){
 // Called from specific modal
 function injectBlockData(index, blockElt){
 	// Insert data at given position if there are already in
-	if(index != -1){
+	if(index == -1){
+		index = blocks.push(blockElt);
+	}
+	else{
 		// Rewrite 
 		blocks[index] = blockElt;
 		index++;
 	}
-	else{
-		// Push and add html content
-		index = blocks.push(blockElt);
+
+	// Update html
+	// Create list element if needed
+	if($('#data-blocks li').length < index){
 		var blockHtml = '<li class="list-group-item"></li>';
 		$('#data-blocks').append(blockHtml);	
 	}

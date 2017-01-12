@@ -132,6 +132,7 @@ function handle_post_request(req, res, connection){
 			if(req.body.update){
 				connection.query("update SharedUserInput set json='"+req.body.json+"' where id='"+req.body.id+"';", function(err, rows){
 					connection.release();
+					console.log(err, rows);
 					if(!err) {
 						res.json(rows);
 					}   
@@ -140,6 +141,7 @@ function handle_post_request(req, res, connection){
 			else {
 				connection.query("insert into SharedUserInput (countryId,json) values ('"+countryId+"','"+json+"');", function(err,rows){
 					connection.release();
+					console.log(err, rows);
 					if(!err) {
 						res.json(rows);
 					}          
@@ -153,6 +155,7 @@ function handle_post_request(req, res, connection){
 			if(req.body.update){
 				connection.query("update SharedRefValue set json='"+req.body.json+"' where id='"+req.body.id+"';", function(err, rows){
 					connection.release();
+					console.log(err, rows);
 					if(!err) {
 						res.json(rows);
 					}   
@@ -161,6 +164,7 @@ function handle_post_request(req, res, connection){
 			else {
 				connection.query("insert into SharedRefValue (countryId, json) values ('"+countryId+"', '"+json+"');", function(err,rows){
 					connection.release();
+					console.log(err, rows);
 					if(!err) {
 						res.json(rows);
 					}          
@@ -174,6 +178,7 @@ function handle_post_request(req, res, connection){
 			if(req.body.update){
 				connection.query("update Question set json='"+req.body.json+"' where id='"+req.body.id+"';", function(err, rows){
 					connection.release();
+					console.log(err, rows);
 					if(!err) {
 						res.json(rows);
 					}   
@@ -181,7 +186,8 @@ function handle_post_request(req, res, connection){
 			}
 			else {
 				connection.query("insert into Question (workId, json) values ('"+workId+"', '"+json+"');", function(err,rows){
-					connection.release();
+						connection.release();
+						console.log(err, rows);
 					if(!err) {
 						res.json(rows);
 					}          
@@ -189,13 +195,54 @@ function handle_post_request(req, res, connection){
 			}
 			break;
 		case 'Block':
-			// connection.query("insert into Block ")
+			var workId = req.body.workId,
+				json = req.body.json;
+
+			if(req.body.update){
+				connection.query("update Block set json='"+req.body.json+"' where id='"+req.body.id+"';", function(err, rows){
+					connection.release();
+					console.log(err, rows);
+					if(!err) {
+						res.json(rows);
+					}   
+				});
+			}
+			else {
+				connection.query("insert into Block (workId, json) values ('"+workId+"', '"+json+"');", function(err,rows){
+						connection.release();
+						console.log(err, rows);
+					if(!err) {
+						res.json(rows);
+					}          
+				});
+			}
 			break;
 		case 'Result':
-			// connection.query("insert into Result ")
+			var workId = req.body.workId,
+				json = req.body.json;
+
+			if(req.body.update){
+				connection.query("update Result set json='"+req.body.json+"' where id='"+req.body.id+"';", function(err, rows){
+					connection.release();
+					console.log(err, rows);
+					if(!err) {
+						res.json(rows);
+					}   
+				});
+			}
+			else {
+				connection.query("insert into Result (workId, json) values ('"+workId+"', '"+json+"');", function(err,rows){
+					connection.release();
+					console.log(err, rows);
+					console.log(err, rows);
+					if(!err) {
+						res.json(rows);
+					}          
+				});
+			}
 			break;
 		default:
-			console.log("default case : ",req.query.table );
+			console.log("default case : ",req.body.table );
 			break;
 	}
 }

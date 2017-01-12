@@ -65,7 +65,7 @@ function injectBlockModal(){
 
 
 currentBlockIndex = -1;
-currentBlockId = -1
+currentBlockId = undefined;
 function loadBlock(index, blockElt){
 	currentBlockIndex 	= index;
 	currentBlockId 		= blockElt.id;	
@@ -118,6 +118,16 @@ function dumpBlock(){
 		block.questions.push($('#block-questions-selection-id-'+i).val());
 	}
 
+
+	if(currentBlockId === undefined){
+		saveBlockElt(block);
+	}
+	else{
+		block.id = currentBlockId;
+		updateBlockElt(block);
+	}
+
+
 	injectBlockData(currentBlockIndex, block);	
 	dismissBlockModal();	
 };
@@ -140,18 +150,27 @@ function BlockElt(){
 };
 
 
-function getBlockId(){
-	if(currentBlockId == -1){
-		var l = blocks.length;
-		if(l == 0){
-			return 0;
-		}else{
-			return blocks[l-1].id + 1;
-		}
-	}
-	else{
-		return currentBlockId;
-	}
+function saveBlockElt(blockElt){
+	$.when(ajaxInsertBlockElt(blockElt, selectedWork.id)).then(
+		function(result){
+			$.when(ajaxGetLast()).then(function(last){
+				blockElt.id = last[0]['LAST_INSERT_ID()'];
+				updateBlockElt(blockElt);
+			});
+		}, 
+		function(error){
+			console.log('saveBlockElt ', error);
+	});
+}
+
+function updateBlockElt(blockElt){
+	$.when(ajaxUpdateBlockElt(blockElt)).then(
+		function(result){
+			// console.log("updateInputElt ", result);
+		},
+		function(error){
+			console.log("updateBlockElt ", error);	
+	});
 }
 
 

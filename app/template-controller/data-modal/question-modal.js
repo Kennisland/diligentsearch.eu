@@ -137,7 +137,7 @@ function injectQuestionModal(){
 };
 
 currentQuestionIndex = -1;
-currentQuestionId = -1;
+currentQuestionId = undefined;
 function loadQuestion(index, questionElt){
 	currentQuestionIndex = index;
 	currentQuestionId = questionElt.id;
@@ -204,9 +204,7 @@ function dumpQuestion(){
 	}
 
 	// Create the question object
-	var question = new QuestionElt();
-	question.id = getQuestionId();
-	
+	var question = new QuestionElt();	
 
 	var outputs = retrieveSection('input', 'question-output-');
 	outputs.forEach(function(elt, idx){
@@ -281,6 +279,15 @@ function dumpQuestion(){
 		return;
 	}
 
+
+	if(currentQuestionId === undefined){
+		saveQuestionElt(question);
+	}
+	else{
+		question.id = currentQuestionId;
+		updateQuestionElt(question);
+	}
+
 	injectQuestionData(currentQuestionIndex, question);
 	dismissQuestionModal();
 };
@@ -324,26 +331,35 @@ function ExpressionElt(dataSrc, id){
 }
 
 
-function getQuestionId(){
-	if(currentQuestionId == -1){
-		var l = questions.length;
-		if(l == 0){
-			return 0;
-		}else{
-			return questions[l-1].id + 1;
-		}
-	}
-	else{
-		return currentQuestionId;
-	}
-}
-
-
 function getReferenceId() {
 	if($('#numeric-reference-id').val() == ""){
 		return undefined;
 	}
 	return parseInt($('#numeric-reference-id').val());
+}
+
+
+function saveQuestionElt(questionElt){
+	$.when(ajaxInsertQuestionElt(questionElt, selectedWork.id)).then(
+		function(result){
+			$.when(ajaxGetLast()).then(function(last){
+				questionElt.id = last[0]['LAST_INSERT_ID()'];
+				updateQuestionElt(questionElt);
+			});
+		}, 
+		function(error){
+			console.log('saveQuestionElt ', error);
+	});
+}
+
+function updateQuestionElt(questionElt){
+	$.when(ajaxUpdateQuestionElt(questionElt)).then(
+		function(result){
+			// console.log("updateInputElt ", result);
+		},
+		function(error){
+			console.log("updateQuestionElt ", error);	
+	});
 }
 
 

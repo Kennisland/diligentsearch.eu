@@ -116,6 +116,17 @@ function ajaxGetLast(){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 function ajaxInsertUserInputElt(UserInputElt, countryId){
 	return $.ajax({
 		type: "POST",
@@ -170,41 +181,64 @@ function ajaxInsertQuestionElt(QuestionElt, workId){
 	});
 }
 
-// function ajaxInsertBlockElt(BlockElt, workId){
-// 	return $.ajax({
-// 		type: "POST",
-// 		url:dbAccessUrl,
-// 		data: {
-// 			table: 'Block',
-// 		 	workId: workId,
-// 		 	json: JSON.stringify(BlockElt)
-// 		},
-// 		success: function(data){
-// 			console.log("ajaxInsertBlockElt success");
-// 		},
-// 		error: function(error){
-// 			console.log('error : ', error);
-// 		}
-// 	});
-// }
+function ajaxInsertResultElt(ResultElt, workId){
+	return $.ajax({
+		type: "POST",
+		url:dbAccessUrl,
+		data: {
+			table: 'Result',
+			workId: workId, 
+			json: JSON.stringify(ResultElt)
+		},
+		success: function(data){
+			console.log("ajaxInsertResultElt success");
+		},
+		error: function(error){
+			console.log('error : ', error);
+		}
+	});
+}
 
-// function ajaxInsertResultElt(ResultElt, workId){
-// 	return $.ajax({
-// 		type: "POST",
-// 		url:dbAccessUrl,
-// 		data: {
-// 			table: 'Result',
-// 			workId: workId, 
-// 			json: JSON.stringify(ResultElt)
-// 		},
-// 		success: function(data){
-// 			console.log("ajaxInsertResultElt success");
-// 		},
-// 		error: function(error){
-// 			console.log('error : ', error);
-// 		}
-// 	});
-// }
+
+function ajaxInsertBlockElt(BlockElt, workId){
+	return $.ajax({
+		type: "POST",
+		url:dbAccessUrl,
+		data: {
+			table: 'Block',
+		 	workId: workId,
+		 	json: JSON.stringify(BlockElt)
+		},
+		success: function(data){
+			console.log("ajaxInsertBlockElt success");
+		},
+		error: function(error){
+			console.log('error : ', error);
+		}
+	});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -260,6 +294,46 @@ function ajaxUpdateQuestionElt(questionElt){
 		},
 		success: function(data){
 			console.log("ajaxUpdateQuestionElt success");
+		},
+		error: function(error){
+			console.log('error : ', error);
+		}
+	});
+}
+
+
+function ajaxUpdateResultElt(resultElt){
+	return $.ajax({
+		type: "POST",
+		url:dbAccessUrl,
+		data: {
+			table: 'Result',
+			update: true,
+			id: resultElt.id,
+			json: JSON.stringify(resultElt)
+		},
+		success: function(data){
+			console.log("ajaxUpdateResultElt success");
+		},
+		error: function(error){
+			console.log('error : ', error);
+		}
+	});
+}
+
+
+function ajaxUpdateBlockElt(blockElt){
+	return $.ajax({
+		type: "POST",
+		url:dbAccessUrl,
+		data: {
+			table: 'Block',
+			update: true,
+			id: blockElt.id,
+			json: JSON.stringify(blockElt)
+		},
+		success: function(data){
+			console.log("ajaxUpdateBlockElt success");
 		},
 		error: function(error){
 			console.log('error : ', error);
