@@ -28,12 +28,15 @@ Set the DirectoryRoot to the location of the index.html master main file of proj
 	        Require all granted
 	</Directory>
 	Header set Access-Control-Allow-Origin "*"
-	ProxyPass "/db-access" "http://localhost:8000/"
-	ProxyPassReverse "/db-access" "http://localhost:8000/"
+	ProxyPass "/db-access" "http://localhost:8888/"
+	ProxyPassReverse "/db-access" "http://localhost:8888/"
 
 *There is no final slash '/' at the end of the DocumentRoot*
 
-The 8000 port is used by default in several nodeJS servers.
+The 8000 port is used by default in several nodeJS servers, so 8888 should be available. change it if already used. To check by which app it is used, run this command as root :
+
+	netstat -tulpn
+
 
 The '/db-access' route is required to perform GET & POST requests to the database.
 
@@ -115,6 +118,10 @@ Type in the following commands:
 Refer to this if there are problems:
 
 	http://askubuntu.com/questions/763336/cannot-enter-phpmyadmin-as-root-mysql-5-7
+
+Database migration: 
+	
+
 
 
 
