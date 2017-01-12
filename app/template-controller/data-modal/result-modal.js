@@ -62,11 +62,11 @@ function dumpResult(){
 
 	var res = new ResultElt();
 	if(currentResultId === undefined){
-		saveResultElt(res);
+		saveElt('Result', res, selectedWork.id);
 	}
 	else{
 		res.id = currentResultId;
-		updateResultElt(res);
+		updateElt('Result', res);
 	}
 
 
@@ -91,27 +91,3 @@ function ResultElt(){
 	this.name	 	= $('#result-reference').val();
 	this.content 	= $('#result-content').val();
 };
-
-
-function saveResultElt(resultElt){
-	$.when(ajaxInsertResultElt(resultElt, selectedWork.id)).then(
-		function(result){
-			$.when(ajaxGetLast()).then(function(last){
-				resultElt.id = last[0]['LAST_INSERT_ID()'];
-				updateResultElt(resultElt);
-			});
-		}, 
-		function(error){
-			console.log('saveResultElt ', error);
-	});
-}
-
-function updateResultElt(resultElt){
-	$.when(ajaxUpdateResultElt(resultElt)).then(
-		function(result){
-			console.log("updateInputElt ", result);
-		},
-		function(error){
-			console.log("updateResultElt ", error);	
-	});
-}

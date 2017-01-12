@@ -120,11 +120,11 @@ function dumpBlock(){
 
 
 	if(currentBlockId === undefined){
-		saveBlockElt(block);
+		saveElt('Block', block, selectedWork.id);
 	}
 	else{
 		block.id = currentBlockId;
-		updateBlockElt(block);
+		updateElt('Block', block);
 	}
 
 
@@ -148,36 +148,6 @@ function BlockElt(){
 	this.introduction	= $('#block-introduction').val();
 	this.questions 		= [];
 };
-
-
-function saveBlockElt(blockElt){
-	$.when(ajaxInsertBlockElt(blockElt, selectedWork.id)).then(
-		function(result){
-			$.when(ajaxGetLast()).then(function(last){
-				blockElt.id = last[0]['LAST_INSERT_ID()'];
-				updateBlockElt(blockElt);
-			});
-		}, 
-		function(error){
-			console.log('saveBlockElt ', error);
-	});
-}
-
-function updateBlockElt(blockElt){
-	$.when(ajaxUpdateBlockElt(blockElt)).then(
-		function(result){
-			// console.log("updateInputElt ", result);
-		},
-		function(error){
-			console.log("updateBlockElt ", error);	
-	});
-}
-
-
-
-
-
-
 
 
 /* 
@@ -243,15 +213,18 @@ function configQuestionComplete(i){
 		select: function(event, ui){
 			$(this).val(ui.item.value);
 
+			var lineSelector = $(this)[0].id.split('-'),
+				last = lineSelector.length - 1,
+				rowIdx = parseInt(lineSelector[last]);
+
+			// console.log($(this)[0].id, lineSelector, last, rowIdx);
+
 			// Look for the id of this question and insert it in good position
-			var rowIdx = 0;			
 			for (var i = 0; i < questions.length; i++) {
 				if($(this).val() == questions[i].name){
 					$('#block-questions-selection-type-'+rowIdx).val(questions[i].type);
 					$('#block-questions-selection-id-'+rowIdx).val(questions[i].id);
-
-					rowIdx++;	// increase row idx for next line
-					console.log("adding : ", rowIdx, i, questions[i].type, questions[i].id);
+					// console.log("adding : ", rowIdx, i, questions[i].type, questions[i].id);
 				}
 			}
 		}

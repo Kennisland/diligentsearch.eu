@@ -71,11 +71,11 @@ function dumpRefValue(){
 
 	// Save it into db
 	if(currentReferenceId === undefined){
-		saveRefValueElt(ref);
+		saveElt('SharedRefValue', ref, selectedCountry.id);
 	}
 	else{
 		ref.id = currentReferenceId;
-		updateRefValueElt(ref);
+		updateElt('SharedRefValue', ref);
 	}
 
 	injectRefValueData(currentReferenceIndex, ref);	
@@ -105,30 +105,4 @@ function ReferenceElt(){
 	this.name 			= $('#reference-name').val();
 	this.value 			= $('#reference-value').val();
 	this.information 	= $('#reference-details').val();
-}
-
-
-
-function saveRefValueElt(refValueElt){
-	$.when(ajaxInsertRefValueElt(refValueElt, selectedCountry.id)).then(
-		function(result){
-			$.when(ajaxGetLast()).then(function(last){
-				refValueElt.id = last[0]['LAST_INSERT_ID()'];
-				updateRefValueElt(refValueElt);
-			});
-		}, 
-		function(error){
-			console.log('saveRefValueElt ', error);
-	});
-}
-
-
-function updateRefValueElt(refValueElt){
-	$.when(ajaxUpdateRefValueElt(refValueElt)).then(
-		function(result){
-			// console.log("updateInputElt ", result);
-		},
-		function(error){
-			console.log("updateRefValueElt ", error);	
-	});
 }

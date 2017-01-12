@@ -75,11 +75,11 @@ function dumpUserInput(){
 
 	// Save it into db
 	if(currentInputId === undefined){
-		saveUserInputElt(input);
+		saveElt('SharedUserInput', input, selectedCountry.id);
 	}
 	else{
 		input.id = currentInputId;
-		updateInputElt(input);
+		updateElt('SharedUserInput', input);
 	}
 
 	injectUserInputData(currentInputIndex, input);	
@@ -108,30 +108,3 @@ function InputElt(){
 	this.information 	= $('#input-details').val();
 	this.value 			= undefined;		// Manually set by end user
 };
-
-
-
-
-function saveUserInputElt(userInputElt){
-	$.when(ajaxInsertUserInputElt(userInputElt, selectedCountry.id)).then(
-		function(result){
-			$.when(ajaxGetLast()).then(function(last){
-				userInputElt.id = last[0]['LAST_INSERT_ID()'];
-				updateInputElt(userInputElt);
-			});
-		}, 
-		function(error){
-			console.log('saveUserInputElt ', error);
-	});
-}
-
-
-function updateInputElt(userInputElt){
-	$.when(ajaxUpdateInputElt(userInputElt)).then(
-		function(result){
-			// console.log("updateInputElt ", result);
-		},
-		function(error){
-			console.log("updateInputElt ", error);	
-	});
-}

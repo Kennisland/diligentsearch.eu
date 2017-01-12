@@ -1,5 +1,8 @@
 dbAccessUrl = window.location.origin+"/db-access";
 
+
+
+
 function ajaxGetCountries(){
 	return $.ajax({
 		type:"GET",
@@ -13,6 +16,7 @@ function ajaxGetCountries(){
 		}
 	});
 }
+
 
 function ajaxGetWorks(countryId){
 	return $.ajax({
@@ -115,228 +119,102 @@ function ajaxGetLast(){
 
 
 
+function saveElt(table, elt, foreignKey){
+	if(table == 'SharedUserInput' || table == 'SharedRefValue'){
+		$.when(ajaxInsertSharedElt(table, elt, foreignKey)).then(
+			function(result){
+				$.when(ajaxGetLast()).then(
+					function(last){
+						elt.id = last[0]['LAST_INSERT_ID()'];
+						ajaxUpdateElt(table, elt);
+					}
+				);
+			});
+	}
+	else if(table == 'Question' || table == 'Block' || table == 'Result'){
+		$.when(ajaxInsertElt(table, elt, foreignKey)).then(
+			function(result){
+				$.when(ajaxGetLast()).then(
+					function(last){
+						elt.id = last[0]['LAST_INSERT_ID()'];
+						ajaxUpdateElt(table, elt);
+					}
+				);
+			});
+	}
+	else{
+		console.log("table not recognized : ", table);
+	}
+}
+
+function updateElt(table, elt){
+	if(table == 'SharedUserInput' || table == 'SharedRefValue' || table == 'Question' || table == 'Block' || table == 'Result'){
+		$.when(ajaxUpdateElt(table, elt)).then(
+			function(result){
+				console.log(result);
+			}, 
+			function(error){
+				console.log(error);
+			});
+	}
+	else{
+		console.log("table not recognized : ", table);
+	}
+}
 
 
 
-
-
-
-
-
-
-
-
-
-function ajaxInsertUserInputElt(UserInputElt, countryId){
+function ajaxInsertSharedElt(table, elt, countryId){
 	return $.ajax({
 		type: "POST",
 		url:dbAccessUrl,
 		data: {
-			table: 'SharedUserInput',
+			table: table,
 			countryId: countryId,
-			json: JSON.stringify(UserInputElt)
+			json: JSON.stringify(elt)
 		},
 		success: function(data){
-			console.log("ajaxInsertUserInputElt success");
+			console.log("Shared element ", elt.name, " inserted with success");
 		},
 		error: function(error){
-			console.log('error : ', error);
+			console.log("ERROR : shared element ", elt.name, " not inserted; ", error.status);	
 		}
 	});
 }
 
-function ajaxInsertRefValueElt(RefValueElt, countryId){
+function ajaxInsertElt(table, elt, workId){
 	return $.ajax({
 		type: "POST",
 		url:dbAccessUrl,
 		data: {
-			table: 'SharedRefValue',
-			countryId: countryId,
-			json: JSON.stringify(RefValueElt)
-		},
-		success: function(data){
-			console.log("ajaxInsertRefValueElt success");
-		},
-		error: function(error){
-			console.log('error : ', error);
-		}
-	});
-}
-
-function ajaxInsertQuestionElt(QuestionElt, workId){
-	return $.ajax({
-		type: "POST",
-		url:dbAccessUrl,
-		data: {
-			table: 'Question',
+			table: table,
 			workId: workId,
-			json: JSON.stringify(QuestionElt)
+			json: JSON.stringify(elt)
 		},
 		success: function(data){
-			console.log("ajaxInsertQuestionElt success");
+			console.log("Basic element ", elt.name, " inserted with success");
 		},
 		error: function(error){
-			console.log('error : ', error);
+			console.log("ERROR : basic element ", elt.name, " not inserted; ", error.status);	
 		}
 	});
 }
 
-function ajaxInsertResultElt(ResultElt, workId){
+function ajaxUpdateElt(table, elt){
 	return $.ajax({
-		type: "POST",
-		url:dbAccessUrl,
+		type: 'POST', 
+		url: dbAccessUrl,
 		data: {
-			table: 'Result',
-			workId: workId, 
-			json: JSON.stringify(ResultElt)
-		},
-		success: function(data){
-			console.log("ajaxInsertResultElt success");
-		},
-		error: function(error){
-			console.log('error : ', error);
-		}
-	});
-}
-
-
-function ajaxInsertBlockElt(BlockElt, workId){
-	return $.ajax({
-		type: "POST",
-		url:dbAccessUrl,
-		data: {
-			table: 'Block',
-		 	workId: workId,
-		 	json: JSON.stringify(BlockElt)
-		},
-		success: function(data){
-			console.log("ajaxInsertBlockElt success");
-		},
-		error: function(error){
-			console.log('error : ', error);
-		}
-	});
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function ajaxUpdateInputElt(userInputElt){
-	return $.ajax({
-		type: "POST",
-		url:dbAccessUrl,
-		data: {
-			table: 'SharedUserInput',
+			table: table,
 			update: true,
-			id: userInputElt.id,
-			json: JSON.stringify(userInputElt)
+			id: elt.id,
+			json: JSON.stringify(elt)
 		},
 		success: function(data){
-			console.log("ajaxInsertUserInputElt success");
+			console.log("Element ", elt.name, " updated with success");
 		},
 		error: function(error){
-			console.log('error : ', error);
-		}
-	});
-}
-
-
-function ajaxUpdateRefValueElt(refValueElt){
-	return $.ajax({
-		type: "POST",
-		url:dbAccessUrl,
-		data: {
-			table: 'SharedRefValue',
-			update: true,
-			id: refValueElt.id,
-			json: JSON.stringify(refValueElt)
-		},
-		success: function(data){
-			console.log("ajaxUpdateRefValueElt success");
-		},
-		error: function(error){
-			console.log('error : ', error);
-		}
-	});
-}
-
-
-function ajaxUpdateQuestionElt(questionElt){
-	return $.ajax({
-		type: "POST",
-		url:dbAccessUrl,
-		data: {
-			table: 'Question',
-			update: true,
-			id: questionElt.id,
-			json: JSON.stringify(questionElt)
-		},
-		success: function(data){
-			console.log("ajaxUpdateQuestionElt success");
-		},
-		error: function(error){
-			console.log('error : ', error);
-		}
-	});
-}
-
-
-function ajaxUpdateResultElt(resultElt){
-	return $.ajax({
-		type: "POST",
-		url:dbAccessUrl,
-		data: {
-			table: 'Result',
-			update: true,
-			id: resultElt.id,
-			json: JSON.stringify(resultElt)
-		},
-		success: function(data){
-			console.log("ajaxUpdateResultElt success");
-		},
-		error: function(error){
-			console.log('error : ', error);
-		}
-	});
-}
-
-
-function ajaxUpdateBlockElt(blockElt){
-	return $.ajax({
-		type: "POST",
-		url:dbAccessUrl,
-		data: {
-			table: 'Block',
-			update: true,
-			id: blockElt.id,
-			json: JSON.stringify(blockElt)
-		},
-		success: function(data){
-			console.log("ajaxUpdateBlockElt success");
-		},
-		error: function(error){
-			console.log('error : ', error);
+			console.log("ERROR : element ", elt.name, " not updated; ", error.status);	
 		}
 	});
 }
