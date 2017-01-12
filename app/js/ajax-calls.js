@@ -152,23 +152,23 @@ function ajaxInsertRefValueElt(RefValueElt, countryId){
 	});
 }
 
-// function ajaxInsertQuestionElt(QuestionElt, workId){
-// 	return $.ajax({
-// 		type: "POST",
-// 		url:dbAccessUrl,
-// 		data: {
-// 			table: 'Question',
-// 			workId: workId,
-// 			json: JSON.stringify(QuestionElt)
-// 		},
-// 		success: function(data){
-// 			console.log("ajaxInsertQuestionElt success");
-// 		},
-// 		error: function(error){
-// 			console.log('error : ', error);
-// 		}
-// 	});
-// }
+function ajaxInsertQuestionElt(QuestionElt, workId){
+	return $.ajax({
+		type: "POST",
+		url:dbAccessUrl,
+		data: {
+			table: 'Question',
+			workId: workId,
+			json: JSON.stringify(QuestionElt)
+		},
+		success: function(data){
+			console.log("ajaxInsertQuestionElt success");
+		},
+		error: function(error){
+			console.log('error : ', error);
+		}
+	});
+}
 
 // function ajaxInsertBlockElt(BlockElt, workId){
 // 	return $.ajax({
@@ -220,6 +220,46 @@ function ajaxUpdateInputElt(userInputElt){
 		},
 		success: function(data){
 			console.log("ajaxInsertUserInputElt success");
+		},
+		error: function(error){
+			console.log('error : ', error);
+		}
+	});
+}
+
+
+function ajaxUpdateRefValueElt(refValueElt){
+	return $.ajax({
+		type: "POST",
+		url:dbAccessUrl,
+		data: {
+			table: 'SharedRefValue',
+			update: true,
+			id: refValueElt.id,
+			json: JSON.stringify(refValueElt)
+		},
+		success: function(data){
+			console.log("ajaxUpdateRefValueElt success");
+		},
+		error: function(error){
+			console.log('error : ', error);
+		}
+	});
+}
+
+
+function ajaxUpdateQuestionElt(questionElt){
+	return $.ajax({
+		type: "POST",
+		url:dbAccessUrl,
+		data: {
+			table: 'Question',
+			update: true,
+			id: questionElt.id,
+			json: JSON.stringify(questionElt)
+		},
+		success: function(data){
+			console.log("ajaxUpdateQuestionElt success");
 		},
 		error: function(error){
 			console.log('error : ', error);

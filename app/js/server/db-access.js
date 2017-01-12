@@ -135,7 +135,7 @@ function handle_post_request(req, res, connection){
 					if(!err) {
 						res.json(rows);
 					}   
-				})
+				});
 			}
 			else {
 				connection.query("insert into SharedUserInput (countryId,json) values ('"+countryId+"','"+json+"');", function(err,rows){
@@ -149,15 +149,44 @@ function handle_post_request(req, res, connection){
 		case 'SharedRefValue':
 			var countryId = req.body.countryId,
 				json = req.body.json;
-			connection.query("insert into SharedRefValue (countryId, json) values ('"+countryId+"', '"+json+"');", function(err,rows){
-				connection.release();
-				if(!err) {
-					res.json(rows);
-				}          
-			});
+
+			if(req.body.update){
+				connection.query("update SharedRefValue set json='"+req.body.json+"' where id='"+req.body.id+"';", function(err, rows){
+					connection.release();
+					if(!err) {
+						res.json(rows);
+					}   
+				});
+			}
+			else {
+				connection.query("insert into SharedRefValue (countryId, json) values ('"+countryId+"', '"+json+"');", function(err,rows){
+					connection.release();
+					if(!err) {
+						res.json(rows);
+					}          
+				});
+			}
 			break;
 		case 'Question':
-			// connection.query("insert into Question ")
+			var workId = req.body.workId,
+				json = req.body.json;
+
+			if(req.body.update){
+				connection.query("update Question set json='"+req.body.json+"' where id='"+req.body.id+"';", function(err, rows){
+					connection.release();
+					if(!err) {
+						res.json(rows);
+					}   
+				});
+			}
+			else {
+				connection.query("insert into Question (workId, json) values ('"+workId+"', '"+json+"');", function(err,rows){
+					connection.release();
+					if(!err) {
+						res.json(rows);
+					}          
+				});
+			}
 			break;
 		case 'Block':
 			// connection.query("insert into Block ")

@@ -243,21 +243,6 @@ function injectUserInputData(index, userInputElt){
 	});
 }
 
-
-
-
-function saveRefValueElt(refValueElt){
-	$.when(ajaxInsertRefValueElt(refValueElt, selectedWork.id)).then(
-		function(result){
-			$.when(ajaxGetLast()).then(function(last){
-				console.log("last is : ", last[0]['LAST_INSERT_ID()']);
-			});			
-		}, 
-		function(error){
-			console.log(error);
-	});
-}
-
 // called from specific modal
 function injectRefValueData(index, refValueElt){
 	// Insert data at given position if there are already in

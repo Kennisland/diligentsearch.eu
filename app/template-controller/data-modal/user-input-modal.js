@@ -112,10 +112,8 @@ function InputElt(){
 
 
 
-
-
 function saveUserInputElt(userInputElt){
-	$.when(ajaxInsertUserInputElt(userInputElt, selectedWork.id)).then(
+	$.when(ajaxInsertUserInputElt(userInputElt, selectedCountry.id)).then(
 		function(result){
 			$.when(ajaxGetLast()).then(function(last){
 				userInputElt.id = last[0]['LAST_INSERT_ID()'];

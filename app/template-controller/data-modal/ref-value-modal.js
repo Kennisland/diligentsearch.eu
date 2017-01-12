@@ -43,7 +43,7 @@ function injectRefValueModal(){
 };
 
 currentReferenceIndex = -1;
-currentReferenceId = -1;
+currentReferenceId = undefined;
 function loadRefValue(index, refElt){
 	currentReferenceIndex = index;
 	currentReferenceId = refElt.id;
@@ -70,15 +70,13 @@ function dumpRefValue(){
 	var ref = new ReferenceElt();
 
 	// Save it into db
-	if(currentReferenceId == -1){
+	if(currentReferenceId === undefined){
 		saveRefValueElt(ref);
 	}
 	else{
-		// update db
-
+		ref.id = currentReferenceId;
+		updateRefValueElt(ref);
 	}
-	// ref.id = getRefId();
-
 
 	injectRefValueData(currentReferenceIndex, ref);	
 	dismissRefValueModal();	
@@ -110,16 +108,27 @@ function ReferenceElt(){
 }
 
 
-function getRefId(){
-	if(currentReferenceId == -1){
-		var l = referenceValues.length;
-		if(l == 0){
-			return 0;
-		}else{
-			return referenceValues[l-1].id + 1;
-		}
-	}
-	else{
-		return currentReferenceId;		
-	}
+
+function saveRefValueElt(refValueElt){
+	$.when(ajaxInsertRefValueElt(refValueElt, selectedCountry.id)).then(
+		function(result){
+			$.when(ajaxGetLast()).then(function(last){
+				refValueElt.id = last[0]['LAST_INSERT_ID()'];
+				updateRefValueElt(refValueElt);
+			});
+		}, 
+		function(error){
+			console.log('saveRefValueElt ', error);
+	});
+}
+
+
+function updateRefValueElt(refValueElt){
+	$.when(ajaxUpdateRefValueElt(refValueElt)).then(
+		function(result){
+			// console.log("updateInputElt ", result);
+		},
+		function(error){
+			console.log("updateRefValueElt ", error);	
+	});
 }
