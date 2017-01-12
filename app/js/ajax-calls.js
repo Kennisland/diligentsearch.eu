@@ -205,3 +205,24 @@ function ajaxInsertRefValueElt(RefValueElt, countryId){
 // 		}
 // 	});
 // }
+
+
+
+function ajaxUpdateInputElt(userInputElt){
+	return $.ajax({
+		type: "POST",
+		url:dbAccessUrl,
+		data: {
+			table: 'SharedUserInput',
+			update: true,
+			id: userInputElt.id,
+			json: JSON.stringify(userInputElt)
+		},
+		success: function(data){
+			console.log("ajaxInsertUserInputElt success");
+		},
+		error: function(error){
+			console.log('error : ', error);
+		}
+	});
+}

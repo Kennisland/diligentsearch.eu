@@ -46,7 +46,7 @@ function injectUserInputModal(){
 
 
 currentInputIndex = -1;
-currentInputId = -1;
+currentInputId = undefined;
 function loadUserInput(index, inputElt){
 	currentInputIndex = index;
 	currentInputId = inputElt.id;
@@ -74,17 +74,15 @@ function dumpUserInput(){
 	var input = new InputElt();	
 
 	// Save it into db
-	if(currentInputId == -1){
+	if(currentInputId === undefined){
 		saveUserInputElt(input);
 	}
 	else{
-		// update db
-
+		input.id = currentInputId;
+		updateInputElt(input);
 	}
 
-	// input.id = getUserInputId();
-	injectUserInputData(currentInputIndex, input);
-	
+	injectUserInputData(currentInputIndex, input);	
 	dismissUserInputModal();	
 }
 
@@ -112,20 +110,30 @@ function InputElt(){
 };
 
 
-// If first id : returns 0
-// Else if new input : returns previous id + 1
-// Else if not new id : returns already used id
-function getUserInputId(){
-	if(currentInputId == -1){
-		var l = userInputs.length;
-		if(l == 0){
-			return 0;
-		}else{
-			return userInputs[l-1].id + 1;
-		}
-	}
-	else{
-		return currentInputId;		
-	}
+
+
+
+
+function saveUserInputElt(userInputElt){
+	$.when(ajaxInsertUserInputElt(userInputElt, selectedWork.id)).then(
+		function(result){
+			$.when(ajaxGetLast()).then(function(last){
+				userInputElt.id = last[0]['LAST_INSERT_ID()'];
+				updateInputElt(userInputElt);
+			});
+		}, 
+		function(error){
+			console.log('saveUserInputElt ', error);
+	});
 }
 
+
+function updateInputElt(userInputElt){
+	$.when(ajaxUpdateInputElt(userInputElt)).then(
+		function(result){
+			// console.log("updateInputElt ", result);
+		},
+		function(error){
+			console.log("updateInputElt ", error);	
+	});
+}

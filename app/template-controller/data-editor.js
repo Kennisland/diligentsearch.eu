@@ -217,21 +217,6 @@ function add(elementType){
 
 
 
-
-
-
-function saveUserInputElt(userInputElt){
-	$.when(ajaxInsertUserInputElt(userInputElt, selectedWork.id)).then(
-		function(result){
-			$.when(ajaxGetLast()).then(function(last){
-				console.log("last is : ", last[0]['LAST_INSERT_ID()']);
-			});			
-		}, 
-		function(error){
-			console.log(error);
-	});
-}
-
 // called from specific modal
 function injectUserInputData(index, userInputElt){
 
@@ -245,7 +230,6 @@ function injectUserInputData(index, userInputElt){
 		index++;
 	}
 
-	// Update html
 	// Create list element if needed
 	if($('#data-userInputs li').length < index){
 		var userInputHtml = '<li class="list-group-item"></li>';
@@ -284,7 +268,7 @@ function injectRefValueData(index, refValueElt){
 		referenceValues[index] = refValueElt;
 		index++;
 	}
-	
+
 	// Update html
 	// Create list element if needed
 	if($('#data-referenceValues li').length < index){
