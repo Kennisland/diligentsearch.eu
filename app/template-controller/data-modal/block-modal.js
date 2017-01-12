@@ -228,6 +228,7 @@ function getNewQuestion(){
 function configQuestionComplete(i){
 	$('#block-questions-selection-'+i).autocomplete({
 		minLength: 0,
+		autocomplete: true,
 		source: function(request, response){
 			response($.map(questions, function(value, key){
 				return {
@@ -235,7 +236,6 @@ function configQuestionComplete(i){
 				}
 			}));
 		},
-		autocomplete: true,
 		open: function() { 
 			var parent_width = $('#block-questions-selection-'+i).width();
 			$('.ui-autocomplete').width(parent_width);
@@ -255,5 +255,5 @@ function configQuestionComplete(i){
 				}
 			}
 		}
-	});
+	}).bind('focus', function(){ $(this).autocomplete("search"); } );
 }

@@ -184,6 +184,8 @@ function configCategorySelection(){
 			sources = getDataSource(category);
 
 		$('#node-data').autocomplete({
+			minLength: 0,
+			autocomplete: true,
 			source: function(request, response){
 				response($.map(sources, function(value, key){
 					return {
@@ -191,8 +193,6 @@ function configCategorySelection(){
 					}
 				}));
 			},
-			minLength: 0,
-			autocomplete: true,
 			open: function() { 
 				var parent_width = $('#node-data').width();
 				$('.ui-autocomplete').width(parent_width);
@@ -207,7 +207,7 @@ function configCategorySelection(){
 					}
 				}
 			}
-		});
+		}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	});
 }
 
@@ -280,17 +280,17 @@ function getNewOutput(){
 function configOutputComplete(i){
 	$('#node-data-output-target-'+i).autocomplete({
 		minLength: 0,
+		autocomplete: true,
 		source: function(request, response){
 			var nodes = graphic.nodes(),
 				parents = recursiveParents($('#node-graphic-id').val(), [], 0);
 			response($(nodes).not(parents).get());
 		},
-		autocomplete: true,
 		open: function() { 
 			var parent_width = $('#node-data-output-target-'+i).width();
 			$('.ui-autocomplete').width(parent_width);
 		}
-	});
+	}).bind('focus', function(){ $(this).autocomplete("search"); } );
 }
 
 // Get parents recursively, to get all ascendance

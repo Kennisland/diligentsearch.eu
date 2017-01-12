@@ -373,6 +373,8 @@ function updateQuestionElt(questionElt){
 
  function configAutocomplete(){
 	$('#numeric-reference').autocomplete({
+		minLength: 0,
+		autocomplete: true,
 		source: function(request, response){
 			response($.map(referenceValues, function(value, key){
 				return {
@@ -380,7 +382,6 @@ function updateQuestionElt(questionElt){
 				}
 			}));
 		},
-		autocomplete: true,
 		open: function() { 
 			var parent_width = $('#numeric-reference').width();
 			$('.ui-autocomplete').width(parent_width);
@@ -395,9 +396,11 @@ function updateQuestionElt(questionElt){
 				}
 			}
 		}
-	});
+	}).bind('focus', function(){ $(this).autocomplete("search"); } );
 
 	$('#numeric-inputs').autocomplete({
+		minLength: 0,
+		autocomplete: true,
 		source: function(request, response){
 			var formattedInputs = $.map(userInputs, function(value, key){
 				return {
@@ -410,7 +413,6 @@ function updateQuestionElt(questionElt){
             	formattedInputs, ( request.term ).split(/\s*[-+]\s/).pop()) 
           	);
 		},
-		autocomplete: true,
 		open: function() { 
 			// Match width of combobow to fit parent
 			var parent_width = $('#numeric-inputs').width();
@@ -429,7 +431,7 @@ function updateQuestionElt(questionElt){
 			this.value = terms.join( " " );
 			return false;
         }
-	});
+	}).bind('focus', function(){ $(this).autocomplete("search"); } );
  }
 
 
