@@ -136,7 +136,10 @@ The server is written with nodeJs. First, download dependecies by fetching packa
 	// Go to app/js/server
 	npm install
 
-Database access configuration available in the file 'db-connection.js'
+Database access configuration available in the file 'db-access.js':
+
+	Change host, user and password if needed
+	
 
 To test if database connection is correctly set, run the following command:
 
