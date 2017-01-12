@@ -1,4 +1,4 @@
-dbAccessUrl = "http://ds.local/db-access";
+dbAccessUrl = window.location.origin+"/db-access";
 
 function ajaxGetCountries(){
 	return $.ajax({
