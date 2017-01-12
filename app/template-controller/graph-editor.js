@@ -154,6 +154,7 @@ function injectGraphicNodeData(index, graphicNodeElt){
 	// Update graphical node style of current node
 	styleGraphicNode(graphicNodeElt.category, graphicNodeElt.id);
 
+	
 	// Generate block of questions if necessary
 	if(graphicNodeElt.category == "block"){
 		setNewGraphicBlock(graphicNodeElt.id, graphicNodeElt.dataId);		
@@ -162,16 +163,24 @@ function injectGraphicNodeData(index, graphicNodeElt){
 	// Regarding number of Outputs, draw new nodes if necessary
 	for (var i = 0; i < graphicNodeElt.targets.length; i++) {
 		// Configure/Get answer text
+		var answer = '';
 		if(graphicNodeElt.category == "block"){
-			var answer = "Block output";				
+			answer = "Block output";				
 		}
 		else if(graphicNodeElt.category == "question"){
-			var answer = questions[graphicNodeElt.dataId].outputs[i];
+			// DB mandatory binding
+			for (var j = 0; j < questions.length; j++) {
+				if(questions[j].id == graphicNodeElt.dataId){
+					answer = questions[j].outputs[i];
+					break;
+				} 
+			}
 		}
 
 		// Create or connect to a node
 		var targetId = graphicNodeElt.targets[i];
 		if(targetId == "New node"){
+			// console.log("setting new node : ", graphicNodeElt);
 			targetId = setNewGraphicNode(graphicNodeElt.id, answer);
 			graphicNodeElt.targets[i] = targetId;
 		}
@@ -221,8 +230,15 @@ function setNewGraphicBlock(blockNodeId, blockNodeDataId){
 	});
 	graphic.setParent(blockNodeId, clusterId);
 
+	// DB effect : get abck block element
+	var blockElt = undefined;
+	for (var i = 0; i < blocks.length; i++) {
+	 	if( blocks[i].id == blockNodeDataId){
+	 		blockElt = blocks[i];
+	 	}
+	}
+	
 	// For all questions, create id, node, edge, and register them as child of the created parent
-	var blockElt = blocks[blockNodeDataId];
 	for (var i = 0; i < blockElt.questions.length; i++) {
 
 		// Get question index to jump to question data model
