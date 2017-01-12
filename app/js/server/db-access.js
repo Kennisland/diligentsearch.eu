@@ -24,6 +24,20 @@ function get_handle_database(req,res) {
 		  return;
 		} 
 
+		// console.log("get_handle_database : ", req.query);
+
+		if(req.query.last){
+			connection.query("SELECT LAST_INSERT_ID();", function(err, rows){
+				connection.release();
+				if(!err){
+					console.log(rows['LAST_INSERT_ID()']);
+					res.json(rows);
+				}
+			});	
+			return;
+		}
+
+
 		switch(req.query.table){
 			case 'Country':
 				connection.query("select * from Country",function(err,rows){
@@ -42,7 +56,7 @@ function get_handle_database(req,res) {
 					}          
 				});
 				break;
-			case 'SharedUserInputs':
+			case 'SharedUserInput':
 				var countryId = req.query.countryId;
 				connection.query("select * from SharedUserInput where countryId='"+countryId+"'",function(err,rows){
 					connection.release();
@@ -51,7 +65,7 @@ function get_handle_database(req,res) {
 					}          
 				});
 				break;
-			case 'SharedRefValues':
+			case 'SharedRefValue':
 				var countryId = req.query.countryId;
 				connection.query("select * from SharedRefValue where countryId='"+countryId+"'",function(err,rows){
 					connection.release();
@@ -111,12 +125,23 @@ function post_handle_database(req, res){
 			case 'SharedUserInput':
 				var countryId = req.body.countryId,
 					json = req.body.json;
-				connection.query("insert into SharedUserInput (countryId,json) values ('"+countryId+"','"+json+"');", mysqlGetLastInserted(err, rows));
+				// connection.query("insert into SharedUserInput (countryId,json) values ('"+countryId+"','"+json+"');", mysqlGetLastInserted());
+				connection.query("insert into SharedUserInput (countryId,json) values ('"+countryId+"','"+json+"');", function(err,rows){
+					connection.release();
+					if(!err) {
+						res.json(rows);
+					}          
+				});
 				break;
 			case 'SharedRefValue':
 				var countryId = req.body.countryId,
 					json = req.body.json;
-				connection.query("insert into SharedRefValue (countryId, json) values ('"+countryId+"', '"+json+"');",mysqlGetLastInserted(err, rows));
+				connection.query("insert into SharedRefValue (countryId, json) values ('"+countryId+"', '"+json+"');", function(err,rows){
+					connection.release();
+					if(!err) {
+						res.json(rows);
+					}          
+				});
 				break;
 			case 'Question':
 				// connection.query("insert into Question ")
@@ -140,26 +165,12 @@ function post_handle_database(req, res){
 }
 
 
-// Update in the same batch the json content (id: undefined), as we have the json content just upper ;)
-function mysqlGetLastInserted(err, rows){
-	if(!err) {						
-		connection.query("SELECT LAST_INSERT_ID();", function(err, rows){
-			connection.release();
-			if(!err){
-				res.json(rows);
-			}
-		});
-	}
-}
-
-
-
 app.get(dbRoute,function(req,res){      
 	get_handle_database(req,res);
 });
 
 app.post(dbRoute, function(req, res){
 	post_handle_database(req, res);
-})
+});
 
 app.listen(8000);

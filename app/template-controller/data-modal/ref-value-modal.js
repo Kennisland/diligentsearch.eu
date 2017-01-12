@@ -68,6 +68,15 @@ function dumpRefValue(){
 	}
 
 	var ref = new ReferenceElt();
+
+	// Save it into db
+	if(currentReferenceId == -1){
+		saveRefValueElt(ref);
+	}
+	else{
+		// update db
+
+	}
 	// ref.id = getRefId();
 
 

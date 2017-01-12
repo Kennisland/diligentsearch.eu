@@ -98,13 +98,25 @@ function ajaxGetResults(workId){
 	});
 }
 
+function ajaxGetLast(){
+	return $.ajax({
+		type:"GET",
+		url:dbAccessUrl,
+		data: {last: true},
+		success: function(data){
+			console.log("ajaxGetLast success : ", data);
+		},
+		error: function(err){
+			console.log("error :", err);
+		}
+	});
+}
+
 
 
 
 
 function ajaxInsertUserInputElt(UserInputElt, countryId){
-	console.log("args ! ", countryId);
-
 	return $.ajax({
 		type: "POST",
 		url:dbAccessUrl,

@@ -61,7 +61,13 @@ countries = []; //['Netherlands', 'Germany'];
 selectedCountry = '';
 works = ['Audiovisual', 'painting'];
 selectedWork = '';
-data = [];
+userInputs = [];
+referenceValues = [];
+results = [];
+questions = [];
+blocks = [];
+
+
 
 function injectDataModelEditor(){
 	$('#data-editor').html(html_dataModelEditor);
@@ -114,11 +120,17 @@ function getWork(countryIdx){
 			$.when(ajaxGetUserInputs(selectedCountry.id)).then(
 				function(result){
 					userInputs = result;
+				},
+				function(error){
+					console.log("get work ajaxGetUserInputs", error);
 				});
 
 			$.when(ajaxGetRefValues(selectedCountry.id)).then(
 				function(result){
 					refValues = result;
+				},
+				function(error){
+					console.log("get work ajaxGetRefValues", error);
 				});
 
 			var worksHtml = '<ul class="list-group">';
@@ -152,13 +164,34 @@ function getData(workIdx){
 
 			$('#breadcrumb li:nth-child(2) a').text(selectedWork.name).attr('onclick', 'getWork('+workIdx+')');;
 			$('#breadcrumb').children().show();
+
+			injectDatabaseData();
 		},
 		function(error){
 			$('#display-data-model').prepend(error.statusText);			
 	});
 
 	$('#display-data-model').show();
+}
 
+function injectDatabaseData(){
+	userInputs.forEach(function(elt, idx){
+		console.log("injectDatabaseData : ", elt, idx, JSON.parse(elt.json));
+
+		injectUserInputData(idx, JSON.parse(elt.json));
+	});
+	refValues.forEach(function(elt, idx){
+		injectRefValueData(idx, JSON.parse(elt.json));
+	});
+	questions.forEach(function(elt, idx){
+		injectQuestionData(idx, JSON.parse(elt.json));
+	});
+	results.forEach(function(elt, idx){
+		injectResultData(idx, JSON.parse(elt.json));
+	});
+	blocks.forEach(function(elt, idx){
+		injectBlockData(idx, JSON.parse(elt.json));
+	});
 }
 
 
@@ -183,36 +216,43 @@ function add(elementType){
 }
 
 
-userInputs = [];
+
+
+
+
+function saveUserInputElt(userInputElt){
+	$.when(ajaxInsertUserInputElt(userInputElt, selectedWork.id)).then(
+		function(result){
+			$.when(ajaxGetLast()).then(function(last){
+				console.log("last is : ", last[0]['LAST_INSERT_ID()']);
+			});			
+		}, 
+		function(error){
+			console.log(error);
+	});
+}
+
 // called from specific modal
 function injectUserInputData(index, userInputElt){
-	// Insert data at given position if there are already in
-	if(index != -1){
-		
-		// Rewrite 
+
+	if(index == -1){
+		// Insert data in array and update index
+		index = userInputs.push(userInputElt);
+	}
+	else{
+		// Update the data array and increment index (0 based array)
 		userInputs[index] = userInputElt;
 		index++;
 	}
-	else{
-		// Save it into db
-		$.when(ajaxInsertUserInputElt(userInputElt, selectedWork.id)).then(
-			function(result){
-				console.log(result);
-			}, 
-			function(error){
-				console.log(error);
-			});
-		
-		// Update before all the userInputElt content id
 
-
-		// Push and add html content
-		index = userInputs.push(userInputElt);
-		var userInputHtml = '<li class="list-group-item"></li>';
-		$('#data-userInputs').append(userInputHtml);	
-	}
-	
 	// Update html
+	// Create list element if needed
+	if($('#data-userInputs li').length < index){
+		var userInputHtml = '<li class="list-group-item"></li>';
+		$('#data-userInputs').append(userInputHtml);
+	}
+
+	// Fill in the created element / update the appropriate list element
 	$('#data-userInputs li:nth-child('+index+')').text(userInputElt.name);
 	$('#data-userInputs li:nth-child('+index+')').click(function(){
 		loadUserInput(index-1, userInputElt);
@@ -220,38 +260,38 @@ function injectUserInputData(index, userInputElt){
 }
 
 
-referenceValues = [];
+
+
+function saveRefValueElt(refValueElt){
+	$.when(ajaxInsertRefValueElt(refValueElt, selectedWork.id)).then(
+		function(result){
+			$.when(ajaxGetLast()).then(function(last){
+				console.log("last is : ", last[0]['LAST_INSERT_ID()']);
+			});			
+		}, 
+		function(error){
+			console.log(error);
+	});
+}
+
 // called from specific modal
 function injectRefValueData(index, refValueElt){
 	// Insert data at given position if there are already in
-	if(index != -1){
-		
-
-		// Rewrite 
+	if(index == -1){
+		index = referenceValues.push(refValueElt);
+	}
+	else{
 		referenceValues[index] = refValueElt;
 		index++;
 	}
-	else{
-		// Save it into db
-		$.when(ajaxInsertRefValueElt(refValueElt, selectedWork.id)).then(
-			function(result){
-				console.log(result);
-			}, 
-			function(error){
-				console.log(error);
-			});
-
-		// Update before all the refValueElt content id
-
-
-
-		// Push and add html content
-		index = referenceValues.push(refValueElt);
-		var refValueHtml = '<li class="list-group-item"></li>';
-		$('#data-referenceValues').append(refValueHtml);	
-	}
 	
 	// Update html
+	// Create list element if needed
+	if($('#data-referenceValues li').length < index){
+		var refValueHtml = '<li class="list-group-item"></li>';
+		$('#data-referenceValues').append(refValueHtml);
+	}
+
 	$('#data-referenceValues li:nth-child('+index+')').text(refValueElt.name);
 	$('#data-referenceValues li:nth-child('+index+')').click(function(){
 		loadRefValue(index-1, refValueElt);
@@ -259,7 +299,7 @@ function injectRefValueData(index, refValueElt){
 }
 
 
-results = [];
+
 // called from specific modal
 function injectResultData(index, resultElt){
 		// Insert data at given position if there are already in
@@ -284,7 +324,7 @@ function injectResultData(index, resultElt){
 
 
 
-questions = [];
+
 // called from specific modal
 function injectQuestionData(index, questionElt){
 		// Insert data at given position if there are already in
@@ -308,7 +348,7 @@ function injectQuestionData(index, questionElt){
 }
 
 
-blocks = [];
+
 // Called from specific modal
 function injectBlockData(index, blockElt){
 	// Insert data at given position if there are already in

@@ -71,8 +71,18 @@ function dumpUserInput(){
 		return;
 	}
 
-	var input = new InputElt();
-	input.id = getUserInputId();
+	var input = new InputElt();	
+
+	// Save it into db
+	if(currentInputId == -1){
+		saveUserInputElt(input);
+	}
+	else{
+		// update db
+
+	}
+
+	// input.id = getUserInputId();
 	injectUserInputData(currentInputIndex, input);
 	
 	dismissUserInputModal();	
