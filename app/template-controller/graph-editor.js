@@ -4,6 +4,10 @@ html_graphEditor = `
 	<small>Use this view to create and edit your decision process by configuring nodes to refer created elements of the data model</small>
 </div>
 
+<div id="decision-process-save" style="text-align:center; padding: 10px; display: none">
+	<button type="button" class="btn btn-primary" onclick="saveDecisionTree()">Save Decision Process</button>
+</div>
+
 <svg id="decision-process" class="svg-css"></svg>
 `;
 
@@ -60,6 +64,7 @@ function configureVisibility(){
 
 
 function loadGraph(){
+	$('#decision-process-save').show();
 	initSVG();
 	createGraphicNode('lvl_0');
 	render();
@@ -67,8 +72,42 @@ function loadGraph(){
 
 function resetGraph(){
 	$('#decision-process').html('');
-	initSVG();
+	$('#decision-process-save').hide();
 }
+
+
+// Save a copy, from which we remove not necessary properties
+function saveDecisionTree(){
+	var toSave = graphicNodes;
+	toSave.forEach(function(node){
+		delete node.dataName;
+	});
+
+	if(graphicNodesDatabaseId === undefined){
+		saveElt('DecisionTree', toSave, selectedWork.id, function(saved){
+			if(saved){
+				alert('Decision tree correctly saved in database');
+			}
+			else{
+				alert('Error in decision tree saving process');	
+			}
+		});
+	}
+	else{
+		// Format the data to benefit of others standardized ajax calls
+		var toSave = {id: graphicNodesDatabaseId, json: toSave};
+		console.log("--> updating : ", toSave);
+		updateElt('DecisionTree', toSave, function(updated){
+			if(updated){
+				alert('Decision tree correctly updated in database');
+			}
+			else{
+				alert('Error in decision tree updating process');	
+			}
+		});
+	}
+}
+
 
 
 
@@ -96,11 +135,7 @@ function initSVG(){
 }
 
 // Render the graphic to display
-function render(){	
-	// graphic.nodes().forEach(function(id) {
-	// 	graphic.node(id).rx = graphic.node(id).ry = 5;
-	// });
-	
+function render(){		
 	var render = new dagreD3.render();
 	render(svgGroup, graphic);
 	configSVG();
@@ -155,6 +190,7 @@ function configSVG(){
 }
 
 
+graphicNodesDatabaseId = undefined;
 graphicNodes = [];
 function createGraphicNode(id){
 	graphic.setNode(id, {

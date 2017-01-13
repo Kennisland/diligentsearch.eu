@@ -70,7 +70,7 @@ function handle_get_request(req, res, connection){
 			}
 		});
 	}
-	else if(currentTable == 'Question' || currentTable == 'Block' || currentTable == 'Result') {
+	else if(currentTable == 'DecisionTree' || currentTable == 'Question' || currentTable == 'Block' || currentTable == 'Result') {
 		var workId = req.query.foreignKeyId;
 		connection.query("select * from "+currentTable+" where workId='"+workId+"'",function(err,rows){
 			connection.release();
@@ -89,7 +89,8 @@ function handle_post_request(req, res, connection){
 
 	var currentTable = req.body.table;
 
-	if( currentTable == 'SharedUserInput' || 
+	if( currentTable == 'DecisionTree' || 
+		currentTable == 'SharedUserInput' || 
 		currentTable == 'SharedRefValue' ||
 		currentTable == 'Question' || 
 		currentTable == 'Block' || 

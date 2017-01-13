@@ -63,11 +63,23 @@ function ajaxGetElt(table, foreignKey){
 
 
 function saveElt(table, elt, foreignKey, callback){
-	if( table == 'SharedUserInput' || 
-		table == 'SharedRefValue' ||
-		table == 'Question' || 
-		table == 'Block' || 
-		table == 'Result'){
+	if( table == 'DecisionTree'){
+		$.when(ajaxInsertElt(table, elt, foreignKey)).then(
+			function(result){
+				graphicNodesDatabaseId = result.insertId;
+				callback(true);
+			}, 
+			function(error){
+				callback(false);
+			}
+		);
+	}
+	else if(table == 'SharedUserInput' || 
+			table == 'SharedRefValue' ||
+			table == 'Question' || 
+			table == 'Block' || 
+			table == 'Result')
+	{
 			$.when(ajaxInsertElt(table, elt, foreignKey)).then(
 				function(result){
 					console.log("saveElt Id, updating: ", result.insertId);
@@ -86,12 +98,27 @@ function saveElt(table, elt, foreignKey, callback){
 }
 
 function updateElt(table, elt, callback){
-	if( table == 'SharedUserInput' || 
+	console.log("======================");
+	console.log(table);
+	console.log(elt);
+	console.log(callback);
+	console.log("======================");
+	if( table == 'DecisionTree'){
+		$.when(ajaxUpdateElt(table, elt.id, elt.json)).then(
+			function(result){
+				callback(true);
+			}, 
+			function(error){
+				console.log(error);
+				callback(false);
+		});
+	}
+	else if( table == 'SharedUserInput' || 
 		table == 'SharedRefValue' ||
 		table == 'Question' || 
 		table == 'Block' || 
 		table == 'Result'){
-			$.when(ajaxUpdateElt(table, elt)).then(
+			$.when(ajaxUpdateElt(table, elt.id, elt)).then(
 				function(result){
 					callback(true);
 				}, 
@@ -138,29 +165,29 @@ function ajaxInsertElt(table, elt, foreignKeyId){
 			json: JSON.stringify(elt)
 		},
 		success: function(data){
-			console.log("Element ", elt.name, " inserted with success");
+			console.log("Element ", elt, " inserted with success from ", table);
 		},
 		error: function(error){
-			console.log("ERROR : Element ", elt.name, " not inserted; ", error.status);	
+			console.log("ERROR : element ", elt, " not inserted from ", table, " - ", error.status);
 		}
 	});
 }
 
-function ajaxUpdateElt(table, elt){
+function ajaxUpdateElt(table, eltId, eltJson){
 	return $.ajax({
 		type: 'POST', 
 		url: dbAccessUrl,
 		data: {
 			table: table,
 			update: true,
-			id: elt.id,
-			json: JSON.stringify(elt)
+			id: eltId,
+			json: JSON.stringify(eltJson)
 		},
 		success: function(data){
-			console.log("Element ", elt.name, " updated with success");
+			console.log("Element ", eltId, " updated with success from ", table);
 		},
 		error: function(error){
-			console.log("ERROR : element ", elt.name, " not updated; ", error.status);	
+			console.log("ERROR : element ", eltId, " not removed from ", table, " - ", error.status);
 		}
 	});
 }
@@ -175,7 +202,7 @@ function ajaxRemoveElt(table, eltId){
 			id: eltId
 		},
 		success: function(data){
-			console.log("Element ",eltId, " removed with success from ", table);
+			console.log("Element ", eltId, " removed with success from ", table);
 		},
 		error: function(error){
 			console.log("ERROR : element ", eltId, " not removed from ", table, " - ", error.status);	
