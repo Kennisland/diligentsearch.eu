@@ -58,78 +58,11 @@ function ajaxGetElt(table, foreignKey){
 	}
 }
 
-// function ajaxGetUserInputs(countryId){
-// 	return $.ajax({
-// 		type:"GET",
-// 		url:dbAccessUrl,
-// 		data: {table: 'SharedUserInput', countryId: countryId},
-// 		success: function(data){
-// 			console.log("ajaxGetUserInput success : ", data);
-// 		},
-// 		error: function(err){
-// 			console.log("error :", err);
-// 		}
-// 	});
-// }
-
-// function ajaxGetRefValues(countryId){
-// 	return $.ajax({
-// 		type:"GET",
-// 		url:dbAccessUrl,
-// 		data: {table: 'SharedRefValue', countryId: countryId},
-// 		success: function(data){
-// 			console.log("ajaxGetRefValues success : ", data);
-// 		},
-// 		error: function(err){
-// 			console.log("error :", err);
-// 		}
-// 	});
-// }
-
-// function ajaxGetQuestions(workId){
-// 	return $.ajax({
-// 		type:"GET",
-// 		url:dbAccessUrl,
-// 		data: {table: 'Question', workId: workId},
-// 		success: function(data){
-// 			console.log("ajaxGetQuestions success : ", data);
-// 		},
-// 		error: function(err){
-// 			console.log("error :", err);
-// 		}
-// 	});
-// }
-
-// function ajaxGetBlocks(workId){
-// 	return $.ajax({
-// 		type:"GET",
-// 		url:dbAccessUrl,
-// 		data: {table: 'Block', workId: workId},
-// 		success: function(data){
-// 			console.log("ajaxGetBlocks success : ", data);
-// 		},
-// 		error: function(err){
-// 			console.log("error :", err);
-// 		}
-// 	});
-// }
-
-// function ajaxGetResults(workId){
-// 	return $.ajax({
-// 		type:"GET",
-// 		url:dbAccessUrl,
-// 		data: {table: 'Result', workId: workId},
-// 		success: function(data){
-// 			console.log("ajaxGetResults success : ", data);
-// 		},
-// 		error: function(err){
-// 			console.log("error :", err);
-// 		}
-// 	});
-// }
 
 
-function saveElt(table, elt, foreignKey){
+
+
+function saveElt(table, elt, foreignKey, callback){
 	if( table == 'SharedUserInput' || 
 		table == 'SharedRefValue' ||
 		table == 'Question' || 
@@ -137,16 +70,22 @@ function saveElt(table, elt, foreignKey){
 		table == 'Result'){
 			$.when(ajaxInsertElt(table, elt, foreignKey)).then(
 				function(result){
-					console.log("saveElt : ", result);
-					// result.insertId;
-			});
+					console.log("saveElt Id, updating: ", result.insertId);
+					elt.id = result.insertId;
+					updateElt(table, elt, callback);
+				},
+				function(error){
+					callback(false);
+				}
+			);
 	}
 	else{
 		console.log("table not recognized : ", table);
+		callback(false);			
 	}
 }
 
-function updateElt(table, elt){
+function updateElt(table, elt, callback){
 	if( table == 'SharedUserInput' || 
 		table == 'SharedRefValue' ||
 		table == 'Question' || 
@@ -154,14 +93,16 @@ function updateElt(table, elt){
 		table == 'Result'){
 			$.when(ajaxUpdateElt(table, elt)).then(
 				function(result){
-					console.log(result);
+					callback(true);
 				}, 
 				function(error){
 					console.log(error);
+					callback(false);
 			});
 	}
 	else{
 		console.log("table not recognized : ", table);
+		callback(false);
 	}
 }
 
