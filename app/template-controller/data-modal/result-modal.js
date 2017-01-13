@@ -105,7 +105,13 @@ function saveResultElt(result){
 
 function deleteResultElt(){
 	if(currentResultId !== undefined){
-		$('#data-results-'+currentResultId).remove();
-		dismissResultModal();
+		removeElt('Result', currentResultId, function(success){
+			if(success){
+				$('#data-results-'+currentResultId).remove();
+				dismissResultModal();
+			}else{
+				alert("Cannot remove element");
+			}
+		});		
 	}
 }

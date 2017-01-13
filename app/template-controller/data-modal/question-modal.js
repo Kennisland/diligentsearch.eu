@@ -518,7 +518,13 @@ function delAnswer(){
 
 function deleteQuestionElt(){
 	if(currentQuestionId !== undefined){
-		$('#data-questions-'+currentQuestionId).remove();
-		dismissQuestionModal();
+		removeElt('Question', currentQuestionId, function(success){
+			if(success){
+				$('#data-questions-'+currentQuestionId).remove();
+				dismissQuestionModal();				
+			}else{
+				alert("Cannot remove element");
+			}
+		})
 	}
 }

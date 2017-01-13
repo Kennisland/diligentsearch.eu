@@ -244,7 +244,13 @@ function configQuestionComplete(i){
 
 function deleteBlockElt(){
 	if(currentBlockId !== undefined){
-		$('#data-blocks-'+currentBlockId).remove();
-		dismissBlockModal();
+		removeElt('Block', currentBlockId, function(success){
+			if(success){
+				$('#data-blocks-'+currentBlockId).remove();
+				dismissBlockModal();
+			}else{
+				alert("Cannot remove element");
+			}
+		});	
 	}
 }

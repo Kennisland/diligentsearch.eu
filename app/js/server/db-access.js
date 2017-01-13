@@ -25,12 +25,10 @@ function handle_database(req,res) {
 		} 
 
 		if(req.query){
-			console.log("get_handle_database : ", req.query);
 			handle_get_request(req, res, connection);
 		}
 
 		if(req.body){
-			console.log("post_handle_database : ", req.body);
 			handle_post_request(req, res, connection);
 		}		
 
@@ -97,28 +95,39 @@ function handle_post_request(req, res, connection){
 		currentTable == 'Block' || 
 		currentTable == 'Result'){
 
-			var foreignKeyAttrName = (currentTable == 'SharedUserInput' || currentTable == 'SharedRefValue') ? 'countryId' : 'workId';
+			// Delete case
+			if(req.body.remove){
+				var q = "delete from "+currentTable+" where id='"+req.body.id+"';";
+				connection.query(q, function(err, rows){
+					connection.release();
+					if(!err){
+						res.json(rows);
+					}
+				});
+			}
+			else{
+				var foreignKeyAttrName = (currentTable == 'SharedUserInput' || currentTable == 'SharedRefValue') ? 'countryId' : 'workId';
 
-			// Insert case or Update case
-			if(req.body.insert){
-				var q = "insert into "+currentTable+" ("+foreignKeyAttrName+",json) values ('"+req.body.foreignKeyId+"','"+req.body.json+"');";
-				connection.query(q, function(err, rows){
-					connection.release();
-					console.log("Insertion : ", err, rows);
-					if(!err){
-						res.json(rows);
-					}
-				});
-			}
-			else if(req.body.update){
-				var q = "update "+currentTable+" set json='"+req.body.json+"' where id='"+req.body.id+"';";
-				connection.query(q, function(err, rows){
-					connection.release();
-					if(!err){
-						res.json(rows);
-					}
-				});
-			}
+				// Insert case or Update case
+				if(req.body.insert){
+					var q = "insert into "+currentTable+" ("+foreignKeyAttrName+",json) values ('"+req.body.foreignKeyId+"','"+req.body.json+"');";
+					connection.query(q, function(err, rows){
+						connection.release();
+						if(!err){
+							res.json(rows);
+						}
+					});
+				}
+				else if(req.body.update){
+					var q = "update "+currentTable+" set json='"+req.body.json+"' where id='"+req.body.id+"';";
+					connection.query(q, function(err, rows){
+						connection.release();
+						if(!err){
+							res.json(rows);
+						}
+					});
+				}
+			}			
 	}
 	else{
 		console.log("Unknown table : ", currentTable);

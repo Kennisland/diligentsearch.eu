@@ -121,7 +121,13 @@ function saveInputElt(input){
 
 function deleteUserInputsElt(){
 	if(currentInputId !== undefined){
-		$('#data-userInputs-'+currentInputId).remove();
-		dismissUserInputModal();
+		removeElt('SharedUserInput', currentInputId, function(success){
+			if(success){
+				$('#data-userInputs-'+currentInputId).remove();
+				dismissUserInputModal();
+			}else{
+				alert("Cannot remove element");
+			}
+		});		
 	}
 }

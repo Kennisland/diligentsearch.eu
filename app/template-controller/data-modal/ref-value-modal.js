@@ -119,7 +119,13 @@ function saveReferenceElt(ref){
 
 function deleteRefValueElt(){
 	if(currentReferenceId !== undefined){
-		$('#data-referenceValues-'+currentReferenceId).remove();
-		dismissRefValueModal();
+		removeElt('SharedRefValue', currentReferenceId, function(success){
+			if(success){
+				$('#data-referenceValues-'+currentReferenceId).remove();
+				dismissRefValueModal();
+			}else{
+				alert("Cannot remove element");
+			}
+		});	
 	}
 }

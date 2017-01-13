@@ -106,6 +106,26 @@ function updateElt(table, elt, callback){
 	}
 }
 
+function removeElt(table, eltId, callback){
+	if( table == 'SharedUserInput' || 
+		table == 'SharedRefValue' ||
+		table == 'Question' || 
+		table == 'Block' || 
+		table == 'Result'){
+			$.when(ajaxRemoveElt(table, eltId)).then(
+				function(result){
+					callback(true);
+				}, 
+				function(error){
+					console.log(error);
+					callback(false);
+			});
+	}
+	else{
+		callback(false);
+	}
+}
+
 
 function ajaxInsertElt(table, elt, foreignKeyId){
 	return $.ajax({
@@ -141,6 +161,24 @@ function ajaxUpdateElt(table, elt){
 		},
 		error: function(error){
 			console.log("ERROR : element ", elt.name, " not updated; ", error.status);	
+		}
+	});
+}
+
+function ajaxRemoveElt(table, eltId){
+	return $.ajax({
+		type: 'POST', 
+		url: dbAccessUrl,
+		data: {
+			table: table,
+			remove: true,
+			id: eltId
+		},
+		success: function(data){
+			console.log("Element ",eltId, " removed with success from ", table);
+		},
+		error: function(error){
+			console.log("ERROR : element ", eltId, " not removed from ", table, " - ", error.status);	
 		}
 	});
 }
