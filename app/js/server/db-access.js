@@ -43,16 +43,8 @@ function handle_database(req,res) {
 
 
 function handle_get_request(req, res, connection){
-	if(req.query.last){
-		connection.query("SELECT LAST_INSERT_ID();", function(err, rows){
-			connection.release();
-			if(!err){
-				console.log(rows['LAST_INSERT_ID()']);
-				res.json(rows);
-			}
-		});	
-		return;
-	}
+
+
 
 	switch(req.query.table){
 		case 'Country':
@@ -126,7 +118,7 @@ function handle_get_request(req, res, connection){
 function handle_post_request(req, res, connection){
 	switch(req.body.table){
 		case 'SharedUserInput':
-			var countryId = req.body.countryId,
+			var countryId = req.body.foreignKeyId,
 				json = req.body.json;
 	
 			if(req.body.update){
@@ -149,7 +141,7 @@ function handle_post_request(req, res, connection){
 			}
 			break;
 		case 'SharedRefValue':
-			var countryId = req.body.countryId,
+			var countryId = req.body.foreignKeyId,
 				json = req.body.json;
 
 			if(req.body.update){
@@ -172,7 +164,7 @@ function handle_post_request(req, res, connection){
 			}
 			break;
 		case 'Question':
-			var workId = req.body.workId,
+			var workId = req.body.foreignKeyId,
 				json = req.body.json;
 
 			if(req.body.update){
@@ -195,7 +187,7 @@ function handle_post_request(req, res, connection){
 			}
 			break;
 		case 'Block':
-			var workId = req.body.workId,
+			var workId = req.body.foreignKeyId,
 				json = req.body.json;
 
 			if(req.body.update){
@@ -218,7 +210,7 @@ function handle_post_request(req, res, connection){
 			}
 			break;
 		case 'Result':
-			var workId = req.body.workId,
+			var workId = req.body.foreignKeyId,
 				json = req.body.json;
 
 			if(req.body.update){

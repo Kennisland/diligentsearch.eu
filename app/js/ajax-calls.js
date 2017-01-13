@@ -102,44 +102,17 @@ function ajaxGetResults(workId){
 	});
 }
 
-function ajaxGetLast(){
-	return $.ajax({
-		type:"GET",
-		url:dbAccessUrl,
-		data: {last: true},
-		success: function(data){
-			console.log("ajaxGetLast success : ", data);
-		},
-		error: function(err){
-			console.log("error :", err);
-		}
-	});
-}
-
-
-
 
 function saveElt(table, elt, foreignKey){
-	if(table == 'SharedUserInput' || table == 'SharedRefValue'){
-		$.when(ajaxInsertSharedElt(table, elt, foreignKey)).then(
-			function(result){
-				$.when(ajaxGetLast()).then(
-					function(last){
-						elt.id = last[0]['LAST_INSERT_ID()'];
-						ajaxUpdateElt(table, elt);
-					}
-				);
-			});
-	}
-	else if(table == 'Question' || table == 'Block' || table == 'Result'){
-		$.when(ajaxInsertElt(table, elt, foreignKey)).then(
-			function(result){
-				$.when(ajaxGetLast()).then(
-					function(last){
-						elt.id = last[0]['LAST_INSERT_ID()'];
-						ajaxUpdateElt(table, elt);
-					}
-				);
+	if( table == 'SharedUserInput' || 
+		table == 'SharedRefValue' ||
+		table == 'Question' || 
+		table == 'Block' || 
+		table == 'Result'){
+			$.when(ajaxInsertElt(table, elt, foreignKey)).then(
+				function(result){
+					console.log("saveElt : ", result);
+					// result.insertId;
 			});
 	}
 	else{
@@ -148,13 +121,17 @@ function saveElt(table, elt, foreignKey){
 }
 
 function updateElt(table, elt){
-	if(table == 'SharedUserInput' || table == 'SharedRefValue' || table == 'Question' || table == 'Block' || table == 'Result'){
-		$.when(ajaxUpdateElt(table, elt)).then(
-			function(result){
-				console.log(result);
-			}, 
-			function(error){
-				console.log(error);
+	if( table == 'SharedUserInput' || 
+		table == 'SharedRefValue' ||
+		table == 'Question' || 
+		table == 'Block' || 
+		table == 'Result'){
+			$.when(ajaxUpdateElt(table, elt)).then(
+				function(result){
+					console.log(result);
+				}, 
+				function(error){
+					console.log(error);
 			});
 	}
 	else{
@@ -163,39 +140,20 @@ function updateElt(table, elt){
 }
 
 
-
-function ajaxInsertSharedElt(table, elt, countryId){
+function ajaxInsertElt(table, elt, foreignKeyId){
 	return $.ajax({
 		type: "POST",
 		url:dbAccessUrl,
 		data: {
 			table: table,
-			countryId: countryId,
+			foreignKeyId: foreignKeyId,
 			json: JSON.stringify(elt)
 		},
 		success: function(data){
-			console.log("Shared element ", elt.name, " inserted with success");
+			console.log("Element ", elt.name, " inserted with success");
 		},
 		error: function(error){
-			console.log("ERROR : shared element ", elt.name, " not inserted; ", error.status);	
-		}
-	});
-}
-
-function ajaxInsertElt(table, elt, workId){
-	return $.ajax({
-		type: "POST",
-		url:dbAccessUrl,
-		data: {
-			table: table,
-			workId: workId,
-			json: JSON.stringify(elt)
-		},
-		success: function(data){
-			console.log("Basic element ", elt.name, " inserted with success");
-		},
-		error: function(error){
-			console.log("ERROR : basic element ", elt.name, " not inserted; ", error.status);	
+			console.log("ERROR : Element ", elt.name, " not inserted; ", error.status);	
 		}
 	});
 }
