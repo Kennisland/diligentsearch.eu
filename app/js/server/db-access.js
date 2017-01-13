@@ -44,198 +44,83 @@ function handle_database(req,res) {
 
 function handle_get_request(req, res, connection){
 
+	var currentTable = req.query.table;
 
-
-	switch(req.query.table){
-		case 'Country':
-			connection.query("select * from Country",function(err,rows){
-				connection.release();
-				if(!err) {
-					res.json(rows);
-				}          
-			});
-			break;
-		case 'Work':
-			var countryId = req.query.countryId;
-			connection.query("select * from Work where countryId='"+countryId+"'",function(err,rows){
-				connection.release();
-				if(!err) {
-					res.json(rows);
-				}          
-			});
-			break;
-		case 'SharedUserInput':
-			var countryId = req.query.countryId;
-			connection.query("select * from SharedUserInput where countryId='"+countryId+"'",function(err,rows){
-				connection.release();
-				if(!err) {
-					res.json(rows);
-				}          
-			});
-			break;
-		case 'SharedRefValue':
-			var countryId = req.query.countryId;
-			connection.query("select * from SharedRefValue where countryId='"+countryId+"'",function(err,rows){
-				connection.release();
-				if(!err) {
-					res.json(rows);
-				}          
-			});
-			break;
-		case 'Question':
-			var workId = req.query.workId;
-			connection.query("select * from Question where workId='"+workId+"'",function(err,rows){
-				connection.release();
-				if(!err) {
-					res.json(rows);
-				}          
-			});
-			break;
-		case 'Block':
-			var workId = req.query.workId;
-			connection.query("select * from Block where workId='"+workId+"'",function(err,rows){
-				connection.release();
-				if(!err) {
-					res.json(rows);
-				}          
-			});
-			break;
-		case 'Result':
-			var workId = req.query.workId;
-			connection.query("select * from Result where workId='"+workId+"'",function(err,rows){
-				connection.release();
-				if(!err) {
-					res.json(rows);
-				}          
-			});
-			break;
-		default:
-			break;
+	if(currentTable == 'Country'){
+		connection.query("select * from Country", function(err,rows){
+			connection.release();
+			if(!err) {
+				res.json(rows);
+			}
+		});
+	}
+	else if(currentTable == 'Work'){
+		var countryId = req.query.countryId;
+		connection.query("select * from Work where countryId='"+countryId+"'",function(err,rows){
+			connection.release();
+			if(!err) {
+				res.json(rows);
+			}
+		});
+	}
+	else if(currentTable == 'SharedUserInput' || currentTable == 'SharedRefValue'){
+		var countryId = req.query.foreignKeyId;
+		connection.query("select * from "+currentTable+" where countryId='"+countryId+"'",function(err,rows){
+			connection.release();
+			if(!err) {
+				res.json(rows);
+			}
+		});
+	}
+	else if(currentTable == 'Question' || currentTable == 'Block' || currentTable == 'Result') {
+		var workId = req.query.foreignKeyId;
+		connection.query("select * from "+currentTable+" where workId='"+workId+"'",function(err,rows){
+			connection.release();
+			if(!err) {
+				res.json(rows);
+			}          
+		});
+	}
+	else{
+		console.log("Unknown table : ", currentTable);
 	}
 }
 
 
 function handle_post_request(req, res, connection){
-	switch(req.body.table){
-		case 'SharedUserInput':
-			var countryId = req.body.foreignKeyId,
-				json = req.body.json;
-	
-			if(req.body.update){
-				connection.query("update SharedUserInput set json='"+req.body.json+"' where id='"+req.body.id+"';", function(err, rows){
-					connection.release();
-					console.log(err, rows);
-					if(!err) {
-						res.json(rows);
-					}   
-				});
-			}
-			else {
-				connection.query("insert into SharedUserInput (countryId,json) values ('"+countryId+"','"+json+"');", function(err,rows){
-					connection.release();
-					console.log(err, rows);
-					if(!err) {
-						res.json(rows);
-					}          
-				});
-			}
-			break;
-		case 'SharedRefValue':
-			var countryId = req.body.foreignKeyId,
-				json = req.body.json;
 
-			if(req.body.update){
-				connection.query("update SharedRefValue set json='"+req.body.json+"' where id='"+req.body.id+"';", function(err, rows){
-					connection.release();
-					console.log(err, rows);
-					if(!err) {
-						res.json(rows);
-					}   
-				});
-			}
-			else {
-				connection.query("insert into SharedRefValue (countryId, json) values ('"+countryId+"', '"+json+"');", function(err,rows){
-					connection.release();
-					console.log(err, rows);
-					if(!err) {
-						res.json(rows);
-					}          
-				});
-			}
-			break;
-		case 'Question':
-			var workId = req.body.foreignKeyId,
-				json = req.body.json;
+	var currentTable = req.body.table;
 
-			if(req.body.update){
-				connection.query("update Question set json='"+req.body.json+"' where id='"+req.body.id+"';", function(err, rows){
-					connection.release();
-					console.log(err, rows);
-					if(!err) {
-						res.json(rows);
-					}   
-				});
-			}
-			else {
-				connection.query("insert into Question (workId, json) values ('"+workId+"', '"+json+"');", function(err,rows){
-						connection.release();
-						console.log(err, rows);
-					if(!err) {
-						res.json(rows);
-					}          
-				});
-			}
-			break;
-		case 'Block':
-			var workId = req.body.foreignKeyId,
-				json = req.body.json;
+	if( currentTable == 'SharedUserInput' || 
+		currentTable == 'SharedRefValue' ||
+		currentTable == 'Question' || 
+		currentTable == 'Block' || 
+		currentTable == 'Result'){
 
-			if(req.body.update){
-				connection.query("update Block set json='"+req.body.json+"' where id='"+req.body.id+"';", function(err, rows){
-					connection.release();
-					console.log(err, rows);
-					if(!err) {
-						res.json(rows);
-					}   
-				});
-			}
-			else {
-				connection.query("insert into Block (workId, json) values ('"+workId+"', '"+json+"');", function(err,rows){
-						connection.release();
-						console.log(err, rows);
-					if(!err) {
-						res.json(rows);
-					}          
-				});
-			}
-			break;
-		case 'Result':
-			var workId = req.body.foreignKeyId,
-				json = req.body.json;
+			var foreignKeyAttrName = (currentTable == 'SharedUserInput' || currentTable == 'SharedRefValue') ? 'countryId' : 'workId';
 
-			if(req.body.update){
-				connection.query("update Result set json='"+req.body.json+"' where id='"+req.body.id+"';", function(err, rows){
+			// Insert case or Update case
+			if(req.body.insert){
+				var q = "insert into "+currentTable+" ("+foreignKeyAttrName+",json) values ('"+req.body.foreignKeyId+"','"+req.body.json+"');";
+				connection.query(q, function(err, rows){
 					connection.release();
-					console.log(err, rows);
-					if(!err) {
+					if(!err){
 						res.json(rows);
-					}   
+					}
 				});
 			}
-			else {
-				connection.query("insert into Result (workId, json) values ('"+workId+"', '"+json+"');", function(err,rows){
+			else if(req.body.update){
+				var q = "update "+currentTable+" set json='"+req.body.json+"' where id='"+req.body.foreignKeyId+"';";
+				connection.query(q, function(err, rows){
 					connection.release();
-					console.log(err, rows);
-					console.log(err, rows);
-					if(!err) {
+					if(!err){
 						res.json(rows);
-					}          
+					}
 				});
 			}
-			break;
-		default:
-			console.log("default case : ",req.body.table );
-			break;
+	}
+	else{
+		console.log("Unknown table : ", currentTable);
 	}
 }
 

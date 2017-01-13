@@ -1,8 +1,6 @@
 dbAccessUrl = window.location.origin+"/db-access";
 
 
-
-
 function ajaxGetCountries(){
 	return $.ajax({
 		type:"GET",
@@ -16,7 +14,6 @@ function ajaxGetCountries(){
 		}
 	});
 }
-
 
 function ajaxGetWorks(countryId){
 	return $.ajax({
@@ -32,75 +29,104 @@ function ajaxGetWorks(countryId){
 	});
 }
 
-function ajaxGetUserInputs(countryId){
-	return $.ajax({
-		type:"GET",
-		url:dbAccessUrl,
-		data: {table: 'SharedUserInput', countryId: countryId},
-		success: function(data){
-			console.log("ajaxGetUserInput success : ", data);
-		},
-		error: function(err){
-			console.log("error :", err);
-		}
-	});
+
+function ajaxGetElt(table, foreignKey){
+	if( table == 'SharedUserInput' || 
+		table == 'SharedRefValue' ||
+		table == 'Question' || 
+		table == 'Block' || 
+		table == 'Result'){
+
+			return $.ajax({
+				type:"GET",
+				url:dbAccessUrl,
+				data: {
+					table: table, 
+					foreignKeyId: foreignKey
+				},
+				success: function(data){
+					console.log("ajaxGetElt success : ", data);
+				},
+				error: function(err){
+					console.log("error :", err);
+				}
+			});
+	}
+	else{
+		console.log("table not recognized : ", table);
+		return null;
+	}
 }
 
-function ajaxGetRefValues(countryId){
-	return $.ajax({
-		type:"GET",
-		url:dbAccessUrl,
-		data: {table: 'SharedRefValue', countryId: countryId},
-		success: function(data){
-			console.log("ajaxGetRefValues success : ", data);
-		},
-		error: function(err){
-			console.log("error :", err);
-		}
-	});
-}
+// function ajaxGetUserInputs(countryId){
+// 	return $.ajax({
+// 		type:"GET",
+// 		url:dbAccessUrl,
+// 		data: {table: 'SharedUserInput', countryId: countryId},
+// 		success: function(data){
+// 			console.log("ajaxGetUserInput success : ", data);
+// 		},
+// 		error: function(err){
+// 			console.log("error :", err);
+// 		}
+// 	});
+// }
 
-function ajaxGetQuestions(workId){
-	return $.ajax({
-		type:"GET",
-		url:dbAccessUrl,
-		data: {table: 'Question', workId: workId},
-		success: function(data){
-			console.log("ajaxGetQuestions success : ", data);
-		},
-		error: function(err){
-			console.log("error :", err);
-		}
-	});
-}
+// function ajaxGetRefValues(countryId){
+// 	return $.ajax({
+// 		type:"GET",
+// 		url:dbAccessUrl,
+// 		data: {table: 'SharedRefValue', countryId: countryId},
+// 		success: function(data){
+// 			console.log("ajaxGetRefValues success : ", data);
+// 		},
+// 		error: function(err){
+// 			console.log("error :", err);
+// 		}
+// 	});
+// }
 
-function ajaxGetBlocks(workId){
-	return $.ajax({
-		type:"GET",
-		url:dbAccessUrl,
-		data: {table: 'Block', workId: workId},
-		success: function(data){
-			console.log("ajaxGetBlocks success : ", data);
-		},
-		error: function(err){
-			console.log("error :", err);
-		}
-	});
-}
+// function ajaxGetQuestions(workId){
+// 	return $.ajax({
+// 		type:"GET",
+// 		url:dbAccessUrl,
+// 		data: {table: 'Question', workId: workId},
+// 		success: function(data){
+// 			console.log("ajaxGetQuestions success : ", data);
+// 		},
+// 		error: function(err){
+// 			console.log("error :", err);
+// 		}
+// 	});
+// }
 
-function ajaxGetResults(workId){
-	return $.ajax({
-		type:"GET",
-		url:dbAccessUrl,
-		data: {table: 'Result', workId: workId},
-		success: function(data){
-			console.log("ajaxGetResults success : ", data);
-		},
-		error: function(err){
-			console.log("error :", err);
-		}
-	});
-}
+// function ajaxGetBlocks(workId){
+// 	return $.ajax({
+// 		type:"GET",
+// 		url:dbAccessUrl,
+// 		data: {table: 'Block', workId: workId},
+// 		success: function(data){
+// 			console.log("ajaxGetBlocks success : ", data);
+// 		},
+// 		error: function(err){
+// 			console.log("error :", err);
+// 		}
+// 	});
+// }
+
+// function ajaxGetResults(workId){
+// 	return $.ajax({
+// 		type:"GET",
+// 		url:dbAccessUrl,
+// 		data: {table: 'Result', workId: workId},
+// 		success: function(data){
+// 			console.log("ajaxGetResults success : ", data);
+// 		},
+// 		error: function(err){
+// 			console.log("error :", err);
+// 		}
+// 	});
+// }
 
 
 function saveElt(table, elt, foreignKey){
@@ -147,6 +173,7 @@ function ajaxInsertElt(table, elt, foreignKeyId){
 		data: {
 			table: table,
 			foreignKeyId: foreignKeyId,
+			insert: true,
 			json: JSON.stringify(elt)
 		},
 		success: function(data){

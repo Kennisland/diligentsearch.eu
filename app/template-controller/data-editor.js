@@ -117,7 +117,7 @@ function getWork(countryIdx){
 		function(result){
 			works = result;
 
-			$.when(ajaxGetUserInputs(selectedCountry.id)).then(
+			$.when(ajaxGetElt('SharedUserInput', selectedCountry.id)).then(
 				function(result){
 					userInputs = result;
 				},
@@ -125,7 +125,7 @@ function getWork(countryIdx){
 					console.log("get work ajaxGetUserInputs", error);
 				});
 
-			$.when(ajaxGetRefValues(selectedCountry.id)).then(
+			$.when(ajaxGetElt('SharedRefValue', selectedCountry.id)).then(
 				function(result){
 					refValues = result;
 				},
@@ -156,7 +156,7 @@ function getData(workIdx){
 
 	selectedWork = works[workIdx];
 	// Ajax call to get data for a specific work
-	$.when(ajaxGetQuestions(selectedWork.id), ajaxGetBlocks(selectedWork.id), ajaxGetResults(selectedWork.id)).then(
+	$.when(ajaxGetElt('Question', selectedWork.id), ajaxGetElt('Block', selectedWork.id), ajaxGetElt('Result', selectedWork.id)).then(
 		function(resultQuestions, resultBlocks, resultResults){
 			questions = resultQuestions[0];
 			blocks = resultBlocks[0];
