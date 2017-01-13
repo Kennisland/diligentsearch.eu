@@ -22,6 +22,16 @@ function injectGraphEditor(){
 	configureVisibility();
 }
 
+function loadGraph(){
+	$('#decision-process-save').show();
+	initSVG();
+}
+
+function resetGraph(){
+	$('#decision-process').html('');
+	$('#decision-process-save').hide();
+}
+
 function configureVisibility(){
 	// http://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome/13348618#13348618
 	var isChromium = window.chrome,
@@ -65,15 +75,7 @@ function configureVisibility(){
 }
 
 
-function loadGraph(){
-	$('#decision-process-save').show();
-	initSVG();
-}
 
-function resetGraph(){
-	$('#decision-process').html('');
-	$('#decision-process-save').hide();
-}
 
 
 
@@ -133,7 +135,6 @@ function configSVG(){
 	/* Click bindings with editor */
 	d3.select("svg g").selectAll("g.node").each(function(v){		
 		var node = graphic.node($(this).context.id);
-
 		// Define default click event if this node has no index yet
 		if(node.index !== undefined){
 			$(this).off('click').on('click', function(event) {

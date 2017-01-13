@@ -289,23 +289,3 @@ function configOutputComplete(i){
 		}
 	}).bind('focus', function(){ $(this).autocomplete("search"); } );
 }
-
-
-// Get parents recursively, to get all ascendance
-function recursiveParents(nodeId, nodeList, depth){
-	// Push current element
-	nodeList.push(nodeId);
-
-	// Check for predecessors and recall if necessary
-	var parents = graphic.predecessors(nodeId);
-	if(parents.length > 0){
-		parents.map(function(parentId){
-			recursiveParents(parentId, nodeList, depth+1);
-		});
-	}
-
-	// If initial caller, return the appended list
-	if(depth == 0){
-		return nodeList;
-	}
-}

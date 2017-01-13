@@ -1,45 +1,76 @@
-function configureVisibility(){
-	// http://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome/13348618#13348618
-	var isChromium = window.chrome,
-		winNav = window.navigator,
-		vendorName = winNav.vendor,
-		isOpera = winNav.userAgent.indexOf("OPR") > -1,
-		isIEedge = winNav.userAgent.indexOf("Edge") > -1,
-		isIOSChrome = winNav.userAgent.match("CriOS");
+/*
 
-	if(isIOSChrome || (isChromium !== null && isChromium !== undefined && vendorName === "Google Inc." && isOpera == false && isIEedge == false) ){
-		// is Google Chrome
-		var element = $('#display-data-model')[0];
-		var observer = new WebKitMutationObserver(function (mutations) {
-		  mutations.forEach(attrModified);
-		});
-		observer.observe(element, { attributes: true, subtree: false });
+	Data retrieval
 
-		function attrModified(mutation) {
-			if($('#display-data-model').is(':visible') && last_state == -1){
-				loadGraph();
-				last_state = 1;
-			}
-			else if( ! $('#display-data-model').is(':visible') && last_state == 1){
-				resetGraph();
-				last_state = -1;
-			}
-		}
-	} else { 
-		// not Google Chrome 
-		$('#display-data-model').bind("DOMAttrModified",function(event){
-			if($(this).is(':visible') && last_state == -1){
-				loadGraph();
-				last_state = 1;
-			}
-			else if( ! $(this).is(':visible') && last_state == 1){
-				resetGraph();
-				last_state = -1;
-			}
-		});
-	}
+*/
+
+// Returns the specific data model
+function getDataSource(category){
+	if(category == 'question')
+		return questions;
+	if(category == 'block')
+		return blocks;
+	if(category == 'result')
+		return results;
 }
 
+// Returns a specific element based on its db ID
+function getGraphicNodeElt(category, dataId){
+	var source = getDataSource(category);
+	for (var i = 0; i < source.length; i++) {
+		if( source[i].id == dataId){
+			return source[i];
+		}
+	}
+	return undefined;
+}
+
+/*
+
+	Style formatting
+
+*/
+
+// Customize graphical nodes aspect
+function styleGraphicNode(category, nodeId){
+	// Configure css
+	var s = '';
+	if(category == "result"){
+		graphic.node(nodeId).style += 'stroke-width: 4;';
+	}
+	else if(category == "question"){
+		graphic.node(nodeId).style += 'stroke: #57723E'; //; stroke-width: 2';
+	}
+	else if(category == "block"){
+		graphic.node(nodeId).style += s;	
+	}
+	else if(category == "questionBlock"){
+		graphic.node(nodeId).shape = 'circle';
+	}
+
+	// format label text if there is one
+	graphic.node(nodeId).label = formatGraphicNodeLabel(graphic.node(nodeId).label);
+}
+
+// Replace '_' by newLine characters
+function formatGraphicNodeLabel(text){
+	return text.replace(/_/g, '<br>');
+}
+
+
+/*
+
+	Graphical node management
+		creation
+		data injection from modal
+		creation of children
+		configuration of blocks
+		deletion (recursion)
+
+*/
+
+
+// Create a new node with the given ID
 function createGraphicNode(id){
 	graphic.setNode(id, {
 		labelType: 'html',
@@ -64,10 +95,8 @@ function injectGraphicNodeData(index, graphicNodeElt){
 	}
 
 	// Get node by the modal hidden input node-graphic-id
-	var node = graphic.node($('#node-graphic-id').val());
-
-	//  Update drawable graphic node information
-	node.index = index-1;
+	var node = graphic.node($('#node-graphic-id').val());	
+	node.index = index-1; //  Update drawable graphic node information
 	node.label = '<div style="text-align:center;">'+graphicNodeElt.dataName+'</div>';
 
 	setUpGraphicNode(graphicNodeElt);	
@@ -105,7 +134,7 @@ function setUpGraphicNode(graphicNodeElt){
 		// Create or connect to a node
 		var targetId = graphicNodeElt.targets[i];
 		if(targetId == "New node"){
-			targetId = setNewGraphicNode(graphicNodeElt.id, answer);
+			targetId = createChildNode(graphicNodeElt.id, answer);
 			graphicNodeElt.targets[i] = targetId;
 		}
 		else{
@@ -116,8 +145,8 @@ function setUpGraphicNode(graphicNodeElt){
 	}
 }
 
-
-function setNewGraphicNode(parentNodeId, edgeLabel){
+// Create a child node of parentNodeId
+function createChildNode(parentNodeId, edgeLabel){
 	// Extract id components
 	var raw = parentNodeId.split('_'),
 		base = raw[0],
@@ -144,6 +173,8 @@ function setNewGraphicNode(parentNodeId, edgeLabel){
 	return nodeId;
 }
 
+
+// Create a node, representing a block element
 function setNewGraphicBlock(blockNodeId, blockNodeDataId){
 
 	// Register a parent node, which will help graphical identification of the block
@@ -154,13 +185,10 @@ function setNewGraphicBlock(blockNodeId, blockNodeDataId){
 	graphic.setParent(blockNodeId, clusterId);
 
 	// DB effect : get back block element
-	var blockElt = undefined;
-	for (var i = 0; i < blocks.length; i++) {
-	 	if( blocks[i].id == blockNodeDataId){
-	 		blockElt = blocks[i];
-	 		console.log("FOUND");
-	 		break;
-	 	}
+	var blockElt = getGraphicNodeElt('block', blockNodeDataId);
+	if(!blockElt){
+		console.log("BlockElt not found");
+		return;
 	}
 	
 	// For all questions, create id, node, edge, and register them as child of the created parent
@@ -190,35 +218,29 @@ function setNewGraphicBlock(blockNodeId, blockNodeDataId){
 	}
 }
 
+// Points to an existing node
 function targetGraphicNode(originId, targetId, edgeLabel){
 	graphic.setEdge(originId, targetId, {label:edgeLabel});
 }
 
-function styleGraphicNode(category, nodeId){
-	// Configure css
-	var s = '';
-	if(category == "result"){
-		graphic.node(nodeId).style += 'stroke-width: 4;';
-	}
-	else if(category == "question"){
-		graphic.node(nodeId).style += 'stroke: #57723E'; //; stroke-width: 2';
-	}
-	else if(category == "block"){
-		graphic.node(nodeId).style += s;	
-	}
-	else if(category == "questionBlock"){
-		graphic.node(nodeId).shape = 'circle';
+// Get parents recursively, to get all ascendance
+function recursiveParents(nodeId, nodeList, depth){
+	// Push current element
+	nodeList.push(nodeId);
+
+	// Check for predecessors and recall if necessary
+	var parents = graphic.predecessors(nodeId);
+	if(parents.length > 0){
+		parents.map(function(parentId){
+			recursiveParents(parentId, nodeList, depth+1);
+		});
 	}
 
-	// format label text if there is one
-	graphic.node(nodeId).label = formatGraphicNodeLabel(graphic.node(nodeId).label);
+	// If initial caller, return the appended list
+	if(depth == 0){
+		return nodeList;
+	}
 }
-
-// Replace '_' by newLine characters
-function formatGraphicNodeLabel(text){
-	return text.replace(/_/g, '<br>');
-}
-
 
 // Call from external
 function deleteGraphicNode(nodeId){
@@ -277,27 +299,3 @@ function recursiveDelete(nodeId, depth){
 
 
 
-
-
-
-
-// Returns the specific data model
-function getDataSource(category){
-	if(category == 'question')
-		return questions;
-	if(category == 'block')
-		return blocks;
-	if(category == 'result')
-		return results;
-}
-
-
-function getGraphicNodeElt(category, dataId){
-	var source = getDataSource(category);
-	for (var i = 0; i < source.length; i++) {
-		if( source[i].id == dataId){
-			return source[i];
-		}
-	}
-	return undefined;
-}

@@ -1,4 +1,11 @@
+/*
 
+	Manage Decision tree recovery with database
+		save / update
+		load
+		generate graphical output
+	
+*/
 function saveDecisionTree(){
 	// Callback function
 	function cb(success){
@@ -73,10 +80,6 @@ function loadGraphicalNodeData(node, idx){
 		node.dataName = current.name;
 	graphic.node(node.id).label = '<div style="text-align:center;">'+node.dataName+'</div>';
 
-
-	// Set up the interactive part
-	graphic.node(node.id).index = idx;
-	
-	// Finalize setup
-	setUpGraphicNode(node);
+	graphic.node(node.id).index = idx; // Set up the interactive part
+	setUpGraphicNode(node); // Finalize setup
 }
