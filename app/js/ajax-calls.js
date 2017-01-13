@@ -7,7 +7,7 @@ function ajaxGetCountries(){
 		url:dbAccessUrl,
 		data: {table: 'Country'},
 		success: function(data){
-			console.log("ajaxGetCountries success : ", data);
+			// console.log("ajaxGetCountries success : ", data);
 		},
 		error: function(err){
 			console.log("error :", err);
@@ -21,7 +21,7 @@ function ajaxGetWorks(countryId){
 		url:dbAccessUrl,
 		data: {table: 'Work', countryId: countryId},
 		success: function(data){
-			console.log("ajaxGetWorks success : ", data);
+			// console.log("ajaxGetWorks success : ", data);
 		},
 		error: function(err){
 			console.log("error :", err);
@@ -161,7 +161,7 @@ function ajaxInsertElt(table, elt, foreignKeyId){
 			json: JSON.stringify(elt)
 		},
 		success: function(data){
-			console.log("Element ", elt, " inserted with success from ", table);
+			// console.log("Element ", elt, " inserted with success from ", table);
 		},
 		error: function(error){
 			console.log("ERROR : element ", elt, " not inserted from ", table, " - ", error.status);
@@ -180,7 +180,7 @@ function ajaxUpdateElt(table, eltId, eltJson){
 			json: JSON.stringify(eltJson)
 		},
 		success: function(data){
-			console.log("Element ", eltId, " updated with success from ", table);
+			// console.log("Element ", eltId, " updated with success from ", table);
 		},
 		error: function(error){
 			console.log("ERROR : element ", eltId, " not removed from ", table, " - ", error.status);
@@ -198,7 +198,7 @@ function ajaxRemoveElt(table, eltId){
 			id: eltId
 		},
 		success: function(data){
-			console.log("Element ", eltId, " removed with success from ", table);
+			// console.log("Element ", eltId, " removed with success from ", table);
 		},
 		error: function(error){
 			console.log("ERROR : element ", eltId, " not removed from ", table, " - ", error.status);	
