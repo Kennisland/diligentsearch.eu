@@ -22,8 +22,8 @@ html_result = `
 			</div>
 
 			<div class="modal-footer">
+				<button type="button" class="btn btn-danger pull-left" onclick="deleteResultElt()">Delete</button>
 				<button type="button" class="btn btn-default" onclick="dismissResultModal()">Close</button>
-
 				<button type="button" class="btn btn-primary" onclick="dumpResult()">Save changes</button>
 			</div>
 		</div>
@@ -100,5 +100,12 @@ function saveResultElt(result){
 	else{
 		result.id = currentResultId;
 		updateElt('Result', result, cb);
+	}
+}
+
+function deleteResultElt(){
+	if(currentResultId !== undefined){
+		$('#data-results-'+currentResultId).remove();
+		dismissResultModal();
 	}
 }

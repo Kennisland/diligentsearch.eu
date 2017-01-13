@@ -237,6 +237,7 @@ function injectUserInputData(index, userInputElt){
 	}
 
 	// Fill in the created element / update the appropriate list element
+	$('#data-userInputs li:nth-child('+index+')').attr('id', 'data-userInputs-'+userInputElt.id);
 	$('#data-userInputs li:nth-child('+index+')').text(userInputElt.name);
 	$('#data-userInputs li:nth-child('+index+')').click(function(){
 		loadUserInput(index-1, userInputElt);
@@ -261,6 +262,7 @@ function injectRefValueData(index, refValueElt){
 		$('#data-referenceValues').append(refValueHtml);
 	}
 
+	$('#data-referenceValues li:nth-child('+index+')').attr('id', 'data-referenceValues-'+refValueElt.id);
 	$('#data-referenceValues li:nth-child('+index+')').text(refValueElt.name);
 	$('#data-referenceValues li:nth-child('+index+')').click(function(){
 		loadRefValue(index-1, refValueElt);
@@ -288,6 +290,7 @@ function injectResultData(index, resultElt){
 	}
 	
 	// Update html
+	$('#data-results li:nth-child('+index+')').attr('id', 'data-results-'+resultElt.id);
 	$('#data-results li:nth-child('+index+')').text(resultElt.name);
 	$('#data-results li:nth-child('+index+')').click(function(){
 		loadResult(index-1, resultElt);
@@ -316,6 +319,7 @@ function injectQuestionData(index, questionElt){
 	}	
 	
 	// Update html
+	$('#data-questions li:nth-child('+index+')').attr('id', 'data-questions-'+questionElt.id);
 	$('#data-questions li:nth-child('+index+')').text(questionElt.name);
 	$('#data-questions li:nth-child('+index+')').click(function(){
 		loadQuestion(index-1, questionElt);
@@ -344,6 +348,7 @@ function injectBlockData(index, blockElt){
 	}
 	
 	// Update html
+	$('#data-blocks li:nth-child('+index+')').attr('id', 'data-blocks-'+blockElt.id);
 	$('#data-blocks li:nth-child('+index+')').text(blockElt.name);
 	$('#data-blocks li:nth-child('+index+')').click(function(){
 		loadBlock(index-1, blockElt);

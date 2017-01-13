@@ -105,8 +105,8 @@ html_question = `
 			</div>
 
 			<div class="modal-footer">
+				<button type="button" class="btn btn-danger pull-left" onclick="deleteQuestionElt()">Delete</button>
 				<button type="button" class="btn btn-default" onclick="dismissQuestionModal()">Close</button>
-
 				<button type="button" class="btn btn-primary" onclick="dumpQuestion()">Save changes</button>
 			</div>
 		</div>
@@ -516,3 +516,9 @@ function delAnswer(){
 }
 
 
+function deleteQuestionElt(){
+	if(currentQuestionId !== undefined){
+		$('#data-questions-'+currentQuestionId).remove();
+		dismissQuestionModal();
+	}
+}

@@ -29,8 +29,8 @@ html_userInput = `
 			</div>
 
 			<div class="modal-footer">
+				<button type="button" class="btn btn-danger pull-left" onclick="deleteUserInputsElt()">Delete</button>
 				<button type="button" class="btn btn-default" onclick="dismissUserInputModal()">Close</button>
-
 				<button type="button" class="btn btn-primary" onclick="dumpUserInput()">Save changes</button>
 			</div>
 		</div>
@@ -116,5 +116,12 @@ function saveInputElt(input){
 	else{
 		input.id = currentInputId;
 		updateElt('SharedUserInput', input, cb);
+	}
+}
+
+function deleteUserInputsElt(){
+	if(currentInputId !== undefined){
+		$('#data-userInputs-'+currentInputId).remove();
+		dismissUserInputModal();
 	}
 }

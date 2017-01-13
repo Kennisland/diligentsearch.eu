@@ -47,8 +47,8 @@ html_block = `
 			</div>
 
 			<div class="modal-footer">
+				<button type="button" class="btn btn-danger pull-left" onclick="deleteBlockElt()">Delete</button>
 				<button type="button" class="btn btn-default" onclick="dismissBlockModal()">Close</button>
-
 				<button type="button" class="btn btn-primary" onclick="dumpBlock()">Save changes</button>
 			</div>
 		</div>
@@ -240,4 +240,11 @@ function configQuestionComplete(i){
 			}
 		}
 	}).bind('focus', function(){ $(this).autocomplete("search"); } );
+}
+
+function deleteBlockElt(){
+	if(currentBlockId !== undefined){
+		$('#data-blocks-'+currentBlockId).remove();
+		dismissBlockModal();
+	}
 }

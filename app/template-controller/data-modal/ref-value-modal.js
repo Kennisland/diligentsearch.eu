@@ -28,8 +28,8 @@ html_refValue = `
 			</div>
 
 			<div class="modal-footer">
+				<button type="button" class="btn btn-danger pull-left" onclick="deleteRefValueElt()">Delete</button>
 				<button type="button" class="btn btn-default" onclick="dismissRefValueModal()">Close</button>
-
 				<button type="button" class="btn btn-primary" onclick="dumpRefValue()">Save changes</button>
 			</div>
 		</div>
@@ -114,5 +114,12 @@ function saveReferenceElt(ref){
 	else{
 		ref.id = currentReferenceId;
 		updateElt('SharedRefValue', ref, cb);
+	}
+}
+
+function deleteRefValueElt(){
+	if(currentReferenceId !== undefined){
+		$('#data-referenceValues-'+currentReferenceId).remove();
+		dismissRefValueModal();
 	}
 }
