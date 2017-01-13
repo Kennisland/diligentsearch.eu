@@ -73,15 +73,7 @@ function loadGraphicNode(index, graphicNodeElt){
 
 
 	// Db effect : retrieve data element based on its db id
-	var dataElt = undefined;
-	var dataSource = getDataSource(graphicNodeElt.category);
-	for (var i = 0; i < dataSource.length; i++) {
-		if( dataSource[i].id == graphicNodeElt.dataId){
-			dataElt = dataSource[i];
-			break;
-		}
-	}
-
+	var dataElt = getGraphicNodeElt(graphicNodeElt.category, graphicNodeElt.dataId);
 	if(!dataElt){
 		console.log('DataElt not found in graphicNodeElt.category array');
 	}
@@ -226,16 +218,6 @@ function configCategorySelection(){
 	});
 }
 
-// Returns the specific data model
-function getDataSource(category){
-	if(category == 'question')
-		return questions;
-	if(category == 'block')
-		return blocks;
-	if(category == 'result')
-		return results;
-}
-
 // Load output texts for the dataElt defined
 function loadDataOutputs(dataCategory, dataElt){
 	delOutputs();	// Reset existing outputs
@@ -308,6 +290,7 @@ function configOutputComplete(i){
 	}).bind('focus', function(){ $(this).autocomplete("search"); } );
 }
 
+
 // Get parents recursively, to get all ascendance
 function recursiveParents(nodeId, nodeList, depth){
 	// Push current element
@@ -326,5 +309,3 @@ function recursiveParents(nodeId, nodeList, depth){
 		return nodeList;
 	}
 }
-
-
