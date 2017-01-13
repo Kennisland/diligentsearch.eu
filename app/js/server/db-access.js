@@ -44,6 +44,10 @@ function handle_get_request(req, res, connection){
 
 	var currentTable = req.query.table;
 
+	// Stop condition
+	if(!currentTable)
+		return;
+
 	if(currentTable == 'Country'){
 		connection.query("select * from Country", function(err,rows){
 			connection.release();
@@ -88,6 +92,10 @@ function handle_get_request(req, res, connection){
 function handle_post_request(req, res, connection){
 
 	var currentTable = req.body.table;
+
+	// Stop condition
+	if(!currentTable)
+		return;
 
 	if( currentTable == 'DecisionTree' || 
 		currentTable == 'SharedUserInput' || 
