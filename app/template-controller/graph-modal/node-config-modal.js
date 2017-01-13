@@ -71,9 +71,24 @@ function loadGraphicNode(index, graphicNodeElt){
 	$('#node-data').val(graphicNodeElt.dataName);
 	$('#node-data-id').val(graphicNodeElt.dataId)
 
-	var dataElt = getDataSource(graphicNodeElt.category)[graphicNodeElt.dataId];
-	loadDataOutputs(graphicNodeElt.category, dataElt);
-	loadGraphicNodeTarget(graphicNodeElt.targets);
+
+	// Db effect : retrieve data element based on its db id
+	var dataElt = undefined;
+	var dataSource = getDataSource(graphicNodeElt.category);
+	for (var i = 0; i < dataSource.length; i++) {
+		if( dataSource[i].id == graphicNodeElt.dataId){
+			dataElt = dataSource[i];
+			break;
+		}
+	}
+
+	if(!dataElt){
+		console.log('DataElt not found in graphicNodeElt.category array');
+	}
+	else{
+		loadDataOutputs(graphicNodeElt.category, dataElt);
+		loadGraphicNodeTarget(graphicNodeElt.targets);
+	}
 	
 	$('#config-nodeModal').modal('show');
 }

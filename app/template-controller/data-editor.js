@@ -162,12 +162,13 @@ function getData(workIdx){
 			blocks = resultBlocks[0];
 			results = resultResults[0];
 
-			console.log("-->", questions);
-
 			$('#breadcrumb li:nth-child(2) a').text(selectedWork.name).attr('onclick', 'getWork('+workIdx+')');;
 			$('#breadcrumb').children().show();
 
 			injectDataBasePrimaryModel();
+
+
+			getDecisionTree();
 		},
 		function(error){
 			$('#display-data-model').prepend(error.statusText);			

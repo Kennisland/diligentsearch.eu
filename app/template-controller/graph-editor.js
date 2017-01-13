@@ -66,8 +66,6 @@ function configureVisibility(){
 function loadGraph(){
 	$('#decision-process-save').show();
 	initSVG();
-	createGraphicNode('lvl_0');
-	render();
 }
 
 function resetGraph(){
@@ -96,7 +94,6 @@ function saveDecisionTree(){
 	else{
 		// Format the data to benefit of others standardized ajax calls
 		var toSave = {id: graphicNodesDatabaseId, json: toSave};
-		console.log("--> updating : ", toSave);
 		updateElt('DecisionTree', toSave, function(updated){
 			if(updated){
 				alert('Decision tree correctly updated in database');
@@ -106,6 +103,54 @@ function saveDecisionTree(){
 			}
 		});
 	}
+}
+
+// Load DecisionTree from database
+// Called from data-editor, as it requires the entire basic data model
+function getDecisionTree(){
+
+	$.when(ajaxGetElt('DecisionTree', selectedWork.id)).then(
+		function(decisionTree){
+			graphicNodes = JSON.parse(decisionTree[0].json);
+			console.log("DecisionTree :", graphicNodes);
+
+			if(graphicNodes.length == 0){
+				createGraphicNode('lvl_0');
+				render();
+			}
+			else{
+				//Dump me everything
+				graphicNodesDatabaseId = decisionTree[0].id;
+
+				graphicNodes.forEach(function(node, idx){
+
+					createGraphicNode(node.id);
+					node.targets.forEach(function(targetId){
+						createGraphicNode(targetId);
+					})
+
+					// Find out what is the name of this node
+					node.dataName = 'Click to edit';
+					var dataSource = getDataSource(node.category);
+					for (var i = 0; i < dataSource.length; i++) {
+						if( dataSource[i].id == node.dataId){
+							node.dataName = dataSource[i].name;
+							break;
+						}
+					}
+
+					graphic.node(node.id).index = idx;
+					graphic.node(node.id).label = '<div style="text-align:center;">'+node.dataName+'</div>';
+					setUpGraphicNode(node);
+				});
+				render();
+			}
+
+		},
+		function(error){
+			console.log("get work ajaxGetUserInputs", error);
+		}
+	);
 }
 
 
@@ -215,14 +260,22 @@ function injectGraphicNodeData(index, graphicNodeElt){
 		index = graphicNodes.push(graphicNodeElt);
 	}
 
-	// Update drawable graphic node information
+	// Get node by the modal hidden input node-graphic-id
 	var node = graphic.node($('#node-graphic-id').val());
+
+	//  Update drawable graphic node information
 	node.index = index-1;
 	node.label = '<div style="text-align:center;">'+graphicNodeElt.dataName+'</div>';
 
+	setUpGraphicNode(graphicNodeElt);	
+	render();
+}
+
+// Update graphic, take care of block case, generate outputs
+function setUpGraphicNode(graphicNodeElt){
+
 	// Update graphical node style of current node
 	styleGraphicNode(graphicNodeElt.category, graphicNodeElt.id);
-
 
 	// Generate block of questions if necessary
 	if(graphicNodeElt.category == "block"){
@@ -258,7 +311,6 @@ function injectGraphicNodeData(index, graphicNodeElt){
 
 		styleGraphicNode(graphicNodeElt.category, targetId);
 	}
-	render();
 }
 
 
@@ -298,11 +350,14 @@ function setNewGraphicBlock(blockNodeId, blockNodeDataId){
 	});
 	graphic.setParent(blockNodeId, clusterId);
 
-	// DB effect : get abck block element
+	// DB effect : get back block element
+	console.log("BlockElt : ", blockNodeId, blockNodeDataId);
 	var blockElt = undefined;
 	for (var i = 0; i < blocks.length; i++) {
 	 	if( blocks[i].id == blockNodeDataId){
 	 		blockElt = blocks[i];
+	 		console.log("FOUND");
+	 		break;
 	 	}
 	}
 	

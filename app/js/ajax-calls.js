@@ -31,7 +31,8 @@ function ajaxGetWorks(countryId){
 
 
 function ajaxGetElt(table, foreignKey){
-	if( table == 'SharedUserInput' || 
+	if( table == 'DecisionTree' ||
+		table == 'SharedUserInput' || 
 		table == 'SharedRefValue' ||
 		table == 'Question' || 
 		table == 'Block' || 
@@ -45,7 +46,7 @@ function ajaxGetElt(table, foreignKey){
 					foreignKeyId: foreignKey
 				},
 				success: function(data){
-					console.log("ajaxGetElt success : ", data);
+					// console.log("ajaxGetElt success : ", data);
 				},
 				error: function(err){
 					console.log("error :", err);
@@ -98,11 +99,6 @@ function saveElt(table, elt, foreignKey, callback){
 }
 
 function updateElt(table, elt, callback){
-	console.log("======================");
-	console.log(table);
-	console.log(elt);
-	console.log(callback);
-	console.log("======================");
 	if( table == 'DecisionTree'){
 		$.when(ajaxUpdateElt(table, elt.id, elt.json)).then(
 			function(result){
