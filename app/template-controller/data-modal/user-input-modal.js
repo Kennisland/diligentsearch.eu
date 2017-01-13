@@ -72,18 +72,7 @@ function dumpUserInput(){
 	}
 
 	var input = new InputElt();	
-
-	// Save it into db
-	if(currentInputId === undefined){
-		saveElt('SharedUserInput', input, selectedCountry.id);
-	}
-	else{
-		input.id = currentInputId;
-		updateElt('SharedUserInput', input);
-	}
-
-	injectUserInputData(currentInputIndex, input);	
-	dismissUserInputModal();	
+	saveInputElt(input);
 }
 
 function dismissUserInputModal(){
@@ -108,3 +97,24 @@ function InputElt(){
 	this.information 	= $('#input-details').val();
 	this.value 			= undefined;		// Manually set by end user
 };
+
+// Save it into DB
+function saveInputElt(input){
+	function cb(success){
+		if(success){
+			injectUserInputData(currentInputIndex, input);	
+			dismissUserInputModal();				
+		}
+		else{
+			alert("Failed to save element within database");
+		}
+	};
+
+	if(currentInputId === undefined){
+		saveElt('SharedUserInput', input, selectedCountry.id, cb);
+	}
+	else{
+		input.id = currentInputId;
+		updateElt('SharedUserInput', input, cb);
+	}
+}

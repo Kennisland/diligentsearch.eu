@@ -61,17 +61,7 @@ function dumpResult(){
 	}
 
 	var res = new ResultElt();
-	if(currentResultId === undefined){
-		saveElt('Result', res, selectedWork.id);
-	}
-	else{
-		res.id = currentResultId;
-		updateElt('Result', res);
-	}
-
-
-	injectResultData(currentResultIndex, res);	
-	dismissResultModal();	
+	saveResultElt(res);	
 };
 
 function dismissResultModal(){
@@ -91,3 +81,24 @@ function ResultElt(){
 	this.name	 	= $('#result-reference').val();
 	this.content 	= $('#result-content').val();
 };
+
+// Save it into DB
+function saveResultElt(result){
+	function cb(success){
+		if(success){
+			injectResultData(currentResultIndex, result);	
+			dismissResultModal();				
+		}
+		else{
+			alert("Failed to save element within database");
+		}
+	};
+
+	if(currentResultId === undefined){
+		saveElt('Result', result, selectedWork.id, cb);
+	}
+	else{
+		result.id = currentResultId;
+		updateElt('Result', result, cb);
+	}
+}

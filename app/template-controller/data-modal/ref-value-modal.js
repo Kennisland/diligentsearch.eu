@@ -68,18 +68,7 @@ function dumpRefValue(){
 	}
 
 	var ref = new ReferenceElt();
-
-	// Save it into db
-	if(currentReferenceId === undefined){
-		saveElt('SharedRefValue', ref, selectedCountry.id);
-	}
-	else{
-		ref.id = currentReferenceId;
-		updateElt('SharedRefValue', ref);
-	}
-
-	injectRefValueData(currentReferenceIndex, ref);	
-	dismissRefValueModal();	
+	saveReferenceElt(ref);
 };
 
 
@@ -105,4 +94,25 @@ function ReferenceElt(){
 	this.name 			= $('#reference-name').val();
 	this.value 			= $('#reference-value').val();
 	this.information 	= $('#reference-details').val();
+}
+
+// Save it into db
+function saveReferenceElt(ref){
+	function cb(success){
+		if(success){
+			injectRefValueData(currentReferenceIndex, ref);	
+			dismissRefValueModal();				
+		}
+		else{
+			alert("Failed to save element within database");
+		}
+	};
+
+	if(currentReferenceId === undefined){
+		saveElt('SharedRefValue', ref, selectedCountry.id, cb);
+	}
+	else{
+		ref.id = currentReferenceId;
+		updateElt('SharedRefValue', ref, cb);
+	}
 }

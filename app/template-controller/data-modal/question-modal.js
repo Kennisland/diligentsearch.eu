@@ -279,17 +279,7 @@ function dumpQuestion(){
 		return;
 	}
 
-
-	if(currentQuestionId === undefined){
-		saveElt('Question', question, selectedWork.id);
-	}
-	else{
-		question.id = currentQuestionId;
-		updateElt('Question', question);
-	}
-
-	injectQuestionData(currentQuestionIndex, question);
-	dismissQuestionModal();
+	saveQuestionElt(question);
 };
 
 function dismissQuestionModal(){
@@ -337,6 +327,29 @@ function getReferenceId() {
 	}
 	return parseInt($('#numeric-reference-id').val());
 }
+
+
+// Save it into db
+function saveQuestionElt(question){
+	function cb(success){
+		if(success){
+			injectQuestionData(currentQuestionIndex, question);	
+			dismissQuestionModal();				
+		}
+		else{
+			alert("Failed to save element within database");
+		}
+	};
+
+	if(currentQuestionId === undefined){
+		saveElt('Question', question, selectedWork.id, cb);
+	}
+	else{
+		question.id = currentQuestionId;
+		updateElt('Question', question, cb);
+	}
+}
+
 
 
 /*
