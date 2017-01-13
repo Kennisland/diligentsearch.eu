@@ -104,13 +104,14 @@ function handle_post_request(req, res, connection){
 				var q = "insert into "+currentTable+" ("+foreignKeyAttrName+",json) values ('"+req.body.foreignKeyId+"','"+req.body.json+"');";
 				connection.query(q, function(err, rows){
 					connection.release();
+					console.log("Insertion : ", err, rows);
 					if(!err){
 						res.json(rows);
 					}
 				});
 			}
 			else if(req.body.update){
-				var q = "update "+currentTable+" set json='"+req.body.json+"' where id='"+req.body.foreignKeyId+"';";
+				var q = "update "+currentTable+" set json='"+req.body.json+"' where id='"+req.body.id+"';";
 				connection.query(q, function(err, rows){
 					connection.release();
 					if(!err){
