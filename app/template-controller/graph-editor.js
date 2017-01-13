@@ -137,7 +137,9 @@ function configSVG(){
 		var node = graphic.node($(this).context.id);
 		// Define default click event if this node has no index yet
 		if(node.index !== undefined){
-			$(this).off('click').on('click', function(event) {
+			$(this).off('click').on('click', function(event) {				
+				// console.log("Opening ", $(this).context.id, ' index ', node.index, ' elt ', graphicNodes[node.index]);			
+
 				$('#node-graphic-id').val($(this).context.id);
 				loadGraphicNode(node.index, graphicNodes[node.index]);
 			});

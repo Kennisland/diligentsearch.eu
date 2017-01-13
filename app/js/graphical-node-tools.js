@@ -289,7 +289,16 @@ function recursiveDelete(nodeId, depth){
 			graphic.removeNode(nodeId+':');
 		}
 
-		graphicNodes.splice(nodeIndex, 1);		
+		// Remove element from graphicNodes model
+		graphicNodes.splice(nodeIndex, 1);
+
+		// Update other elements index (pointing nowhere is not funny)
+		for (var i = 0; i < graphicNodes.length; i++) {
+			var node = graphic.node(graphicNodes[i].id);
+			if(node.index > nodeIndex){
+				node.index--;
+			}
+		}
 	}
 
 	// Update graphical model

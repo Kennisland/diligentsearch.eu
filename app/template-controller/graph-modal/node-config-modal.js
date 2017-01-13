@@ -87,7 +87,6 @@ function loadGraphicNode(index, graphicNodeElt){
 
 // Load targets value referencing outputs nodes
 function loadGraphicNodeTarget(targets){
-	console.log("loadGraphicNodeTarget");
 	for (var i = 0; i < targets.length; i++) {
 		if(targets[i] != ""){
 			$('#node-data-output-target-'+i).val(targets[i]);			
