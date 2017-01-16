@@ -95,7 +95,31 @@ function handle_post_request(req, res, connection){
 	if(!currentTable)
 		return;
 
-	if( currentTable == 'DecisionTree' || 
+	if(currentTable == 'Country'){
+		if(req.body.insert){
+			var q = "insert into "+currentTable+" (code, name) values ( ?, ?)",
+				countryObj = JSON.parse(req.body.json);
+			connection.query(q, [countryObj.code, countryObj.name], function(err, rows){
+				connection.release();
+				if(!err){
+					res.json(rows);
+				}
+			});
+		}
+	}
+	else if(currentTable == 'Work'){
+		if(req.body.insert){
+			var q = "insert into "+currentTable+" (countryId, name) values ( ?, ?)",
+				workObj = JSON.parse(req.body.json);
+			connection.query(q, [workObj.countryId, workObj.name], function(err, rows){
+				connection.release();
+				if(!err){
+					res.json(rows);
+				}
+			});
+		}
+	}
+	else if( currentTable == 'DecisionTree' || 
 		currentTable == 'SharedUserInput' || 
 		currentTable == 'SharedRefValue' ||
 		currentTable == 'Question' || 

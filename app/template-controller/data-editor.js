@@ -98,24 +98,38 @@ function getCountry(){
 }
 
 
-function getWork(countryIdx){
+function getWork(countryId){
 	// Reset and hide unecessary divs
 	resetDataModel();
 	$('#select-country').hide();
 	$('#display-data-model').hide();
 
-	selectedCountry = countries[countryIdx];
-	// Ajax call to get works from server for this country
-	$.when(ajaxGetWorks(selectedCountry.id), ajaxGetElt('SharedUserInput', selectedCountry.id), ajaxGetElt('SharedRefValue', selectedCountry.id)).then(
-		function(resultWorks, resultUserInputs, resultRefValues){
-			works = resultWorks[0];
-			userInputs = resultUserInputs[0];
-			refValues = resultRefValues[0];
-			injectWorkData();					
-		},
-		function(error){
-			$('#select-work').html(error.statusText);
-	});
+	selectedCountry = undefined;
+	for (var i = 0; i < countries.length; i++) {
+		if( countries[i].id == countryId){
+			selectedCountry = countries[i];
+			break;
+		}
+	}
+
+	if(!selectedCountry){
+		$('#select-work').html('Country id not found');
+	}
+	else{
+		// Ajax call to get works from server for this country
+		$.when(ajaxGetWorks(selectedCountry.id), ajaxGetElt('SharedUserInput', selectedCountry.id), ajaxGetElt('SharedRefValue', selectedCountry.id)).then(
+			function(resultWorks, resultUserInputs, resultRefValues){
+				works = resultWorks[0];
+				userInputs = resultUserInputs[0];
+				refValues = resultRefValues[0];
+				injectWorkData();					
+			},
+			function(error){
+				$('#select-work').html(error.statusText);
+		});		
+	}
+
+
 	$('#select-work').show();
 }
 
@@ -133,12 +147,7 @@ function getData(workIdx){
 			results = resultResults[0];
 
 			// Retrieve index of country
-			for (var i = 0; i < countries.length; i++) {
-				if( countries[i].id == selectedCountry.id){
-					$('#breadcrumb li:nth-child(2) a').text(selectedWork.name).attr('onclick', 'getWork('+i+')');
-					break;
-				}
-			}			
+			$('#breadcrumb li:nth-child(2) a').text(selectedWork.name).attr('onclick', 'getWork('+selectedCountry.id+')');	
 			$('#breadcrumb').children().show();
 			injectDataBasePrimaryModel();
 			getDecisionTree();
@@ -174,9 +183,10 @@ function resetDataModel(){
 function injectCountryData(){	
 	var countriesHtml = '<ul class="list-group">';
 	for (var i = countries.length - 1; i >= 0; i--) {
-		countriesHtml += '<li class="list-group-item" onclick="getWork('+i+')">'+countries[i].name+'</li>';
+		countriesHtml += '<li class="list-group-item" onclick="getWork('+countries[i].id+')">'+countries[i].name+'</li>';
 	}
 	countriesHtml += '</ul>';
+	countriesHtml += '<button class="btn btn-default" onclick="add(\'country\')" style="text-align:right">Add</button>';
 	$('#select-country').html(countriesHtml);
 
 	selectedCountry = '';
@@ -188,11 +198,12 @@ function injectCountryData(){
 }
 
 function injectWorkData(){
-	console.log("works : ", works);
 	var worksHtml = '<ul class="list-group">';
 	for (var i = works.length - 1; i >= 0; i--) {
 		worksHtml += '<li class="list-group-item" onclick="getData('+i+')">'+works[i].name+'</li>';
 	}
+	worksHtml += '</ul>';
+	worksHtml += '<button class="btn btn-default" onclick="add(\'work\')" style="text-align:right">Add</button>';
 	$('#select-work').html(worksHtml);
 
 	$('#breadcrumb li:nth-child(1) a').text(selectedCountry.name).attr('onclick', 'getCountry()');
@@ -226,6 +237,12 @@ function injectDataBasePrimaryModel(){
 
 function add(elementType){
 	switch(elementType){
+		case 'country':
+			$('#add-countryModal').modal('show');
+			break;
+		case 'work':
+			$('#add-workModal').modal('show');
+			break;
 		case 'userInput':
 			$('#add-userInputModal').modal('show');
 			break;

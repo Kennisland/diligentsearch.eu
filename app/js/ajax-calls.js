@@ -75,6 +75,17 @@ function saveElt(table, elt, foreignKey, callback){
 			}
 		);
 	}
+	else if(table == 'Country' ||
+			table == 'Work'){
+		$.when(ajaxInsertElt(table, elt, foreignKey)).then(
+			function(result){
+				callback(true);
+			},
+			function(error){
+				callback(false);
+			}
+		);
+	}
 	else if(table == 'SharedUserInput' || 
 			table == 'SharedRefValue' ||
 			table == 'Question' || 

@@ -20,6 +20,8 @@
 	<!-- Templates simulation -->
 	<link rel="stylesheet" href="../css/editor.css">
 	<script type="text/javascript" src="template-controller/data-editor.js"></script>
+	<script type="text/javascript" src="template-controller/data-modal/country-modal.js"></script>
+	<script type="text/javascript" src="template-controller/data-modal/work-modal.js"></script>
 	<script type="text/javascript" src="template-controller/data-modal/user-input-modal.js"></script>
 	<script type="text/javascript" src="template-controller/data-modal/ref-value-modal.js"></script>
 	<script type="text/javascript" src="template-controller/data-modal/question-modal.js"></script>
@@ -64,8 +66,10 @@
 	$(document).ready(function(){
 		// Inject data model editor
 		injectDataModelEditor();
+		injectWorkModal();
 
-		// Inject template/controller for each type of data
+		// Inject template/controller for each type of data	
+		injectCountryModal();	
 		injectUserInputModal();
 		injectRefValueModal();
 		injectResultModal();
