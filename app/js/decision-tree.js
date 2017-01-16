@@ -40,9 +40,9 @@ function getDecisionTree(){
 
 	$.when(ajaxGetElt('DecisionTree', selectedWork.id)).then(
 		function(decisionTree){
-			if(!decisionTree[0]){
+			if(!decisionTree[0] || decisionTree[0].json == "[]") {
 				// New graph
-				createGraphicNode('lvl_0');				
+				createGraphicNode('lvl_0');
 			}
 			else{
 				graphicNodes = JSON.parse(decisionTree[0].json); 	// Save only this part, not the database requirements
