@@ -59,7 +59,7 @@ html_dataModelEditor = `
 
 countries = []; //['Netherlands', 'Germany'];
 selectedCountry = '';
-works = ['Audiovisual', 'painting'];
+works = []; //['Audiovisual', 'painting'];
 selectedWork = '';
 userInputs = [];
 referenceValues = [];
