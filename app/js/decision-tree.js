@@ -40,13 +40,13 @@ function getDecisionTree(){
 
 	$.when(ajaxGetElt('DecisionTree', selectedWork.id)).then(
 		function(decisionTree){
-			graphicNodes = JSON.parse(decisionTree[0].json); 	// Save only this part, not the database requirements
-
-			if(graphicNodes.length == 0){
+			if(!decisionTree[0]){
 				// New graph
-				createGraphicNode('lvl_0');
+				createGraphicNode('lvl_0');				
 			}
 			else{
+				graphicNodes = JSON.parse(decisionTree[0].json); 	// Save only this part, not the database requirements
+				
 				// Dump old graph
 				graphicNodesDatabaseId = decisionTree[0].id;
 
