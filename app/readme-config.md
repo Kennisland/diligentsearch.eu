@@ -1,4 +1,4 @@
-OutOfCopyright Configuration
+Diligent search Configuration
 ==========
 
 
