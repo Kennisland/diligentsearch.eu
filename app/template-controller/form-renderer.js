@@ -11,18 +11,22 @@ html_formRenderer =`
 		</select>
 	</div>
 
-	<div class="form-group">
-		<label for="choose-work">
-			Of what type of work do you want to determine the orphan work status?
-		</label>
-		<br>
-		<select id="choose-work">
-			<option value="">Choose a type of work</option>
-		</select>
-	</div>
+	<div id="country-data-selected" style="display:none">
 
-	<div class="form-decision-tree-renderer">
-		<label>This is where the decision tree begins</label>
+		<div class="form-group">
+			<label for="choose-work">
+				Of what type of work do you want to determine the orphan work status?
+			</label>
+			<br>
+			<select id="choose-work">
+				<option value="">Choose a type of work</option>
+			</select>
+		</div>
+
+		<div id="work-data-selected" style="display:none">
+			<label>This is where the decision tree begins</label>
+		</div>
+
 	</div>
 `;
 
@@ -36,14 +40,22 @@ blocks = [];
 results = [];
 decisionTree = [];
 
-
 function injectFormRenderer(){
 	getCountry();
 	$('#form-renderer').html(html_formRenderer);
 }
 
+/*
+	Get relevant data
+*/
 
 function getCountry(){
+	// Reset countries data
+	countries = [];
+	injectCountriesIntoForm();
+	$('#country-data-selected').hide();
+
+	// Get countries data
 	$.when(ajaxGetCountries()).then(
 		function(result){
 			countries = result;
@@ -52,10 +64,15 @@ function getCountry(){
 		function(error){
 			alert(error.statusText);
 	});
-	$('#select-country').show();
 }
 
 function getWork(countryId){
+	// Reset works data
+	works = [];
+	injectWorksIntoForm();
+	$('#work-data-selected').hide();
+
+	// Get works data
 	$.when(ajaxGetWorks(countryId)).then(
 		function(result){
 			works = result;
@@ -77,20 +94,51 @@ function getSharedValue(countryId){
 	});	
 }
 
-function getData(workId){
+function getData(workId){	
 	$.when(ajaxGetElt('Question', workId), ajaxGetElt('Block', workId), ajaxGetElt('Result', workId), ajaxGetElt('DecisionTree', workId)).then(
 		function(resultQuestions, resultBlocks, resultResults, resultDecisionTree){
 			questions = resultQuestions[0];
 			blocks = resultBlocks[0];
 			results = resultResults[0];
 			decisionTree = resultDecisionTree[0];
-			// console.log("q", questions);
-			// console.log("b", blocks);
-			// console.log("r", results);
-			// console.log("T", decisionTree);
+
+			// Now we have data, we do something --> event
+			$('#all-data-downloaded').show();
+
 		},
 		function(error){
 			alert(error.statusText);
+	});
+}
+
+/*
+	HTML injection and JS bindings
+*/
+function bindTypeOfWork(){	
+	$('#choose-country').on('change', function(){
+		var countryId = $(this).val();
+		if(countryId == ""){
+			$('#country-data-selected').hide();			
+		}
+		else{
+			getWork(countryId);
+			getSharedValue(countryId);
+			$('#country-data-selected').show();	
+		}
+	});	
+}
+
+function bindDecisionTreeData(){
+	$('#choose-work').on('change', function(){
+		var workId = $(this).val();
+		if(workId == ""){
+			works = [];
+			$('#work-data-selected').hide();
+		}
+		else{
+			getData(workId);
+			$('#work-data-selected').show();	
+		}
 	});
 }
 
@@ -105,14 +153,6 @@ function injectCountriesIntoForm(){
 	bindTypeOfWork();
 }
 
-function bindTypeOfWork(){
-	$('#choose-country').on('change', function(){
-		var countryId = $(this).val();
-		getWork(countryId);
-		getSharedValue(countryId);
-	});	
-}
-
 function injectWorksIntoForm(){
 	var selectContent = '<option value="">Choose a type of work</option>';
 	for (var i = 0; i < works.length; i++) {
@@ -124,10 +164,11 @@ function injectWorksIntoForm(){
 	bindDecisionTreeData();
 }
 
-function bindDecisionTreeData(){
-	$('#choose-work').on('change', function(){
-		var workId = $(this).val();
-		console.log("changed : ", workId);
-		getData(workId);
-	});
-}
+
+
+// function injectNewDecisionTreeElement(){
+// 	var content = '';
+// 	content += '<label>This is where the decision tree begins</label>';
+
+
+// }
