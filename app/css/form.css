@@ -1,0 +1,21 @@
+/*
+HTML css
+*/
+html,
+body,
+div.container-fluid  {
+	height: 100%;
+	overflow: scroll;
+}
+h1{
+	text-align:center;
+}
+label{
+	color:green;
+}
+
+div.form-renderer {
+	height:90%;
+	width:60%;
+	margin:5%;
+}
