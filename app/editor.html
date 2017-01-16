@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Menu</title>
+	<title>Editor</title>
 
 	<!-- jQuery -->
 	<script src="../js/lib/jquery-1.11.0.min.js"></script>
@@ -34,15 +34,10 @@
 	<script type="text/javascript" src="template-controller/graph-modal/node-config-modal.js"></script>
 
 
-	<!-- Dependecies -->
+	<!-- Dependencies -->
 	<script type="text/javascript" src="js/lib/d3.v3.min.js"></script>
 	<script type="text/javascript" src="js/lib/dagre-d3.min.js"></script>
 	<script type="text/javascript" src="js/ajax-calls.js"></script>
-
-
-	<!-- Ressources -->
-	<script type="text/javascript" src="js/data-model-example.js"></script>
-
 
 </head>
 
@@ -58,16 +53,6 @@
 		<div id="data-editor" class="left-panel"></div>
 
 		<div id="graph-editor" class="right-panel"></div>
-
-		<!-- 
-		<div id="editor-left-panel" class="col-md-6 left-panel"></div>
-
-		<div id="editor-content" class="col-md-6 right-panel">
-			<h3>Graphical editor</h3>
-			<svg id="graphical-editor" class="svg-css"></svg> 
-		</div> -->
-
-
 	</div>
 
 	<div id="modal-section"></div>
@@ -87,47 +72,10 @@
 		injectQuestionModal();
 		injectBlockModal();
 
-		// Get working set of data
-		// loadExample();
-
 		// Inject graph editor
 		injectGraphEditor();
 		injectNodeConfigModal();
 	});
 </script>
 
-
-
-<!-- 
-<script type="text/javascript">
-
-
-	$(document).ready(function(){
-		injectLeftPanel();
-		initSVG();
-		render();
-		$('#node-editor-generate').click(function(){
-			var nodeId = $('#node-editor-id').val(),
-				dtElt = getElement();
-			updateNode(nodeId, dtElt);
-
-
-
-			// var nodeData = dumpEditedNode();
-			// if(nodeData != null){
-			// 	updateNode(nodeData);
-			// 	lpReset();
-			// 	lpHideDisplay();				
-			// }
-		});
-		$('#node-editor-delete').click(function(){
-			deleteNode();			
-			lpReset();
-			lpHideDisplay();
-		});
-
-	});
-
-</script>
- -->
 </html>
