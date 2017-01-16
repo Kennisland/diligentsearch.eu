@@ -57,9 +57,9 @@ html_dataModelEditor = `
 `;
 
 
-countries = []; //['Netherlands', 'Germany'];
+countries = [];
 selectedCountry = '';
-works = []; //['Audiovisual', 'painting'];
+works = [];
 selectedWork = '';
 userInputs = [];
 referenceValues = [];
@@ -78,6 +78,17 @@ function getCountry(){
 	// Hide unecessary divs
 	$('#select-work').hide();
 	$('#display-data-model').hide();
+
+	// Reset all data
+	countries = [];
+	selectedCountry = '';
+	works = [];
+	selectedWork = '';
+	userInputs = [];
+	referenceValues = [];
+	resetDataModel();
+
+
 
 	// Ajax call to get data from server
 	$.when(ajaxGetCountries()).then(
@@ -110,6 +121,13 @@ function getWork(countryIdx){
 	$('#select-country').hide();
 	$('#display-data-model').hide();
 
+	// Reset all data except country
+	works = [];
+	selectedWork = '';
+	userInputs = [];
+	referenceValues = [];
+	resetDataModel();
+
 
 	selectedCountry = countries[countryIdx];
 	// Ajax call to get works from server for this country
@@ -139,7 +157,7 @@ function getWork(countryIdx){
 			}
 			$('#select-work').html(worksHtml);
 
-			$('#breadcrumb li:nth-child(1) a').text(selectedCountry.name).attr('onclick', 'getCountry('+countryIdx+')');
+			$('#breadcrumb li:nth-child(1) a').text(selectedCountry.name).attr('onclick', 'getCountry()');
 			$('#breadcrumb').children().show();
 			$('#breadcrumb li:last-child').hide();			
 		},
@@ -154,6 +172,9 @@ function getData(workIdx){
 	// Hide unecessary divs
 	$('#select-work').hide();
 
+	// Reset all specific data
+	resetDataModel();
+
 	selectedWork = works[workIdx];
 	// Ajax call to get data for a specific work
 	$.when(ajaxGetElt('Question', selectedWork.id), ajaxGetElt('Block', selectedWork.id), ajaxGetElt('Result', selectedWork.id)).then(
@@ -162,7 +183,13 @@ function getData(workIdx){
 			blocks = resultBlocks[0];
 			results = resultResults[0];
 
-			$('#breadcrumb li:nth-child(2) a').text(selectedWork.name).attr('onclick', 'getWork('+workIdx+')');;
+			// Retrieve index of country
+			for (var i = 0; i < countries.length; i++) {
+				if( countries[i].id == selectedCountry.id){
+					$('#breadcrumb li:nth-child(2) a').text(selectedWork.name).attr('onclick', 'getWork('+i+')');
+					break;
+				}
+			}			
 			$('#breadcrumb').children().show();
 
 			injectDataBasePrimaryModel();
@@ -176,6 +203,17 @@ function getData(workIdx){
 
 	$('#display-data-model').show();
 }
+
+
+function resetDataModel(){
+	results = [];
+	questions = [];
+	blocks = [];
+	$('#data-results > li').remove();
+	$('#data-questions > li').remove();
+	$('#data-blocks > li').remove();
+}
+
 
 function injectDataBasePrimaryModel(){
 	userInputs.forEach(function(elt, idx){

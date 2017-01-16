@@ -28,6 +28,8 @@ function loadGraph(){
 }
 
 function resetGraph(){
+	graphicNodes = [];
+	graphicNodesDatabaseId = undefined;
 	$('#decision-process').html('');
 	$('#decision-process-save').hide();
 }
