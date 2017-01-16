@@ -56,7 +56,7 @@ function handle_get_request(req, res, connection){
 	}
 	else if(currentTable == 'Work'){
 		var countryId = req.query.countryId;
-		connection.query("select * from Work where countryId='"+countryId+"'",function(err,rows){
+		connection.query("select * from Work where countryId = ?", [countryId], function(err,rows){
 			connection.release();
 			if(!err) {
 				res.json(rows);
@@ -65,7 +65,7 @@ function handle_get_request(req, res, connection){
 	}
 	else if(currentTable == 'SharedUserInput' || currentTable == 'SharedRefValue'){
 		var countryId = req.query.foreignKeyId;
-		connection.query("select * from "+currentTable+" where countryId='"+countryId+"'",function(err,rows){
+		connection.query("select * from "+currentTable+" where countryId = ?", [countryId], function(err,rows){
 			connection.release();
 			if(!err) {
 				res.json(rows);
@@ -74,7 +74,7 @@ function handle_get_request(req, res, connection){
 	}
 	else if(currentTable == 'DecisionTree' || currentTable == 'Question' || currentTable == 'Block' || currentTable == 'Result') {
 		var workId = req.query.foreignKeyId;
-		connection.query("select * from "+currentTable+" where workId='"+workId+"'",function(err,rows){
+		connection.query("select * from "+currentTable+" where workId = ?", [workId], function(err,rows){
 			connection.release();
 			if(!err) {
 				res.json(rows);
@@ -104,8 +104,8 @@ function handle_post_request(req, res, connection){
 
 			// Delete case
 			if(req.body.remove){
-				var q = "delete from "+currentTable+" where id='"+req.body.id+"';";
-				connection.query(q, function(err, rows){
+				var q = "delete from "+currentTable+" where id = ?";
+				connection.query(q, [req.body.id], function(err, rows){
 					connection.release();
 					if(!err){
 						res.json(rows);
@@ -117,8 +117,8 @@ function handle_post_request(req, res, connection){
 
 				// Insert case or Update case
 				if(req.body.insert){
-					var q = "insert into "+currentTable+" ("+foreignKeyAttrName+",json) values ('"+req.body.foreignKeyId+"','"+req.body.json+"');";
-					connection.query(q, function(err, rows){
+					var q = "insert into "+currentTable+" ("+foreignKeyAttrName+",json) values ( ?, ?)";
+					connection.query(q, [req.body.foreignKeyId, req.body.json], function(err, rows){
 						connection.release();
 						if(!err){
 							res.json(rows);
@@ -126,8 +126,8 @@ function handle_post_request(req, res, connection){
 					});
 				}
 				else if(req.body.update){
-					var q = "update "+currentTable+" set json='"+req.body.json+"' where id='"+req.body.id+"';";
-					connection.query(q, function(err, rows){
+					var q = "update "+currentTable+" set json = ? where id = ?";
+					connection.query(q, [req.body.json, req.body.id], function(err, rows){
 						connection.release();
 						if(!err){
 							res.json(rows);
