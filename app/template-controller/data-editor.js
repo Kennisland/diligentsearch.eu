@@ -70,44 +70,26 @@ blocks = [];
 
 
 function injectDataModelEditor(){
+	getCountry();
 	$('#data-editor').html(html_dataModelEditor);
 }
 
 
 function getCountry(){
-	// Hide unecessary divs
+	// Reset country data
+	countries = [];
+	selectedCountry = '';
+
+	// Reset and hide unecessary divs
+	resetWorkModel();
 	$('#select-work').hide();
 	$('#display-data-model').hide();
 
-	// Reset all data
-	countries = [];
-	selectedCountry = '';
-	works = [];
-	selectedWork = '';
-	userInputs = [];
-	referenceValues = [];
-	resetDataModel();
-
-
-
-	// Ajax call to get data from server
+	// Ajax call to get data from server and display them as list
 	$.when(ajaxGetCountries()).then(
 		function(result){
 			countries = result;
-
-			var countriesHtml = '<ul class="list-group">';
-			for (var i = countries.length - 1; i >= 0; i--) {
-				countriesHtml += '<li class="list-group-item" onclick="getWork('+i+')">'+countries[i].name+'</li>';
-			}
-			countriesHtml += '</ul>';
-			$('#select-country').html(countriesHtml);
-
-			selectedCountry = '';
-			$('#breadcrumb li:nth-child(1) a').text("Choose a Country");
-			selectedWork = '';
-			$('#breadcrumb li:nth-child(2) a').text("Choose a type of Work");
-			$('#breadcrumb').children().hide();
-			$('#breadcrumb li:first-child').show();
+			injectCountryData();
 		}, 
 		function(error){
 			$('#select-country').html(error.statusText);
@@ -117,63 +99,30 @@ function getCountry(){
 
 
 function getWork(countryIdx){
-	// Hide unecessary divs
+	// Reset and hide unecessary divs
+	resetDataModel();
 	$('#select-country').hide();
 	$('#display-data-model').hide();
 
-	// Reset all data except country
-	works = [];
-	selectedWork = '';
-	userInputs = [];
-	referenceValues = [];
-	resetDataModel();
-
-
 	selectedCountry = countries[countryIdx];
 	// Ajax call to get works from server for this country
-	$.when(ajaxGetWorks(selectedCountry.id)).then(
-		function(result){
-			works = result;
-
-			$.when(ajaxGetElt('SharedUserInput', selectedCountry.id)).then(
-				function(result){
-					userInputs = result;
-				},
-				function(error){
-					console.log("get work ajaxGetUserInputs", error);
-				});
-
-			$.when(ajaxGetElt('SharedRefValue', selectedCountry.id)).then(
-				function(result){
-					refValues = result;
-				},
-				function(error){
-					console.log("get work ajaxGetRefValues", error);
-				});
-
-			var worksHtml = '<ul class="list-group">';
-			for (var i = works.length - 1; i >= 0; i--) {
-				worksHtml += '<li class="list-group-item" onclick="getData('+i+')">'+works[i].name+'</li>';
-			}
-			$('#select-work').html(worksHtml);
-
-			$('#breadcrumb li:nth-child(1) a').text(selectedCountry.name).attr('onclick', 'getCountry()');
-			$('#breadcrumb').children().show();
-			$('#breadcrumb li:last-child').hide();			
+	$.when(ajaxGetWorks(selectedCountry.id), ajaxGetElt('SharedUserInput', selectedCountry.id), ajaxGetElt('SharedRefValue', selectedCountry.id)).then(
+		function(resultWorks, resultUserInputs, resultRefValues){
+			works = resultWorks[0];
+			userInputs = resultUserInputs[0];
+			refValues = resultRefValues[0];
+			injectWorkData();					
 		},
 		function(error){
 			$('#select-work').html(error.statusText);
 	});
-
 	$('#select-work').show();
 }
 
 function getData(workIdx){
-	// Hide unecessary divs
-	$('#select-work').hide();
-
-	// Reset all specific data
+	// Reset and hide unecessary divs
 	resetDataModel();
+	$('#select-work').hide();
 
 	selectedWork = works[workIdx];
 	// Ajax call to get data for a specific work
@@ -191,19 +140,27 @@ function getData(workIdx){
 				}
 			}			
 			$('#breadcrumb').children().show();
-
 			injectDataBasePrimaryModel();
-
-
 			getDecisionTree();
 		},
 		function(error){
 			$('#display-data-model').prepend(error.statusText);			
 	});
-
 	$('#display-data-model').show();
 }
 
+
+function resetWorkModel(){
+	// Reset work part
+	works = [];
+	selectedWork = '';
+	userInputs = [];
+	referenceValues = [];
+	$('#select-work').html('');
+
+	// Reset implicitely wor dependant part
+	resetDataModel();
+}
 
 function resetDataModel(){
 	results = [];
@@ -212,6 +169,35 @@ function resetDataModel(){
 	$('#data-results > li').remove();
 	$('#data-questions > li').remove();
 	$('#data-blocks > li').remove();
+}
+
+function injectCountryData(){	
+	var countriesHtml = '<ul class="list-group">';
+	for (var i = countries.length - 1; i >= 0; i--) {
+		countriesHtml += '<li class="list-group-item" onclick="getWork('+i+')">'+countries[i].name+'</li>';
+	}
+	countriesHtml += '</ul>';
+	$('#select-country').html(countriesHtml);
+
+	selectedCountry = '';
+	$('#breadcrumb li:nth-child(1) a').text("Choose a Country");
+	selectedWork = '';
+	$('#breadcrumb li:nth-child(2) a').text("Choose a type of Work");
+	$('#breadcrumb').children().hide();
+	$('#breadcrumb li:first-child').show();
+}
+
+function injectWorkData(){
+	console.log("works : ", works);
+	var worksHtml = '<ul class="list-group">';
+	for (var i = works.length - 1; i >= 0; i--) {
+		worksHtml += '<li class="list-group-item" onclick="getData('+i+')">'+works[i].name+'</li>';
+	}
+	$('#select-work').html(worksHtml);
+
+	$('#breadcrumb li:nth-child(1) a').text(selectedCountry.name).attr('onclick', 'getCountry()');
+	$('#breadcrumb').children().show();
+	$('#breadcrumb li:last-child').hide();	
 }
 
 
@@ -233,6 +219,10 @@ function injectDataBasePrimaryModel(){
 	});
 }
 
+
+/*
+	Modal interactions
+*/
 
 function add(elementType){
 	switch(elementType){
