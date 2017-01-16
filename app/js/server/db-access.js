@@ -1,18 +1,20 @@
 var express   	=	require("express");
 var bodyParser 	= 	require('body-parser');
 var mysql     	=	require('mysql');
+var mysqlConfig = 	require('./db-config.js').dbConfig();
 var dbRoute		= 	"/";
 var app       	=	express();
+app.setMaxListeners(0);
 app.use(bodyParser.urlencoded({
 	extended: true
 }));
 
 var pool      	=	mysql.createPool({
 	connectionLimit : 100, //important
-	host     : 'localhost',
-	user     : 'phpmyadmin',
-	password : 'diligentsearch',
-	database : 'diligent_search',
+	host		: mysqlConfig.host,
+	user		: mysqlConfig.user,
+	password	: mysqlConfig.password,
+	database	: mysqlConfig.database,
 	debug    :  false
 });
 
@@ -24,18 +26,14 @@ function handle_database(req,res) {
 		  return;
 		} 
 
+		// nb : both req.query / req.body exist and equal at least {} (empty object)
 		if(req.query){
 			handle_get_request(req, res, connection);
 		}
 
 		if(req.body){
 			handle_post_request(req, res, connection);
-		}		
-
-		connection.on('error', function(err) {      
-			res.json({"code" : 100, "status" : "Error in connection database"});
-			return;    
-		});
+		}
   });
 }
 
