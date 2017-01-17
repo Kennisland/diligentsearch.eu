@@ -66,8 +66,6 @@ function injectNodeConfigModal(){
 
 currentGraphicNodeIndex = -1;
 function loadGraphicNode(index, graphicNodeElt){
-	// configCategorySelection();
-
 	currentGraphicNodeIndex = index;
 	$('#node-category').val(graphicNodeElt.category);
 	$('#node-data').val(graphicNodeElt.dataName);
@@ -192,9 +190,6 @@ function configCategorySelection(){
 		// Configure autocomplete
 		var category = $(this).val(),
 			sources = getDataSource(category);
-
-		console.log('Resetting configCategorySelection');
-		console.log('sources, ', sources);
 
 		$('#node-data').autocomplete({
 			minLength: 0,

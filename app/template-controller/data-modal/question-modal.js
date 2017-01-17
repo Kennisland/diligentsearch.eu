@@ -240,7 +240,11 @@ function dumpQuestion(){
 			error_log += "Numeric question requires a reference value\n";
 		}
 
-		var regExp = new RegExp(/\w+\s*(\s+(-|\+)\s+\w+)*$/g);
+
+		// 
+
+
+		var regExp = new RegExp(/^(\w(\s)*)+((-|\+)\s+(\w(\s)*)+)*$/g);
 		if( ! regExp.test($('#numeric-inputs').val()) ){
 			error_log += "Numeric inputs field contains error\n";
 		}
@@ -256,8 +260,12 @@ function dumpQuestion(){
 			}
 
 			// Get foreach input its id
-			var displayedInputs = $('#numeric-inputs').val().split(/\s+/);
+			var displayedInputs = $('#numeric-inputs').val().split(/\s+(-|\+)\s+/);
+			console.log("getted input " , displayedInputs);
+
 			for(var i=0; i<displayedInputs.length; i++){
+				// Remove trailing spaces
+				displayedInputs[i] = displayedInputs[i].trim();
 
 				// garbage
 				if(displayedInputs[i] == ""){
@@ -288,7 +296,7 @@ function dumpQuestion(){
 						}
 
 						if(!found){
-							error_log += "Input value <"+ displayedInputs[i] + "> not found in user inputs\n";
+							error_log += "Input value <"+ displayedInputs[i] + "> not found in both userInputs and referenceValues\n";
 						}
 					}
 				}
@@ -417,9 +425,9 @@ function saveQuestionElt(question){
 			});
 
 			// Do the autocomplete operation only with the last word inserted, based on the formatted input dataset and 
-          	response( $.ui.autocomplete.filter(
-            	formattedInputs, ( request.term ).split(/\s*[-+]\s/).pop()) 
-          	);
+			response( $.ui.autocomplete.filter(
+				formattedInputs, ( request.term ).split(/\s*[-+]\s/).pop()) 
+			);
 		},
 		open: function() { 
 			// Match width of combobow to fit parent
@@ -427,18 +435,22 @@ function saveQuestionElt(question){
 			$('.ui-autocomplete').width(parent_width);
 		},
 		focus: function() {
-            // prevent value inserted on focus
-            return false;
-        },
-        select: function( event, ui ) {
+			// prevent value inserted on focus
+			return false;
+		},
+		select: function( event, ui ) {
 			var terms = this.value.split(/\s+/);
 			// remove the current input, typed by user
 			terms.pop();
-			// add the selected item
-			terms.push( ui.item.value );
+			// add the selected item and a space
+			terms.push( ui.item.value + ' ' );
 			this.value = terms.join( " " );
+
+			var preview = $('#numeric-reference').val() + ' ' + $('#numeric-condition').val() + ' ' + this.value;
+			$('#numeric-visualization').val(preview);
+
 			return false;
-        }
+		}
 	}).bind('focus', function(){ $(this).autocomplete("search"); } );
  }
 
