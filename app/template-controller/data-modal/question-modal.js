@@ -138,6 +138,8 @@ function injectQuestionModal(){
 currentQuestionIndex = -1;
 currentQuestionId = undefined;
 function loadQuestion(index, questionElt){
+	console.log("question : ", questionElt);
+
 	currentQuestionIndex = index;
 	currentQuestionId = questionElt.id;
 
@@ -177,13 +179,34 @@ function loadQuestion(index, questionElt){
 			}
 
 			// Retrieve input name and inject it
-			var expElt = questionElt.numerical.expression[i],
-				dataSet = expElt.sources,
-				element = dataSet[expElt.idx];
+			var	dataSetName = questionElt.numerical.expression[i].source,
+				dataId 	= questionElt.numerical.expression[i].dataId,
+				dataSet = undefined,
+				element = undefined;
 
-			console.log(expElt, dataSet, element);
+			if(dataSetName == 'userInputs'){
+				dataSet = userInputs;
+			}
+			else if(dataSetName == 'referenceValues'){
+				dataSet = referenceValues;				
+			}
 
-			inputsField += element.name+' ';
+			if(!dataSet){
+				console.log("Aborting numerical loading caseuse to wrong dataset ", dataSetName);
+			}
+			else{
+				for (var i = 0; i < dataSet.length; i++) {
+					if(dataSet[i].id == dataId){
+						element = dataSet[i];
+						break;
+					}
+				}
+
+				if(element){
+					inputsField += element.name+' ';				
+				}				
+			}
+
 		}
 
 		$('#numeric-inputs').val(inputsField);
@@ -251,7 +274,7 @@ function dumpQuestion(){
 					// Check first in user input list
 					for(var j=0; j<userInputs.length; j++){
 						if(displayedInputs[i] == userInputs[j].name){
-							var p = question.numerical.expression.push(new ExpressionElt(userInputs, userInputs[j].id));
+							var p = question.numerical.expression.push(new ExpressionElt('userInputs', userInputs[j].id));
 							found = true;
 							break;
 						}					
@@ -260,7 +283,7 @@ function dumpQuestion(){
 						// Check in references values list if not found
 						for(var j=0; j<referenceValues.length; j++){
 							if(displayedInputs[i] == referenceValues[j].name){
-								var p = question.numerical.expression.push(new ExpressionElt(referenceValues, referenceValues[j].id));
+								var p = question.numerical.expression.push(new ExpressionElt('referenceValues', referenceValues[j].id));
 								found = true;
 								break;
 							}					
@@ -309,16 +332,16 @@ function QuestionElt(){
 
 // Reference specific attributes for computation
 function NumericalElt(){
-	this.refId 		= undefined;
+	this.refId 		= undefined; 	// Reference value
 	this.condition 	= $('#numeric-condition').val();
-	this.expression = []	// List of ExpressionElt
-	this.operations = []; 	// List of '+' and '-' to fit between 2 elements
+	this.expression = []			// List of ExpressionElt
+	this.operations = []; 			// List of '+' and '-' to fit between 2 elements
 };
 
 // Reference object to store in numerical configuration element
 function ExpressionElt(dataSrc, id){
-	this.sources	= dataSrc;
-	this.idx 		= id;
+	this.source	= dataSrc;
+	this.dataId		= id;
 }
 
 
