@@ -105,7 +105,6 @@ function injectGraphicNodeData(index, graphicNodeElt){
 
 // Update graphic, take care of block case, generate outputs
 function setUpGraphicNode(graphicNodeElt){
-
 	// Update graphical node style of current node
 	styleGraphicNode(graphicNodeElt.category, graphicNodeElt.id);
 
@@ -140,7 +139,6 @@ function setUpGraphicNode(graphicNodeElt){
 		else{
 			targetGraphicNode(graphicNodeElt.id, targetId, answer);
 		}
-
 		styleGraphicNode(graphicNodeElt.category, targetId);
 	}
 }

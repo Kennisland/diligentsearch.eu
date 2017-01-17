@@ -110,7 +110,7 @@ function dumpNode(){
 	}
 
 	var node = new GraphicNodeElt();
-	var targets = retrieveSection('input', 'node-data-output-target-');
+	var targets = retrieveSection('input', 'node-data-output-id-');
 	targets.forEach(function(elt, idx){
 		var t = elt.value != "" ? elt.value : elt.placeholder;
 		node.targets[idx] = t;
@@ -280,13 +280,42 @@ function configOutputComplete(i){
 		minLength: 0,
 		autocomplete: true,
 		source: function(request, response){
-			var nodes = graphic.nodes(),
-				parents = recursiveParents($('#node-graphic-id').val(), [], 0);
-			response($(nodes).not(parents).get());
+			var potentialTargets = $.map(getNotParentNodes(), function(target){
+				return {label:target.dataName, value:target.id}
+			});
+			response(potentialTargets);
 		},
 		open: function() { 
 			var parent_width = $('#node-data-output-target-'+i).width();
 			$('.ui-autocomplete').width(parent_width);
+		},
+		focus: function(event, ui){
+			$(this).val(ui.item.label);
+			return false;
+		},
+		select: function(event, ui){
+			// Display label, but save the target value (id)
+			$(this).val(ui.item.label);
+			$('#node-data-output-id-'+i).val(ui.item.value);
+			return false;
 		}
 	}).bind('focus', function(){ $(this).autocomplete("search"); } );
+}
+
+function getNotParentNodes(){
+	var nodes = graphic.nodes(),
+		parents = recursiveParents($('#node-graphic-id').val(), [], 0),
+		targetsId = $(nodes).not(parents).get(),
+		targets = [];
+
+	for (var i = 0; i < graphicNodes.length; i++) {
+		var currentNode = graphicNodes[i];
+		for (var j = 0; j < targetsId.length; j++) {
+			if(currentNode.id == targetsId[j]){
+				targets.push(currentNode);
+				break;
+			}
+		}
+	}
+	return targets
 }

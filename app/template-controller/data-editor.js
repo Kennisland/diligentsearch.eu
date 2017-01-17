@@ -117,7 +117,6 @@ function getWork(countryId){
 	}
 	else{
 		// Ajax call to get works from server for this country
-		console.log("countryId is ", selectedCountry.id);
 		$.when(ajaxGetWorks(selectedCountry.id), ajaxGetElt('SharedUserInput', selectedCountry.id), ajaxGetElt('SharedRefValue', selectedCountry.id)).then(
 			function(resultWorks, resultUserInputs, resultRefValues){
 				works = resultWorks[0];
