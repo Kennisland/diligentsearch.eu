@@ -138,8 +138,6 @@ function injectQuestionModal(){
 currentQuestionIndex = -1;
 currentQuestionId = undefined;
 function loadQuestion(index, questionElt){
-	console.log("question : ", questionElt);
-
 	currentQuestionIndex = index;
 	currentQuestionId = questionElt.id;
 
