@@ -14,6 +14,15 @@ function getDataSource(category){
 		return results;
 }
 
+function getGraphicNode(nodeId){
+	for (var j = 0; j < graphicNodes.length; j++) {
+		if(graphicNodes[j].id == nodeId){
+			return graphicNodes[j];
+		}
+	}
+	return undefined;
+}
+
 // Returns a specific element based on its db ID
 function getGraphicNodeElt(category, dataId){
 	var source = getDataSource(category);
@@ -269,11 +278,11 @@ function recursiveDelete(nodeId, depth){
 			// Look for this parent in the model and its targets
 			var parentIndex = graphic.node(parentId).index,
 				targets = graphicNodes[parentIndex].targets;
-		
+
 			// Update its targets list
 			targets.forEach(function(t, idx){
 				if(t == nodeId){
-					targets[idx] = "";
+					targets[idx] = ""; // will  be cast to 'New node' string in dumpNode function
 				}
 			});
 		});

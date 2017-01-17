@@ -79,20 +79,10 @@ function loadGraphicNode(index, graphicNodeElt){
 	}
 	else{
 		loadDataOutputs(graphicNodeElt.category, dataElt);
-		loadGraphicNodeTarget(graphicNodeElt.targets);
+		loadGraphicNodeTarget(graphicNodeElt);
 	}
 	
 	$('#config-nodeModal').modal({backdrop: 'static', keyboard: false});
-}
-
-// Load targets value referencing outputs nodes
-function loadGraphicNodeTarget(targets){
-	for (var i = 0; i < targets.length; i++) {
-		console.log('targets[i]', targets[i]);
-		if(targets[i] != ""){
-			$('#node-data-output-target-'+i).val(targets[i]);
-		}
-	}
 }
 
 
@@ -116,6 +106,7 @@ function dumpNode(){
 		var t = elt.value != "" ? elt.value : 'New node';
 		node.targets[idx] = t;
 	});
+	console.log("targets : ", node.targets);
 
 	injectGraphicNodeData(currentGraphicNodeIndex, node);
 	dismissNodeModal();
@@ -163,10 +154,10 @@ function deleteNode(){
 	}
 
 	// Not saved node case
-	if(!found){
-		alert('The node you try to delete has not been saved yet.\nTry to delete the parent node instead');
-		return;
-	}
+	// if(!found){
+	// 	alert('The node you try to delete has not been saved yet.\nTry to delete the parent node instead');
+	// 	return;
+	// }
 
 	// Delete recursively all successors nodes
 	deleteGraphicNode(nodeId);
@@ -241,6 +232,29 @@ function loadDataOutputs(dataCategory, dataElt){
 	$('#node-data-output-block').show();	// Display output block
 }
 
+// Load targets value referencing outputs nodes
+function loadGraphicNodeTarget(graphicNodeElt){	
+	var targets = graphicNodeElt.targets,
+		dataId 	= graphicNodeElt.dataId;
+
+	for (var i = 0; i < targets.length; i++) {
+		// Put id of node in hidden field and get the target dataId
+		$('#node-data-output-id-'+i).val(targets[i]);
+		
+		var targetNode = getGraphicNode(targets[i]);		
+		if(targetNode){
+			var targetNodeElt = getGraphicNodeElt(targetNode.category, targetNode.dataId);
+			console.log("\ttargetElt : ", targetNodeElt);
+			if(targetNodeElt){
+				$('#node-data-output-target-'+i).val(targetNodeElt.name);
+			}
+		}
+		else{
+			$('#node-data-output-target-'+i).val('');
+		}
+	}
+}
+
 // Add html content representing output
 function addOutput(){
 	$('#node-data-output').append(getNewOutput());
@@ -281,7 +295,7 @@ function configOutputComplete(i){
 		minLength: 0,
 		autocomplete: true,
 		source: function(request, response){
-			var potentialTargets = $.map(getNotParentNodes(), function(target){
+			var potentialTargets = $.map(getPotentialTargets(), function(target){
 				return {label:target.dataName, value:target.id}
 			});
 			response(potentialTargets);
@@ -303,20 +317,72 @@ function configOutputComplete(i){
 	}).bind('focus', function(){ $(this).autocomplete("search"); } );
 }
 
-function getNotParentNodes(){
-	var nodes = graphic.nodes(),
-		parents = recursiveParents($('#node-graphic-id').val(), [], 0),
-		targetsId = $(nodes).not(parents).get(),
-		targets = [];
 
-	for (var i = 0; i < graphicNodes.length; i++) {
-		var currentNode = graphicNodes[i];
-		for (var j = 0; j < targetsId.length; j++) {
-			if(currentNode.id == targetsId[j]){
-				targets.push(currentNode);
-				break;
-			}
+function getPotentialTargets(){
+	var nodes 	= graphic.nodes(),
+		parents = recursiveParents($('#node-graphic-id').val(), [], 0),
+		inUse 	= [];
+
+	retrieveSection('input', 'node-data-output-id-').forEach(function(elt){ 
+		console.log("Elt : ", elt);
+		if(elt.value != ""){
+			inUse.push(elt.value);
 		}
-	}
-	return targets
+	});
+
+	// Avoid parents and inUse
+	var targetsId = $(nodes).not(parents).not(inUse).get();
+
+	console.log("nodes", nodes);
+	console.log("parents", parents);
+	console.log("inUse", inUse);
 }
+
+
+// var targets = retrieveSection('input', 'node-data-output-id-');
+// 	targets.forEach(function(elt, idx){
+// 		var t = elt.value != "" ? elt.value : 'New node';
+// 		node.targets[idx] = t;
+// 	});
+
+
+// function getNotDesiredNodes(){
+// 	var a = getNotParentNodes(),
+// 		b = getNotCurrentTargets();
+// }
+
+// function getNotParentNodes(){
+// 	var nodes = graphic.nodes(),
+// 		parents = recursiveParents($('#node-graphic-id').val(), [], 0),
+// 		targetsId = $(nodes).not(parents).get(),
+// 		targets = [];
+
+// 	for (var i = 0; i < graphicNodes.length; i++) {
+// 		var currentNode = graphicNodes[i];
+// 		for (var j = 0; j < targetsId.length; j++) {
+// 			if(currentNode.id == targetsId[j]){
+// 				targets.push(currentNode);
+// 				break;
+// 			}
+// 		}
+// 	}
+// 	return targets
+// }
+
+// function getNotCurrentTargets(){
+// 	var nodes = graphic.nodes(),
+// 		currentTargetsId = retrieveSection('input', 'node-data-output-id-'),
+// 		targetsId = $(nodes).not(currentTargetsId).get();
+	
+// 	for (var i = 0; i < graphicNodes.length; i++) {
+// 		var currentNode = graphicNodes[i];
+// 		for (var j = 0; j < targetsId.length; j++) {
+// 			if(currentNode.id == targetsId[j]){
+// 				targets.push(currentNode);
+// 				break;
+// 			}
+// 		}
+// 	}
+// 	console.log(targets);
+// 	return targets;
+// }
