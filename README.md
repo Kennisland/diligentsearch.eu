@@ -1,11 +1,12 @@
 # DiligentSearchWebsite
 
-This repository holds the Diligentsearch project
+This repository holds the Diligentsearch project. Further project information can be found on http://diligentsearch.eu/
+
 The project is based on the 'outofcopyright' project
 
 ## Objectives:
 
-Allow a end user to determine the copyrigh status of an orphan work in the European Union
+Allow a end user to determine the orphan works status of a possibly copyright protected work in the European Union
 
 ## Data model of application:
 
