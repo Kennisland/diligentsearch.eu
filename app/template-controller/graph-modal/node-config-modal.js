@@ -88,6 +88,7 @@ function loadGraphicNode(index, graphicNodeElt){
 // Load targets value referencing outputs nodes
 function loadGraphicNodeTarget(targets){
 	for (var i = 0; i < targets.length; i++) {
+		console.log('targets[i]', targets[i]);
 		if(targets[i] != ""){
 			$('#node-data-output-target-'+i).val(targets[i]);
 		}
@@ -112,7 +113,7 @@ function dumpNode(){
 	var node = new GraphicNodeElt();
 	var targets = retrieveSection('input', 'node-data-output-id-');
 	targets.forEach(function(elt, idx){
-		var t = elt.value != "" ? elt.value : elt.placeholder;
+		var t = elt.value != "" ? elt.value : 'New node';
 		node.targets[idx] = t;
 	});
 
@@ -267,7 +268,7 @@ function getNewOutput(){
 				<input id="node-data-output-target-`+i+`" class="ui-autocomplete" style="margin-left:5%; margin-right:5%; max-width:90%" placeholder="New node"/>
 			</th>
 			<th style="padding:1%">
-				<input id="node-data-output-id-`+i+`" type="hidden">
+				<input id="node-data-output-id-`+i+`" value="" type="hidden">
 			</th>
 		</tr>
 	`;
