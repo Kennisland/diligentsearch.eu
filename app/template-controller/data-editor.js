@@ -117,6 +117,7 @@ function getWork(countryId){
 	}
 	else{
 		// Ajax call to get works from server for this country
+		console.log("countryId is ", selectedCountry.id);
 		$.when(ajaxGetWorks(selectedCountry.id), ajaxGetElt('SharedUserInput', selectedCountry.id), ajaxGetElt('SharedRefValue', selectedCountry.id)).then(
 			function(resultWorks, resultUserInputs, resultRefValues){
 				works = resultWorks[0];
@@ -128,8 +129,6 @@ function getWork(countryId){
 				$('#select-work').html(error.statusText);
 		});		
 	}
-
-
 	$('#select-work').show();
 }
 
@@ -163,11 +162,15 @@ function resetWorkModel(){
 	// Reset work part
 	works = [];
 	selectedWork = '';
-	userInputs = [];
-	referenceValues = [];
 	$('#select-work').html('');
 
-	// Reset implicitely wor dependant part
+	// Reset shared data part
+	userInputs = [];
+	referenceValues = [];
+	$('#data-userInputs > li').remove();
+	$('#data-referenceValues > li').remove();
+
+	// Reset implicitely work dependant part
 	resetDataModel();
 }
 
