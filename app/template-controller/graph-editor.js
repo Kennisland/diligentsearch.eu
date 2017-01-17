@@ -154,7 +154,7 @@ function configSVG(){
 			// Define the custom click event to load node information
 			$(this).off('click').on('click', function(event) {
 				$('#node-graphic-id').val($(this).context.id);
-				$('#config-nodeModal').modal('show');
+				$('#config-nodeModal').modal({backdrop: 'static', keyboard: false});
 			});
 		}
 	});

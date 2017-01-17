@@ -66,6 +66,8 @@ function injectNodeConfigModal(){
 
 currentGraphicNodeIndex = -1;
 function loadGraphicNode(index, graphicNodeElt){
+	// configCategorySelection();
+
 	currentGraphicNodeIndex = index;
 	$('#node-category').val(graphicNodeElt.category);
 	$('#node-data').val(graphicNodeElt.dataName);
@@ -82,14 +84,14 @@ function loadGraphicNode(index, graphicNodeElt){
 		loadGraphicNodeTarget(graphicNodeElt.targets);
 	}
 	
-	$('#config-nodeModal').modal('show');
+	$('#config-nodeModal').modal({backdrop: 'static', keyboard: false});
 }
 
 // Load targets value referencing outputs nodes
 function loadGraphicNodeTarget(targets){
 	for (var i = 0; i < targets.length; i++) {
 		if(targets[i] != ""){
-			$('#node-data-output-target-'+i).val(targets[i]);			
+			$('#node-data-output-target-'+i).val(targets[i]);
 		}
 	}
 }
@@ -180,6 +182,8 @@ function deleteNode(){
 
 // Configure autocomplete based on selected category
 function configCategorySelection(){
+
+	
 	$('#node-category').on('change', function(){
 		// Reset necessary fields
 		$('#node-data').val(''); 
@@ -188,6 +192,9 @@ function configCategorySelection(){
 		// Configure autocomplete
 		var category = $(this).val(),
 			sources = getDataSource(category);
+
+		console.log('Resetting configCategorySelection');
+		console.log('sources, ', sources);
 
 		$('#node-data').autocomplete({
 			minLength: 0,
