@@ -38,8 +38,7 @@ html_question = `
 							<table class"table table-responsive table-bordered table-stripped" style="width:100%">
 								<thead>
 									<th style="width:10%; text-align:center">#</th>
-									<th style="width:50%; text-align:center">Answer</th>
-									<th style="width:40%; text-align:center">Target</th>
+									<th style="width:70%; text-align:center">Answer</th>
 								</thead>
 								<tbody id="question-output">
 								</tbody>
@@ -177,12 +176,14 @@ function loadQuestion(index, questionElt){
 				inputsField += questionElt.numerical.operations[i-1]+' ';
 			}
 
-			// Retrieve inpu name and inject it
+			// Retrieve input name and inject it
 			var expElt = questionElt.numerical.expression[i],
 				dataSet = expElt.sources,
 				element = dataSet[expElt.idx];
 
-			inputsField += element.name+' ';		
+			console.log(expElt, dataSet, element);
+
+			inputsField += element.name+' ';
 		}
 
 		$('#numeric-inputs').val(inputsField);
@@ -491,11 +492,6 @@ function getNewAnswer(placeholder){
 	}
 
 	answer += `"/>
-			</th>
-			<th style="padding:1%">
-				<select id="`+htmlId+`-target-`+i+`" style="margin-left:5%; margin-right:5%; width:90%" disabled>
-					<option value="" selecte> 	Unset 	</option>
-				</select>
 			</th>
 		</tr>
 	`;
