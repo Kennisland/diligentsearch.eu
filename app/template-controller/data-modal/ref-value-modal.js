@@ -81,8 +81,8 @@ function dismissRefValueModal(){
 	if(currentReferenceIndex != -1){
 		currentReferenceIndex = -1;
 	}
-	if(currentReferenceId != -1){
-		currentReferenceId = -1;
+	if(currentReferenceId != undefined){
+		currentReferenceId = undefined;
 	}
 	$('#add-refValueModal').modal('hide');
 }

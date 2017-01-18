@@ -84,8 +84,8 @@ function dismissUserInputModal(){
 	if(currentInputIndex != -1){
 		currentInputIndex = -1;
 	}
-	if(currentInputId != -1){
-		currentInputId = -1;
+	if(currentInputId != undefined){
+		currentInputId = undefined;
 	}
 	$('#add-userInputModal').modal('hide');
 }

@@ -127,6 +127,9 @@ function dismissBlockModal(){
 	if(currentBlockIndex != -1){
 		currentBlockIndex = -1;
 	}
+	if(currentBlockId !== undefined){
+		currentBlockId = undefined;
+	}
 	$('#add-blockModal').modal('hide');
 }
 

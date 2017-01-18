@@ -70,8 +70,8 @@ function dismissResultModal(){
 	if(currentResultIndex != -1){
 		currentResultIndex = -1;
 	}
-	if(currentResultId != -1){
-		currentResultId = -1;
+	if(currentResultId != undefined){
+		currentResultId = undefined;
 	}
 	$('#add-resultModal').modal('hide');
 };

@@ -319,8 +319,8 @@ function dismissQuestionModal(){
 	if(currentQuestionIndex != -1){
 		currentQuestionIndex = -1;
 	}
-	if(currentQuestionId != -1){
-		currentQuestionId = -1;
+	if(currentQuestionId != undefined){
+		currentQuestionId = undefined;
 	}
 	$('#add-questionModal').modal('hide');
 };
