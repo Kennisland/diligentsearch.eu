@@ -116,13 +116,10 @@ function dumpNode(){
 	}
 
 	var targets = retrieveSection('input', 'node-data-output-id-');
-	console.log("Dumping targets : ");
 	targets.forEach(function(elt, idx){
 		var t = elt.value != "" ? elt.value : 'New node';
-		console.log("\t", t);
 		node.targets[idx] = t;
 	});
-	// console.log("targets : ", node.targets);
 
 	injectGraphicNodeData(currentGraphicNodeIndex, node);
 	dismissNodeModal();
@@ -152,7 +149,8 @@ function GraphicNodeElt(){
 
 // Delete the current node
 function deleteNode(){
-	var nodeId = $('#node-graphic-id').val();
+	var nodeId 	 = $('#node-graphic-id').val(),
+		parentId = graphic.inEdges(nodeId)[0].v;
 
 	// Root node case
 	if(graphic.predecessors(nodeId).length == 0){
@@ -160,23 +158,22 @@ function deleteNode(){
 		return;
 	}
 
-	// Find this node within the graphic node model
-	var found = false;
-	for (var i = 0; i < graphicNodes.length; i++) {
-		if(graphicNodes[i].id == nodeId){
-			found = true;
-			break;
-		}
-	}
-
-	// Not saved node case
-	// if(!found){
-	// 	alert('The node you try to delete has not been saved yet.\nTry to delete the parent node instead');
-	// 	return;
-	// }
-
-	// Delete recursively all successors nodes
+	// Delete this node
 	deleteGraphicNode(nodeId);
+
+	// Find the parent, and regen outputs
+	$('#node-graphic-id').val(parentId);	
+	var parentIndex = graphic.node(parentId).index,
+		parentNode = getGraphicNode(parentId);
+
+	parentNode.targets.map(function(t, idx){
+		if(t == ""){
+			parentNode.targets[idx] = 'New node';
+		}
+	});
+	injectGraphicNodeData(parentIndex, parentNode);
+
+	// Close modal
 	dismissNodeModal();
 }
 
@@ -336,7 +333,6 @@ function configOutputComplete(i){
 			// Display label, but save the target value (id)
 			$(this).val(ui.item.label);
 			$('#node-data-output-id-'+i).val(ui.item.value);
-			console.log('id set');
 			return false;
 		}
 	}).bind('focus', function(){ $(this).autocomplete("search"); } );
@@ -349,7 +345,6 @@ function getPotentialTargets(){
 		inUseId 	= [];
 
 	retrieveSection('input', 'node-data-output-id-').forEach(function(elt){ 
-		console.log('\t', elt.value);
 		if(elt.value != ""){
 			inUseId.push(elt.value);
 		}
