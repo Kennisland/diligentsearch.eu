@@ -10,6 +10,7 @@ function ajaxGetCountries(){
 			// console.log("ajaxGetCountries success : ", data);
 		},
 		error: function(err){
+			alert('Error in Country retrieval from database\n'+err.statusText);
 			console.log("error :", err);
 		}
 	});
@@ -24,6 +25,7 @@ function ajaxGetWorks(countryId){
 			// console.log("ajaxGetWorks success : ", data);
 		},
 		error: function(err){
+			alert('Error in Work retrieval from database\n'+err.statusText);
 			console.log("error :", err);
 		}
 	});

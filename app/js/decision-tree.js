@@ -10,7 +10,7 @@ function saveDecisionTree(){
 	// Callback function
 	function cb(success){
 		if(success){
-				alert('Decision tree correctly saved in database');
+			alert('Decision tree correctly saved in database');
 		}
 		else{
 			alert('Error in decision tree saving process');	
@@ -57,7 +57,7 @@ function getDecisionTree(){
 			render();
 		},
 		function(error){
-			console.log("get work ajaxGetUserInputs", error);
+			alert('Fail to retrieve decision process ', error.statusText);
 		}
 	);
 }

@@ -50,7 +50,7 @@ html_nodeConfig = `
 			<div class="modal-footer">
 				<button type="button" class="btn btn-danger pull-left" onclick="deleteNode()">Delete</button>
 				<button type="button" class="btn btn-default" onclick="dismissNodeModal()">Close</button>
-				<button type="button" class="btn btn-primary" onclick="dumpNode()">Save changes</button>
+				<button type="button" class="btn btn-primary" onclick="dumpNode()">Insert node</button>
 			</div>
 		</div>
 	</div>
@@ -186,6 +186,15 @@ function deleteNode(){
 // Configure autocomplete based on selected category
 function configCategorySelection(){
 
+	$('#node-category').on('click', 'focus', function(){
+		$(this).autocomplete();
+	});
+
+	$('#node-category').on('keypress', function(event){
+		event.preventDefault();
+		return false;
+	});
+
 	
 	$('#node-category').on('change', function(){
 		// Reset necessary fields
@@ -304,7 +313,7 @@ function getNewOutput(){
 // Configure autocomplete plugin for outputs
 function configOutputComplete(i){
 	$('#node-data-output-target-'+i).on('click', 'focus', function(){
-		$(this).autocomplete()
+		$(this).autocomplete();
 	});
 
 	$('#node-data-output-target-'+i).on('keypress', function(event){
