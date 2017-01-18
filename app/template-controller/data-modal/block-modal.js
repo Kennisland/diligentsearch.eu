@@ -27,10 +27,10 @@ html_block = `
 						<div style="float:left; width:70%; margin-left:3%">
 							<table class"table table-responsive table-bordered table-stripped" style="width:100%">
 								<thead>
-									<th style="width:10%; text-align:center">#</th>
-									<th style="width:50%; text-align:center">Question</th>
-									<th style="width:35%; text-align:center">Type</th>
-									<th style="width:5%;  text-align:center"></th>
+									<th style="width:10%;	min-width:10%;	max-width:10%; text-align:center">#</th>
+									<th style="width:60%;	min-width:60%;	max-width:60%; text-align:center">Question</th>
+									<th style="width:25%;	min-width:25%;	max-width:25%; text-align:center">Type</th>
+									<th style="width:5%;	min-width:5%;	max-width:5%;  text-align:center"></th>
 								</thead>
 								<tbody id="block-questions-selection">
 								</tbody>
