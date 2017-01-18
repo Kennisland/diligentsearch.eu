@@ -193,9 +193,13 @@ function loadQuestion(index, questionElt){
 				console.log("Aborting numerical loading caseuse to wrong dataset ", dataSetName);
 			}
 			else{
-				for (var i = 0; i < dataSet.length; i++) {
-					if(dataSet[i].id == dataId){
-						element = dataSet[i];
+				for (var j = 0; j < dataSet.length; j++) {
+					if(dataSet[j].id == dataId){
+						element = dataSet[j];
+						break;
+					}
+
+					if(i >= 150){
 						break;
 					}
 				}
@@ -239,10 +243,6 @@ function dumpQuestion(){
 		if($('#numeric-reference').val() == ""){
 			error_log += "Numeric question requires a reference value\n";
 		}
-
-
-		// 
-
 
 		var regExp = new RegExp(/^(\w(\s)*)+((-|\+)\s+(\w(\s)*)+)*$/g);
 		if( ! regExp.test($('#numeric-inputs').val()) ){
@@ -418,7 +418,9 @@ function saveQuestionElt(question){
 		minLength: 0,
 		autocomplete: true,
 		source: function(request, response){
-			var formattedInputs = $.map(userInputs, function(value, key){
+
+			var sharedData = userInputs.concat(referenceValues);
+			var formattedInputs = $.map(sharedData, function(value, key){
 				return {
 					label: value.name
 				}
