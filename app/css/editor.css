@@ -62,29 +62,30 @@ g.type-TK > rect {
 
 text {
 	font-weight: 300;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 14px;
 }
 
 .node rect{
 	fill: #999;
 	stroke: #57723E;
-	stroke-width: 1.5px;	
+	stroke-width: 1.5px;
 }
 
 .node circle{
 	fill: #999;
 	stroke: #57723E;
-	stroke-width: 1.5px;	
+	stroke-width: 1.5px;
 }
 
 .clusters rect {
 	fill: #fff;
 	stroke: #57723E;
-	stroke-width: 1.5px;	
+	stroke-width: 1.5px;
 }
 
 
 .edgePath path {
 	stroke: #333;
 	stroke-width: 1.5px;
+}

@@ -50,7 +50,7 @@ function styleGraphicNode(category, nodeId){
 		graphic.node(nodeId).style += 'stroke-width: 4;';
 	}
 	else if(category == "question"){
-		graphic.node(nodeId).style += 'stroke: #57723E'; //; stroke-width: 2';
+		// graphic.node(nodeId).style += 'stroke: #57723E'; //; stroke-width: 2';
 	}
 	else if(category == "block"){
 		graphic.node(nodeId).style += s;	
@@ -60,12 +60,15 @@ function styleGraphicNode(category, nodeId){
 	}
 
 	// format label text if there is one
-	graphic.node(nodeId).label = formatGraphicNodeLabel(graphic.node(nodeId).label);
+	// graphic.node(nodeId).label = formatGraphicNodeLabel(graphic.node(nodeId).label);
 }
 
 // Replace '_' by newLine characters
-function formatGraphicNodeLabel(text){
-	return text.replace(/_/g, '<br>');
+function formatGraphicNodeLabel(graphicNodeElt){
+	var labelText = '<div style="text-align: center; width: 150px; padding: 5px">';
+	labelText += graphicNodeElt.dataName.replace(/(_|\s+)/g, '<br>');
+	labelText += '</div>';
+	graphic.node(graphicNodeElt.id).label = labelText;
 }
 
 
@@ -108,7 +111,6 @@ function injectGraphicNodeData(index, graphicNodeElt){
 	// Get node by the modal hidden input node-graphic-id
 	var node = graphic.node($('#node-graphic-id').val());	
 	node.index = index-1; //  Update drawable graphic node information
-	node.label = '<div style="text-align:center;">'+graphicNodeElt.dataName+'</div>';
 
 	setUpGraphicNode(graphicNodeElt);	
 	render();
@@ -116,6 +118,10 @@ function injectGraphicNodeData(index, graphicNodeElt){
 
 // Update graphic, take care of block case, generate outputs
 function setUpGraphicNode(graphicNodeElt){
+
+	// Update node label
+	formatGraphicNodeLabel(graphicNodeElt);
+
 	// Update graphical node style of current node
 	styleGraphicNode(graphicNodeElt.category, graphicNodeElt.id);
 
