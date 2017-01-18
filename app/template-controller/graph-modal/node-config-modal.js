@@ -116,8 +116,10 @@ function dumpNode(){
 	}
 
 	var targets = retrieveSection('input', 'node-data-output-id-');
+	console.log("Dumping targets : ");
 	targets.forEach(function(elt, idx){
 		var t = elt.value != "" ? elt.value : 'New node';
+		console.log("\t", t);
 		node.targets[idx] = t;
 	});
 	// console.log("targets : ", node.targets);
@@ -258,7 +260,6 @@ function loadGraphicNodeTarget(graphicNodeElt){
 		var targetNode = getGraphicNode(targets[i]);		
 		if(targetNode){
 			var targetNodeElt = getGraphicNodeElt(targetNode.category, targetNode.dataId);
-			console.log("\ttargetElt : ", targetNodeElt);
 			if(targetNodeElt){
 				$('#node-data-output-target-'+i).val(targetNodeElt.name);
 			}
@@ -305,6 +306,15 @@ function getNewOutput(){
 
 // Configure autocomplete plugin for outputs
 function configOutputComplete(i){
+	$('#node-data-output-target-'+i).on('click', 'focus', function(){
+		$(this).autocomplete()
+	});
+
+	$('#node-data-output-target-'+i).on('keypress', function(event){
+		event.preventDefault();
+		return false;
+	});
+
 	$('#node-data-output-target-'+i).autocomplete({
 		minLength: 0,
 		autocomplete: true,
@@ -326,6 +336,7 @@ function configOutputComplete(i){
 			// Display label, but save the target value (id)
 			$(this).val(ui.item.label);
 			$('#node-data-output-id-'+i).val(ui.item.value);
+			console.log('id set');
 			return false;
 		}
 	}).bind('focus', function(){ $(this).autocomplete("search"); } );
@@ -333,70 +344,42 @@ function configOutputComplete(i){
 
 
 function getPotentialTargets(){
-	var nodes 	= graphic.nodes(),
-		parents = recursiveParents($('#node-graphic-id').val(), [], 0),
-		inUse 	= [];
+	var nodesId 	= graphic.nodes(),
+		parentsId 	= recursiveParents($('#node-graphic-id').val(), [], 0),
+		inUseId 	= [];
 
 	retrieveSection('input', 'node-data-output-id-').forEach(function(elt){ 
-		console.log("Elt : ", elt);
+		console.log('\t', elt.value);
 		if(elt.value != ""){
-			inUse.push(elt.value);
+			inUseId.push(elt.value);
 		}
 	});
 
-	// Avoid parents and inUse
-	var targetsId = $(nodes).not(parents).not(inUse).get();
 
-	console.log("nodes", nodes);
-	console.log("parents", parents);
-	console.log("inUse", inUse);
+	// Avoid parents first
+	var targetsId = $(nodesId).not(parentsId).get();
+
+	// Avoid inUsed node if necessary
+	for (var i = 0; i < inUseId.length; i++) {
+		var idx = targetsId.indexOf(inUseId[i]);
+		if(idx >= 0){
+			targetsId.splice(idx, 1);
+		}
+	}
+
+
+	var targets = [];
+
+	// Push neutral element
+	targets.push({dataName:"New node", id:""});
+
+	for (var i = 0; i < targetsId.length; i++) {
+		var node = getGraphicNode(targetsId[i]);
+		if(node){
+			targets.push(node);			
+		}
+	}
+
+
+	return targets;
 }
-
-
-// var targets = retrieveSection('input', 'node-data-output-id-');
-// 	targets.forEach(function(elt, idx){
-// 		var t = elt.value != "" ? elt.value : 'New node';
-// 		node.targets[idx] = t;
-// 	});
-
-
-// function getNotDesiredNodes(){
-// 	var a = getNotParentNodes(),
-// 		b = getNotCurrentTargets();
-// }
-
-// function getNotParentNodes(){
-// 	var nodes = graphic.nodes(),
-// 		parents = recursiveParents($('#node-graphic-id').val(), [], 0),
-// 		targetsId = $(nodes).not(parents).get(),
-// 		targets = [];
-
-// 	for (var i = 0; i < graphicNodes.length; i++) {
-// 		var currentNode = graphicNodes[i];
-// 		for (var j = 0; j < targetsId.length; j++) {
-// 			if(currentNode.id == targetsId[j]){
-// 				targets.push(currentNode);
-// 				break;
-// 			}
-// 		}
-// 	}
-// 	return targets
-// }
-
-// function getNotCurrentTargets(){
-// 	var nodes = graphic.nodes(),
-// 		currentTargetsId = retrieveSection('input', 'node-data-output-id-'),
-// 		targetsId = $(nodes).not(currentTargetsId).get();
-	
-// 	for (var i = 0; i < graphicNodes.length; i++) {
-// 		var currentNode = graphicNodes[i];
-// 		for (var j = 0; j < targetsId.length; j++) {
-// 			if(currentNode.id == targetsId[j]){
-// 				targets.push(currentNode);
-// 				break;
-// 			}
-// 		}
-// 	}
-// 	console.log(targets);
-// 	return targets;
-// }
