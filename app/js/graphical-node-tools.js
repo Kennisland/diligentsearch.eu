@@ -34,6 +34,8 @@ function getGraphicNodeElt(category, dataId){
 	return undefined;
 }
 
+
+
 /*
 
 	Style formatting
@@ -313,5 +315,32 @@ function recursiveDelete(nodeId, depth){
 }
 
 
+function refreshChildren(nodeId){
+	var parentId = graphic.inEdges(nodeId)[0].v,
+		edgeLabel = getInEdgeLabel(parentId, nodeId);
+	
+	// Remove current node, and recreate it
+	recursiveDelete(nodeId, 0);
+	createGraphicNode(nodeId);
+	graphic.setEdge(parentId, nodeId, {label:edgeLabel});
+}
 
 
+function getInEdgeLabel(parentId, nodeId){
+	// get parent node
+	var	parentNode = getGraphicNode(parentId);
+
+	if(parentNode){
+		var parentNodeElt = getGraphicNodeElt(parentNode.category, parentNode.dataId);
+		if(parentNodeElt){
+			var outputs = parentNodeElt.outputs,
+				targets = parentNode.targets;
+
+			for (var i = 0; i < targets.length; i++) {
+				if(targets[i] == nodeId){
+					return outputs[i];
+				}
+			}
+		}
+	}
+}

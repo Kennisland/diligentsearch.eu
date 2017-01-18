@@ -100,13 +100,27 @@ function dumpNode(){
 		return;
 	}
 
+	// Create a new node, based on data filled in by user
 	var node = new GraphicNodeElt();
+
+	// Check if this node suffers a modification on its category, or on its dataId / dataName
+	if(currentGraphicNodeIndex != -1){
+		var oldCategory = graphicNodes[currentGraphicNodeIndex].category,
+			oldDataId	= graphicNodes[currentGraphicNodeIndex].dataId,
+			oldDataName	= graphicNodes[currentGraphicNodeIndex].dataName;
+
+		var hasChanged = (oldCategory != node.category) || (oldDataId != node.dataId) || (oldDataName != node.dataName);
+		if(hasChanged){
+			refreshChildren(node.id);	
+		}
+	}
+
 	var targets = retrieveSection('input', 'node-data-output-id-');
 	targets.forEach(function(elt, idx){
 		var t = elt.value != "" ? elt.value : 'New node';
 		node.targets[idx] = t;
 	});
-	console.log("targets : ", node.targets);
+	// console.log("targets : ", node.targets);
 
 	injectGraphicNodeData(currentGraphicNodeIndex, node);
 	dismissNodeModal();
