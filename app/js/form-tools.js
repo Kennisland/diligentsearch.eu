@@ -1,5 +1,13 @@
 root_node_id = 'lvl_0';
 
+function logData(){	
+	console.log("userInputs ", userInputs);
+	console.log("refValues ", refValues);
+	console.log("questions ", questions);
+	console.log("blocks ", blocks);
+	console.log("results ", results);
+	console.log("decisionTree", decisionTree);
+}
 
 function loadElement(id){
 	if(!id){
@@ -15,12 +23,16 @@ function loadElement(id){
 }
 
 function getDecisionTreeElement(nodeElt){
-	// console.log("nodeElt ", nodeElt);
 	var eltToDisplay = getGraphicNodeElt(nodeElt.category, nodeElt.dataId);
-	// console.log("eltToDisplay ", eltToDisplay);
 	
 	if(nodeElt.category == 'question'){
-		injectQuestionElement(nodeElt.id, eltToDisplay);
+		if(eltToDisplay.type != 'numeric'){
+			injectQuestionElement(nodeElt.id, eltToDisplay);
+		}
+		else{
+			injectNumericQuestionElement(nodeElt.id, eltToDisplay);
+		}
+		bindQuestionToTarget(nodeElt, eltToDisplay);
 	}
 	else if(nodeElt.category == 'block'){
 		console.log("Block");
@@ -28,38 +40,37 @@ function getDecisionTreeElement(nodeElt){
 	else if(nodeElt.category == 'result'){
 		console.log("Result");
 	}
-	bindQuestionToTarget(nodeElt, eltToDisplay);
 }
 
 function bindQuestionToTarget(nodeElt, eltToDisplay){
-	var decisionTreeId	= nodeElt.id,
-		targets			= nodeElt.targets,
+	var targets			= nodeElt.targets,
 		type 			= eltToDisplay.type,
-		outputs 		= eltToDisplay.outputs,
-		toFollow 		= undefined;
+		outputs 		= eltToDisplay.outputs;
 
 	if(type == 'text'){
-		questionTextEvent(decisionTreeId, outputs, targets);
+		questionTextEvent(nodeElt.id, outputs, targets);
 	}
 	else if(type == 'check'){
-		questionCheckEvent(decisionTreeId, outputs, targets);
+		questionCheckEvent(nodeElt.id, outputs, targets);
 	}
 	else if(type == 'list'){
-		questionListEvent(decisionTreeId, outputs, targets);
+		questionListEvent(nodeElt.id, outputs, targets);
 	}
 	else if(type == 'numeric'){
-		console.log("Numeric config ", eltToDisplay.numerical);
-	}	
-}
+		var inputs = extractExpression(eltToDisplay.numerical.expression).inputs,
+			i = 0;
 
-function getTargets(nodeId){
-	for (var i = 0; i < decisionTree.length; i++) {
-		if(decisionTree[i].id == nodeId){
-			console.log("\t", decisionTree[i].targets);
-			return decisionTree[i].targets;
+		while(i < inputs.length){
+			var isLast = (i == (inputs.length-1));
+			if(isLast){
+				questionNumericDecisionEvent(nodeElt.id, inputs, i, eltToDisplay.numerical, targets);	
+			}
+			else{
+				questionNumericEvent(nodeElt.id, inputs, i);				
+			}
+			i++;
 		}
-	}
-	return [];
+	}	
 }
 
 // Recursively remove given targets
@@ -71,8 +82,97 @@ function removeTargetsElement(targets){
 			removeTargetsElement(subTargets);			
 		}
 
-		// Remove the current target
-		$('label[for="'+id+'"]').remove();
-		$('#'+id).remove();
+		// Remove the current target group, hold by the parent of target
+		$('#'+id).parent().remove();
 	});
+}
+
+// Get targets of the given node
+function getTargets(nodeId){
+	for (var i = 0; i < decisionTree.length; i++) {
+		if(decisionTree[i].id == nodeId){
+			return decisionTree[i].targets;
+		}
+	}
+	return [];
+}
+
+function getUserInput(userInputId){
+	for (var i = 0; i < userInputs.length; i++) {
+		if(userInputs[i].id == userInputId){
+			return userInputs[i];
+		}
+	}
+	return null;
+}
+
+
+function getReference(refValueId){
+	for (var i = 0; i < refValues.length; i++) {
+		if(refValues[i].id == refValueId){
+			return refValues[i];
+		}
+	}
+	return null;
+}
+
+
+
+function extractExpression(expression){
+	var usedInputs = [],
+		usedReferences = [];
+	expression.map(function(elt){
+		if(elt.source == 'userInputs'){
+			usedInputs.push(getUserInput(elt.dataId));
+		}
+		else if(elt.source == 'referenceValues'){
+			usedReferences.push(getReference(elt.dataId));
+		}
+	});
+	return {inputs:usedInputs, references:usedReferences};
+}
+
+function replaceReference(value){
+	switch(value){
+		case 'now':
+			return new Date().getFullYear();
+		default:
+			return value;
+	}
+}
+
+
+function evalExpression(inputs, inputIdx, numConfig){
+	var	ref = getReference(numConfig.refId),
+		condition  = numConfig.condition,
+		expression = numConfig.expression,
+		references = extractExpression(expression).references;
+		operations = numConfig.operations;
+
+	var exp = ref.value+" "+condition+" ",
+		i = 0,
+		j = 0,
+		k = 0;
+	expression.map(function(elt){
+		if(elt.source == 'userInputs'){
+			exp += inputs[i].value+" ";
+			i++;
+		}
+		else if(elt.source == 'referenceValues'){
+			exp += replaceReference(references[j].value)+" ";
+			j++;
+		}
+
+		if(k < operations.length){
+			exp += operations[k]+" ";
+			k++;
+		}
+	});
+	// console.log("EXP", exp);
+	return eval(exp);
+}
+
+function evalResultToTargetIdx(result){
+	var targetIdx = result ? 0 : 1;
+	return targetIdx
 }

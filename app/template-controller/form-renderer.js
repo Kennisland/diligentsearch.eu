@@ -84,10 +84,8 @@ function getWork(countryId){
 function getSharedValue(countryId){
 	$.when(ajaxGetElt('SharedUserInput', countryId), ajaxGetElt('SharedRefValue', countryId)).then(
 		function(resultUserInputs, resultRefValues){
-			userInputs = resultUserInputs[0];
-			refValues = resultRefValues[0];
-			console.log("userInputs ", userInputs);
-			console.log("refValues ", refValues);
+			userInputs = resultUserInputs[0].map(function(elt){ return JSON.parse(elt.json); 	});;
+			refValues = resultRefValues[0].map(function(elt){ 	return JSON.parse(elt.json); 	});;
 		},
 		function(error){
 			alert(error.statusText);
@@ -97,17 +95,11 @@ function getSharedValue(countryId){
 function getData(workId){	
 	$.when(ajaxGetElt('Question', workId), ajaxGetElt('Block', workId), ajaxGetElt('Result', workId), ajaxGetElt('DecisionTree', workId)).then(
 		function(resultQuestions, resultBlocks, resultResults, resultDecisionTree){
-
-			// retrieve data as JSON format
 			questions 	= resultQuestions[0].map(function(elt){ return JSON.parse(elt.json); 	});
 			blocks 		= resultBlocks[0].map(function(elt){ 	return JSON.parse(elt.json); 	});
 			results 	= resultResults[0].map(function(elt){ 	return JSON.parse(elt.json); 	});
 			decisionTree = JSON.parse(resultDecisionTree[0][0].json);
-			
-			console.log("questions ", questions);
-			console.log("blocks ", blocks);
-			console.log("results ", results);
-			console.log("decisionTree", decisionTree);
+			logData();
 
 			// Now we have data, we do something --> event
 			$('#all-data-downloaded').show();
@@ -143,8 +135,8 @@ function bindDecisionTreeData(){
 			$('#work-data-selected').hide();
 		}
 		else{
-
 			getData(workId);
+			$('#work-data-selected').html('');
 			$('#work-data-selected').show();
 		}
 	});
@@ -173,10 +165,14 @@ function injectWorksIntoForm(){
 }
 
 function injectQuestionElement(decisionTreeId, question){
-	content = '<div class="form-group">';
+	var content = '<div class="form-group">';
 	content += '<label for="'+decisionTreeId+'">'+question.title+'</label>';
 
-	if(question.type == 'check'){
+	if(question.type == 'text'){
+		content += '<br>';
+		content += '<input id="'+decisionTreeId+'" type="text"></input>';		
+	}
+	else if(question.type == 'check'){
 		content += '<input id="'+decisionTreeId+'" type="checkbox" checke></input>';
 	}
 	else if(question.type == 'list'){
@@ -187,10 +183,35 @@ function injectQuestionElement(decisionTreeId, question){
 		}
 		content += '</select>';
 	}
-	else if(question.type == 'text' || question.type == 'numeric'){
-		content += '<input id="'+decisionTreeId+'" type="text"></input>';
-	}
+	content += '<br>';
+	content += "</div>";
+	$('#work-data-selected').append(content);
+}
 
+function injectNumericQuestionElement(decisionTreeId, question){
+	var content = '<div class="form-group">';
+	content += '<label>'+question.title+'</label>';	
+
+	var inputs = extractExpression(question.numerical.expression).inputs;
+	if(inputs.length > 0){
+		content += '<div id="'+decisionTreeId+'" style="padding:10px">';
+		var eltStyle = '';
+
+		inputs.map(function(elt, i){
+			content += '<label for="'+decisionTreeId+'-'+i+'" '+eltStyle+'>'+elt.question+'</label>';
+			content += '<br>';
+			content += '<input id="'+decisionTreeId+'-'+i+'" '+eltStyle+'></input>';
+			content += '<br>';
+			content += '<small id="'+decisionTreeId+'-'+i+'-info" '+eltStyle+'>'+elt.information+'</small>';
+			content += '<br>';
+			// Other elements not displayed on beginning
+			if(i==0){
+				eltStyle = ' style="display:none"';
+			}
+		});
+
+		content += "</div>";
+	}
 	content += "</div>";
 	$('#work-data-selected').append(content);
 }
@@ -218,6 +239,16 @@ function handleFollowers(toFollow, targets){
 	}
 }
 
+function questionTextEvent(htmlId, outputs, targets){
+	$('#'+htmlId).on('change', function(){
+		var toFollow = undefined;
+		if($(this).val() != ""){
+			toFollow = targets[0];
+		}
+		handleFollowers(toFollow, targets);
+	});
+}
+
 function questionCheckEvent(htmlId, outputs, targets){
 	$('#'+htmlId).on('change', function(){
 		var toFollow = undefined;
@@ -231,16 +262,6 @@ function questionCheckEvent(htmlId, outputs, targets){
 	});
 }
 
-function questionTextEvent(htmlId, outputs, targets){
-	$('#'+htmlId).on('change', function(){
-		var toFollow = undefined;
-		if($(this).val() != ""){
-			toFollow = targets[0];
-		}
-		console.log("toFollow, targets", toFollow, targets);
-		handleFollowers(toFollow, targets);
-	});
-}
 
 function questionListEvent(htmlId, outputs, targets){
 	$('#'+htmlId).on('change', function(){
@@ -254,6 +275,46 @@ function questionListEvent(htmlId, outputs, targets){
 	});
 }
 
-function questionNumericEvent(){
+function questionNumericEvent(htmlId, inputs, inputIdx){
+	$('#'+htmlId+'-'+inputIdx).on('change', function(){
+		inputs[inputIdx].value = $(this).val();
+		if($(this).val() == ""){
+			hideInputsElement(htmlId, inputIdx, inputs.length);
+		}
+		else{
+			showNextInputElement(htmlId, inputIdx);
+		}
+	});
+}
 
+function questionNumericDecisionEvent(htmlId, inputs, inputIdx, numConfig, targets){
+	$('#'+htmlId+'-'+inputIdx).on('change', function(){
+		var toFollow = undefined;
+		inputs[inputIdx].value = $(this).val();
+		if($(this).val() != ""){
+			var evalResult = evalExpression(inputs, inputIdx, numConfig),
+				targetIdx = evalResultToTargetIdx(evalResult),
+				toFollow = targets[targetIdx];
+		}
+		handleFollowers(toFollow, targets)
+	});
+}
+
+function showNextInputElement(htmlId, inputIdx){
+	var next = inputIdx + 1,
+		nextSelector = htmlId+'-'+next;
+	$('label[for="'+nextSelector+'"]').show();
+	$('#'+nextSelector).show();
+	$('#'+nextSelector+'-info').show();
+}
+
+function hideInputsElement(htmlId, inputIdx, inputsLength){
+	var next = inputIdx + 1;
+	while(next < inputsLength){
+		var nextSelector = htmlId+'-'+next;
+		$('label[for="'+nextSelector+'"]').hide();
+		$('#'+nextSelector).hide();
+		$('#'+nextSelector+'-info').hide();
+		next++;
+	}
 }
