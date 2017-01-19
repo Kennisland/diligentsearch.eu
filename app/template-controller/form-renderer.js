@@ -24,7 +24,6 @@ html_formRenderer =`
 		</div>
 
 		<div id="work-data-selected" style="display:none">
-			<label>This is where the decision tree begins</label>
 		</div>
 
 	</div>
@@ -69,7 +68,6 @@ function getCountry(){
 function getWork(countryId){
 	// Reset works data
 	works = [];
-	injectWorksIntoForm();
 	$('#work-data-selected').hide();
 
 	// Get works data
@@ -86,8 +84,10 @@ function getWork(countryId){
 function getSharedValue(countryId){
 	$.when(ajaxGetElt('SharedUserInput', countryId), ajaxGetElt('SharedRefValue', countryId)).then(
 		function(resultUserInputs, resultRefValues){
-			userInputs = resultUserInputs;
-			refValues = resultRefValues;
+			userInputs = resultUserInputs[0];
+			refValues = resultRefValues[0];
+			console.log("userInputs ", userInputs);
+			console.log("refValues ", refValues);
 		},
 		function(error){
 			alert(error.statusText);
@@ -97,14 +97,21 @@ function getSharedValue(countryId){
 function getData(workId){	
 	$.when(ajaxGetElt('Question', workId), ajaxGetElt('Block', workId), ajaxGetElt('Result', workId), ajaxGetElt('DecisionTree', workId)).then(
 		function(resultQuestions, resultBlocks, resultResults, resultDecisionTree){
-			questions = resultQuestions[0];
-			blocks = resultBlocks[0];
-			results = resultResults[0];
-			decisionTree = resultDecisionTree[0];
+
+			// retrieve data as JSON format
+			questions 	= resultQuestions[0].map(function(elt){ return JSON.parse(elt.json); 	});
+			blocks 		= resultBlocks[0].map(function(elt){ 	return JSON.parse(elt.json); 	});
+			results 	= resultResults[0].map(function(elt){ 	return JSON.parse(elt.json); 	});
+			decisionTree = JSON.parse(resultDecisionTree[0][0].json);
+			
+			console.log("questions ", questions);
+			console.log("blocks ", blocks);
+			console.log("results ", results);
+			console.log("decisionTree", decisionTree);
 
 			// Now we have data, we do something --> event
 			$('#all-data-downloaded').show();
-
+			loadElement();
 		},
 		function(error){
 			alert(error.statusText);
@@ -136,8 +143,9 @@ function bindDecisionTreeData(){
 			$('#work-data-selected').hide();
 		}
 		else{
+
 			getData(workId);
-			$('#work-data-selected').show();	
+			$('#work-data-selected').show();
 		}
 	});
 }
@@ -164,11 +172,88 @@ function injectWorksIntoForm(){
 	bindDecisionTreeData();
 }
 
+function injectQuestionElement(decisionTreeId, question){
+	content = '<div class="form-group">';
+	content += '<label for="'+decisionTreeId+'">'+question.title+'</label>';
+
+	if(question.type == 'check'){
+		content += '<input id="'+decisionTreeId+'" type="checkbox" checke></input>';
+	}
+	else if(question.type == 'list'){
+		content += '<select id="'+decisionTreeId+'">';
+		content += '<option val=""></option>';
+		for (var i = 0; i < question.outputs.length; i++) {
+			content += '<option val="'+question.outputs[i]+'">'+question.outputs[i]+'</option>';
+		}
+		content += '</select>';
+	}
+	else if(question.type == 'text' || question.type == 'numeric'){
+		content += '<input id="'+decisionTreeId+'" type="text"></input>';
+	}
+
+	content += "</div>";
+	$('#work-data-selected').append(content);
+}
+
+function injectBlockElement(){
+
+}
+
+function injectResultElement(){
+
+}
 
 
-// function injectNewDecisionTreeElement(){
-// 	var content = '';
-// 	content += '<label>This is where the decision tree begins</label>';
 
+/*
 
-// }
+	Question type events
+
+*/
+
+function handleFollowers(toFollow, targets){
+	removeTargetsElement(targets);	
+	if(toFollow){
+		loadElement(toFollow);
+	}
+}
+
+function questionCheckEvent(htmlId, outputs, targets){
+	$('#'+htmlId).on('change', function(){
+		var toFollow = undefined;
+		if($('#'+htmlId).is(':checked')){
+			toFollow = targets[0];
+		}
+		else{
+			toFollow = targets[1];
+		}
+		handleFollowers(toFollow, targets);
+	});
+}
+
+function questionTextEvent(htmlId, outputs, targets){
+	$('#'+htmlId).on('change', function(){
+		var toFollow = undefined;
+		if($(this).val() != ""){
+			toFollow = targets[0];
+		}
+		console.log("toFollow, targets", toFollow, targets);
+		handleFollowers(toFollow, targets);
+	});
+}
+
+function questionListEvent(htmlId, outputs, targets){
+	$('#'+htmlId).on('change', function(){
+		var toFollow = undefined;
+		for (var i = 0; i < outputs.length; i++) {
+			if(outputs[i] == $(this).val()){
+				toFollow = targets[i];
+			}
+		}
+		handleFollowers(toFollow, targets);
+	});
+}
+
+function questionNumericEvent(){
+
+}
