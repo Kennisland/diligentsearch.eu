@@ -25,7 +25,9 @@ function loadElement(id){
 function getDecisionTreeElement(nodeElt){
 	var eltToDisplay = getGraphicNodeElt(nodeElt.category, nodeElt.dataId);
 	
+	console.log("injecting ", nodeElt.id);
 	if(nodeElt.category == 'question'){
+
 		if(eltToDisplay.type != 'numeric'){
 			injectQuestionElement(nodeElt.id, eltToDisplay);
 		}
@@ -36,16 +38,17 @@ function getDecisionTreeElement(nodeElt){
 	}
 	else if(nodeElt.category == 'block'){
 		console.log("Block");
+		injectBlockElement(nodeElt.id, eltToDisplay);
 	}
 	else if(nodeElt.category == 'result'){
-		console.log("Result");
+		injectResultElement(nodeElt.id, eltToDisplay);
 	}
 }
 
 function bindQuestionToTarget(nodeElt, eltToDisplay){
-	var targets			= nodeElt.targets,
-		type 			= eltToDisplay.type,
-		outputs 		= eltToDisplay.outputs;
+	var targets	= nodeElt.targets,
+		type 	= eltToDisplay.type,
+		outputs = eltToDisplay.outputs;
 
 	if(type == 'text'){
 		questionTextEvent(nodeElt.id, outputs, targets);
@@ -83,7 +86,7 @@ function removeTargetsElement(targets){
 		}
 
 		// Remove the current target group, hold by the parent of target
-		$('#'+id).parent().remove();
+		$('#'+id).remove();
 	});
 }
 
@@ -97,6 +100,15 @@ function getTargets(nodeId){
 	return [];
 }
 
+
+
+
+
+
+/* 
+	Numerical question stuff
+*/
+
 function getUserInput(userInputId){
 	for (var i = 0; i < userInputs.length; i++) {
 		if(userInputs[i].id == userInputId){
@@ -105,7 +117,6 @@ function getUserInput(userInputId){
 	}
 	return null;
 }
-
 
 function getReference(refValueId){
 	for (var i = 0; i < refValues.length; i++) {
