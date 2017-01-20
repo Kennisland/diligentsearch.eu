@@ -201,21 +201,24 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 
 	var inputs = extractExpression(question.numerical.expression).inputs;
 	if(inputs.length > 0){
+		var isFirst = true;
 		inputs.map(function(elt, i){
-			if(i==0){
-				content += '<div style="padding:10px;">';
-			}else{
-				content += '<div style="padding:10px; display:none">';				
+			if(!elt.value){
+				if(isFirst){
+					content += '<div style="padding:10px;">';
+					isFirst = false;
+				}else{
+					content += '<div style="padding:10px; display:none">';				
+				}
+				content += '<label>'+elt.question+'</label>';
+				content += '<br>';
+				content += '<input></input>';
+				content += '<br>';
+				content += '<small>'+elt.information+'</small>';
+				content += '<br>';
+				content += "</div>";
 			}
-			content += '<label>'+elt.question+'</label>';
-			content += '<br>';
-			content += '<input></input>';
-			content += '<br>';
-			content += '<small>'+elt.information+'</small>';
-			content += '<br>';
-			content += "</div>";
 		});
-
 	}
 	content += "</div>";
 	return content;
@@ -324,9 +327,9 @@ function questionListEvent(htmlId, outputs, targets){
 	});
 }
 
-function questionNumericEvent(htmlId, inputs, inputIdx){
+function questionNumericEvent(htmlId, htmlIndex, inputs, inputIdx){
 	var selector = htmlId+' div';
-	$('#'+selector+' input').eq(inputIdx).on('change', function(){
+	$('#'+selector+' input').eq(htmlIndex).on('change', function(){
 		inputs[inputIdx].value = $(this).val();
 		if($(this).val() == ""){
 			hideInputsElement(selector, inputIdx, inputs.length);
@@ -337,18 +340,23 @@ function questionNumericEvent(htmlId, inputs, inputIdx){
 	});
 }
 
-function questionNumericDecisionEvent(htmlId, inputs, inputIdx, numConfig, targets){	
+function questionNumericDecisionEvent(htmlId, htmlIndex, inputs, inputIdx, numConfig, targets){	
 	var selector = htmlId+' div';
-	$('#'+selector+' input').eq(inputIdx).on('change', function(){
+	$('#'+selector+' input').eq(htmlIndex).on('change', function(){
 		var toFollow = undefined;
 		inputs[inputIdx].value = $(this).val();
 		if($(this).val() != ""){
-			var evalResult = evalExpression(inputs, inputIdx, numConfig),
+			var evalResult = evalExpression(inputs, numConfig),
 				targetIdx = evalResultToTargetIdx(evalResult),
 				toFollow = targets[targetIdx];
 		}
-		console.log("After computation : ", toFollow);
 		handleFollowers(toFollow, targets)
+	});
+}
+
+function questionNumericRemoveEvent(htmlId, inputs, i){
+	$('#'+htmlId).on('remove', function(){
+		inputs[i].value = undefined;
 	});
 }
 

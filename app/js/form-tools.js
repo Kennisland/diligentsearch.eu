@@ -66,20 +66,41 @@ function bindQuestionToTarget(nodeElt, eltToDisplay){
 		questionListEvent(nodeElt.id, outputs, targets);
 	}
 	else if(type == 'numeric'){
-		var inputs = extractExpression(eltToDisplay.numerical.expression).inputs,
-			i = 0;
+		bindNumericQuestionToTarget(nodeElt, eltToDisplay, targets);
+	}
+}
 
-		while(i < inputs.length){
-			var isLast = (i == (inputs.length-1));
-			if(isLast){
-				questionNumericDecisionEvent(nodeElt.id, inputs, i, eltToDisplay.numerical, targets);	
-			}
-			else{
-				questionNumericEvent(nodeElt.id, inputs, i);				
+function bindNumericQuestionToTarget(nodeElt, eltToDisplay, targets){
+	var numConfig 	= eltToDisplay.numerical,
+		inputs 		= extractExpression(numConfig.expression).inputs,
+		lastToCompute = getLastToCompute(inputs);
+
+	// Run computation if all inputs already have value
+	if(lastToCompute == -1){
+		var evalResult = evalExpression(inputs, numConfig),
+			targetIdx = evalResultToTargetIdx(evalResult),
+			toFollow = targets[targetIdx];
+		handleFollowers(toFollow, targets);
+	}
+	else{
+		// Bind the html / jquery
+		var i = 0,
+			htmlIdx = 0;
+		while(i <= lastToCompute){
+			if(!inputs[i].value){
+				if(i == lastToCompute){
+					questionNumericDecisionEvent(nodeElt.id, htmlIdx, inputs, i, eltToDisplay.numerical, targets);	
+				}
+				else{
+					questionNumericEvent(nodeElt.id, htmlIdx, inputs, i);				
+				}
+				// Handle model reset on deletion
+				questionNumericRemoveEvent(nodeElt.id, inputs, i);
+				htmlIdx++;
 			}
 			i++;
 		}
-	}	
+	}
 }
 
 // Recursively remove given targets
@@ -92,7 +113,7 @@ function removeTargetsElement(targets){
 		}
 
 		// Remove the current target group, hold by the parent of target
-		$('#'+id).remove();
+		$('#'+id).trigger('remove').remove();
 	});
 }
 
@@ -119,7 +140,7 @@ function addBlock(questions, nodeId, index){
 	var htmlContent = '<div '+innerBlockStyle+'>';
 	htmlContent += getBlockQuestionElementHtml(questions, innerBlockId);
 	htmlContent += '</div>';
-	
+
 	var selector = nodeId+' div',
 		selectorIdx = index-1;
 	$('#'+selector).eq(selectorIdx).after(htmlContent);
@@ -166,6 +187,16 @@ function extractExpression(expression){
 	return {inputs:usedInputs, references:usedReferences};
 }
 
+function getLastToCompute(inputs){
+	var lastToCompute = -1;
+	for(var i=0; i<inputs.length; i++){
+		if(!inputs[i].value){
+			lastToCompute = i;
+		}
+	}
+	return lastToCompute;
+}
+
 function replaceReference(value){
 	switch(value){
 		case 'now':
@@ -176,7 +207,7 @@ function replaceReference(value){
 }
 
 
-function evalExpression(inputs, inputIdx, numConfig){
+function evalExpression(inputs, numConfig){
 	var	ref = getReference(numConfig.refId),
 		condition  = numConfig.condition,
 		expression = numConfig.expression,
@@ -202,7 +233,7 @@ function evalExpression(inputs, inputIdx, numConfig){
 			k++;
 		}
 	});
-	// console.log("EXP", exp);
+	console.log("EXP", exp, eval(exp));
 	return eval(exp);
 }
 
