@@ -22,6 +22,8 @@ function loadElement(id){
 	}
 }
 
+
+// Inject HTML and bind events on injected html
 function getDecisionTreeElement(nodeElt){
 	var htmlContent = '',
 		eltToDisplay = getGraphicNodeElt(nodeElt.category, nodeElt.dataId);
@@ -39,8 +41,7 @@ function getDecisionTreeElement(nodeElt){
 	else if(nodeElt.category == 'block'){
 		htmlContent = getBlockElementHtml(nodeElt.id, eltToDisplay, 0);
 		injectElementIntoForm(htmlContent);
-
-		// targets = nodeElt.targets
+		// Load the output direclty, to provide further navigation to user
 		loadElement(nodeElt.targets[0]);
 	}
 	else if(nodeElt.category == 'result'){
@@ -50,7 +51,7 @@ function getDecisionTreeElement(nodeElt){
 }
 
 
-
+// Specific question binding according to question type
 function bindQuestionToTarget(nodeElt, eltToDisplay){
 	var targets	= nodeElt.targets,
 		type 	= eltToDisplay.type,
@@ -70,6 +71,7 @@ function bindQuestionToTarget(nodeElt, eltToDisplay){
 	}
 }
 
+//Numeric question binding, allowing direct computation if possible
 function bindNumericQuestionToTarget(nodeElt, eltToDisplay, targets){
 	var numConfig 	= eltToDisplay.numerical,
 		inputs 		= extractExpression(numConfig.expression).inputs,
@@ -103,6 +105,14 @@ function bindNumericQuestionToTarget(nodeElt, eltToDisplay, targets){
 	}
 }
 
+// Handle the following element when 'change' Jquery event is triggered in html
+function handleFollowers(toFollow, targets){
+	removeTargetsElement(targets);	
+	if(toFollow){
+		loadElement(toFollow);
+	}
+}
+
 // Recursively remove given targets
 function removeTargetsElement(targets){
 	targets.map(function(id){		
@@ -111,8 +121,8 @@ function removeTargetsElement(targets){
 		if(subTargets.length > 0 ){
 			removeTargetsElement(subTargets);			
 		}
-
 		// Remove the current target group, hold by the parent of target
+		// The trigger event allow to reset user inputs if needed
 		$('#'+id).trigger('remove').remove();
 	});
 }
@@ -127,25 +137,20 @@ function getTargets(nodeId){
 	return [];
 }
 
-
-
-/*
-	Block stuff
-*/
-
-function addBlock(questions, nodeId, index){
-	var innerBlockStyle = 'style="border: 1px;border-style: solid;border-color: #34a301;padding: 5px;"',
-		innerBlockId 	= nodeId+'-'+index;
-
-	var htmlContent = '<div '+innerBlockStyle+'>';
-	htmlContent += getBlockQuestionElementHtml(questions, innerBlockId);
-	htmlContent += '</div>';
-
-	var selector = nodeId+' div',
-		selectorIdx = index-1;
-	$('#'+selector).eq(selectorIdx).after(htmlContent);
+// Display following user input element
+function showNextInputElement(selector, inputIdx){
+	var next = inputIdx + 1;
+	$('#'+selector).eq(next).show();
 }
 
+// Hide following user inputs
+function hideInputsElement(selector, inputIdx, inputsLength){
+	var next = inputIdx + 1;
+	while(next < inputsLength){
+		$('#'+selector).eq(next).hide();
+		next++;
+	}
+}
 
 
 
@@ -172,21 +177,6 @@ function getReference(refValueId){
 }
 
 
-
-function extractExpression(expression){
-	var usedInputs = [],
-		usedReferences = [];
-	expression.map(function(elt){
-		if(elt.source == 'userInputs'){
-			usedInputs.push(getUserInput(elt.dataId));
-		}
-		else if(elt.source == 'referenceValues'){
-			usedReferences.push(getReference(elt.dataId));
-		}
-	});
-	return {inputs:usedInputs, references:usedReferences};
-}
-
 function getLastToCompute(inputs){
 	var lastToCompute = -1;
 	for(var i=0; i<inputs.length; i++){
@@ -206,6 +196,19 @@ function replaceReference(value){
 	}
 }
 
+function extractExpression(expression){
+	var usedInputs = [],
+		usedReferences = [];
+	expression.map(function(elt){
+		if(elt.source == 'userInputs'){
+			usedInputs.push(getUserInput(elt.dataId));
+		}
+		else if(elt.source == 'referenceValues'){
+			usedReferences.push(getReference(elt.dataId));
+		}
+	});
+	return {inputs:usedInputs, references:usedReferences};
+}
 
 function evalExpression(inputs, numConfig){
 	var	ref = getReference(numConfig.refId),
