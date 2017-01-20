@@ -164,10 +164,14 @@ function injectWorksIntoForm(){
 	bindDecisionTreeData();
 }
 
+function injectElementIntoForm(html){
+	$('#work-data-selected').append(html);
+}
 
 
 
-function injectQuestionElement(decisionTreeId, question){
+
+function getQuestionElementHtml(decisionTreeId, question){
 	var content = '<div id="'+decisionTreeId+'" class="form-group">';
 		content += '<label>'+question.title+'</label>';
 
@@ -188,10 +192,10 @@ function injectQuestionElement(decisionTreeId, question){
 	}
 	content += '<br>';
 	content += "</div>";
-	$('#work-data-selected').append(content);
+	return content;
 }
 
-function injectNumericQuestionElement(decisionTreeId, question){
+function getNumericQuestionElementHtml(decisionTreeId, question){
 	var content = '<div id="'+decisionTreeId+'" class="form-group">';
 		content += '<label>'+question.title+'</label>';	
 
@@ -214,24 +218,56 @@ function injectNumericQuestionElement(decisionTreeId, question){
 
 	}
 	content += "</div>";
-	$('#work-data-selected').append(content);
-}
-
-function injectBlockElement(decisionTreeId, block){
-	console.log("Injecting ", block);
+	return content;
 }
 
 
-
-
-function injectResultElement(decisionTreeId, result){
-	console.log("Injecting ", result);
-
+function getBlockElementHtml(decisionTreeId, block, blockIndex){
 	var content = '<div id="'+decisionTreeId+'" class="form-group">';
-	content += '<textarea style="min-width:85%;max-width:85%">'+result.content+'</textarea>';
+		content += '<label>'+block.introduction+'</label>';
+
+	// Set / Get question data
+	var	innerBlockStyle = 'style="border: 1px;border-style: solid;border-color: #34a301;padding: 5px;"',
+		innerBlockId = decisionTreeId+'-'+blockIndex
+		innerBlockHtml = getBlockQuestionElementHtml(block.questions, innerBlockId);
+
+	// Inject question data
+	content += '<div '+innerBlockStyle+'>';
+	content += innerBlockHtml;
+	content += '</div>';
+
+	// Inject add button
+	var nextBlockIdx = blockIndex+1;
+	content += '<a onclick="addBlock(['+block.questions+'], `'+decisionTreeId+'`, '+nextBlockIdx+')">Add a block section</a>';
+	content += '</div>';
+	return content;
+}
+
+function getBlockQuestionElementHtml(questions, innerBlockId){
+	var content = '';
+	questions.map(function(dataId){
+		var eltToDisplay = getGraphicNodeElt('question', dataId),
+			eltHtml = '';
+		if(eltToDisplay.type != 'numeric'){
+			eltHtml += getQuestionElementHtml(innerBlockId, eltToDisplay);
+		}
+		else{
+			eltHtml += getNumericQuestionElementHtml(innerBlockId, eltToDisplay);
+		}
+		eltHtml = eltHtml.replace(/<br>/g, '');
+		eltHtml = eltHtml.replace(/class="form-group"/g, '');
+		content += eltHtml;
+	});
+	return content;
+}
+
+
+function getResultElementHtml(decisionTreeId, result){
+	var content = '<div id="'+decisionTreeId+'" class="form-group">';
+	content += '<textarea style="min-width:85%;max-width:85%" disabled>'+result.content+'</textarea>';
 	content += '<br>';
 	content += "</div>";
-	$('#work-data-selected').append(content);
+	return content;
 }
 
 
@@ -270,7 +306,6 @@ function questionCheckEvent(htmlId, outputs, targets){
 		else{
 			toFollow = targets[1];
 		}
-		console.log("check handleFollowers", toFollow);
 		handleFollowers(toFollow, targets);
 	});
 }
@@ -294,11 +329,9 @@ function questionNumericEvent(htmlId, inputs, inputIdx){
 	$('#'+selector+' input').eq(inputIdx).on('change', function(){
 		inputs[inputIdx].value = $(this).val();
 		if($(this).val() == ""){
-			console.log("hideInputsElement");
 			hideInputsElement(selector, inputIdx, inputs.length);
 		}
 		else{
-			console.log("showNextInputElement");
 			showNextInputElement(selector, inputIdx);
 		}
 	});
@@ -314,13 +347,13 @@ function questionNumericDecisionEvent(htmlId, inputs, inputIdx, numConfig, targe
 				targetIdx = evalResultToTargetIdx(evalResult),
 				toFollow = targets[targetIdx];
 		}
+		console.log("After computation : ", toFollow);
 		handleFollowers(toFollow, targets)
 	});
 }
 
 function showNextInputElement(selector, inputIdx){
 	var next = inputIdx + 1;
-	console.log("--> ", selector, next);
 	$('#'+selector).eq(next).show();
 }
 

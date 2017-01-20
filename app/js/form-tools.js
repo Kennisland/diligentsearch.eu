@@ -23,27 +23,33 @@ function loadElement(id){
 }
 
 function getDecisionTreeElement(nodeElt){
-	var eltToDisplay = getGraphicNodeElt(nodeElt.category, nodeElt.dataId);
+	var htmlContent = '',
+		eltToDisplay = getGraphicNodeElt(nodeElt.category, nodeElt.dataId);
 	
-	console.log("injecting ", nodeElt.id);
 	if(nodeElt.category == 'question'){
-
 		if(eltToDisplay.type != 'numeric'){
-			injectQuestionElement(nodeElt.id, eltToDisplay);
+			htmlContent = getQuestionElementHtml(nodeElt.id, eltToDisplay);
 		}
 		else{
-			injectNumericQuestionElement(nodeElt.id, eltToDisplay);
+			htmlContent = getNumericQuestionElementHtml(nodeElt.id, eltToDisplay);
 		}
+		injectElementIntoForm(htmlContent);
 		bindQuestionToTarget(nodeElt, eltToDisplay);
 	}
 	else if(nodeElt.category == 'block'){
-		console.log("Block");
-		injectBlockElement(nodeElt.id, eltToDisplay);
+		htmlContent = getBlockElementHtml(nodeElt.id, eltToDisplay, 0);
+		injectElementIntoForm(htmlContent);
+
+		// targets = nodeElt.targets
+		loadElement(nodeElt.targets[0]);
 	}
 	else if(nodeElt.category == 'result'){
-		injectResultElement(nodeElt.id, eltToDisplay);
-	}
+		htmlContent = getResultElementHtml(nodeElt.id, eltToDisplay);
+		injectElementIntoForm(htmlContent);
+	}	
 }
+
+
 
 function bindQuestionToTarget(nodeElt, eltToDisplay){
 	var targets	= nodeElt.targets,
@@ -101,6 +107,23 @@ function getTargets(nodeId){
 }
 
 
+
+/*
+	Block stuff
+*/
+
+function addBlock(questions, nodeId, index){
+	var innerBlockStyle = 'style="border: 1px;border-style: solid;border-color: #34a301;padding: 5px;"',
+		innerBlockId 	= nodeId+'-'+index;
+
+	var htmlContent = '<div '+innerBlockStyle+'>';
+	htmlContent += getBlockQuestionElementHtml(questions, innerBlockId);
+	htmlContent += '</div>';
+	
+	var selector = nodeId+' div',
+		selectorIdx = index-1;
+	$('#'+selector).eq(selectorIdx).after(htmlContent);
+}
 
 
 
