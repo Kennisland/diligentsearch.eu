@@ -339,7 +339,7 @@ function questionNumericEvent(htmlId, inputs, inputIdx){
 
 function questionNumericDecisionEvent(htmlId, inputs, inputIdx, numConfig, targets){	
 	var selector = htmlId+' div';
-	$('#'+selector+' input').on('change', function(){
+	$('#'+selector+' input').eq(inputIdx).on('change', function(){
 		var toFollow = undefined;
 		inputs[inputIdx].value = $(this).val();
 		if($(this).val() != ""){
