@@ -26,6 +26,11 @@ html_formRenderer =`
 		<div id="work-data-selected" style="display:none">
 		</div>
 
+		<div id="work-data-selected-save" style="display:none">
+			<button type="button" class="btn btn-success pull-left" onclick="saveForm()">Save</button>
+		</div>
+
+		
 	</div>
 `;
 
@@ -68,7 +73,7 @@ function getCountry(){
 function getWork(countryId){
 	// Reset works data
 	works = [];
-	$('#work-data-selected').hide();
+	$('div [id^="work-data-selected"]').hide();
 
 	// Get works data
 	$.when(ajaxGetWorks(countryId)).then(
@@ -132,12 +137,12 @@ function bindDecisionTreeData(){
 		var workId = $(this).val();
 		if(workId == ""){
 			works = [];
-			$('#work-data-selected').hide();
+			$('div [id^="work-data-selected"]').hide();
 		}
 		else{
 			getData(workId);
 			$('#work-data-selected').html('');
-			$('#work-data-selected').show();
+			$('div [id^="work-data-selected"]').show();
 		}
 	});
 }

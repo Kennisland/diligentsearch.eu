@@ -10,7 +10,7 @@ function getQuestionElementHtml(decisionTreeId, question){
 		content += '<input type="text"></input>';
 	}
 	else if(question.type == 'check'){
-		content += '<input type="checkbox"></input>';
+		content += '<input type="checkbox" value="off"></input>';
 	}
 	else if(question.type == 'list'){
 		content += '<select>';
@@ -73,9 +73,11 @@ function questionCheckEvent(htmlId, outputs, targets){
 	$('#'+selector).on('change', function(){
 		var toFollow = undefined;
 		if($('#'+selector).is(':checked')){
+			$(this).val('on');
 			toFollow = targets[0];
 		}
 		else{
+			$(this).val('off');
 			toFollow = targets[1];
 		}
 		handleFollowers(toFollow, targets);
@@ -161,14 +163,15 @@ function getBlockElementHtml(decisionTreeId, block, blockIndex){
 
 function getBlockQuestionElementHtml(questions, innerBlockId){
 	var content = '';
-	questions.map(function(dataId){
+	questions.map(function(dataId){		
 		var eltToDisplay = getGraphicNodeElt('question', dataId),
-			eltHtml = '';
+			eltHtml = '',
+			innerQuestionId = innerBlockId+'-'+dataId;
 		if(eltToDisplay.type != 'numeric'){
-			eltHtml += getQuestionElementHtml(innerBlockId, eltToDisplay);
+			eltHtml += getQuestionElementHtml(innerQuestionId, eltToDisplay);
 		}
 		else{
-			eltHtml += getNumericQuestionElementHtml(innerBlockId, eltToDisplay);
+			eltHtml += getNumericQuestionElementHtml(innerQuestionId, eltToDisplay);
 		}
 		eltHtml = eltHtml.replace(/<br>/g, '');
 		eltHtml = eltHtml.replace(/class="form-group"/g, '');

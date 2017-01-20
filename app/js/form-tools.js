@@ -14,17 +14,24 @@ function loadElement(id){
 		id = root_node_id;
 	}
 
+	var element = getDecisionTreeElement(id);
+	if(element){
+		generateElementHtml(element);
+	}
+}
+
+function getDecisionTreeElement(id){
 	for (var i = 0; i < decisionTree.length; i++) {
 		if(decisionTree[i].id == id){
-			getDecisionTreeElement(decisionTree[i]);
-			break;
+			return decisionTree[i];
 		}
 	}
+	return undefined;
 }
 
 
 // Inject HTML and bind events on injected html
-function getDecisionTreeElement(nodeElt){
+function generateElementHtml(nodeElt){
 	var htmlContent = '',
 		eltToDisplay = getGraphicNodeElt(nodeElt.category, nodeElt.dataId);
 	
@@ -50,6 +57,11 @@ function getDecisionTreeElement(nodeElt){
 	}	
 }
 
+
+
+/*
+	HTML Jquery event / remove / hide / show
+*/
 
 // Specific question binding according to question type
 function bindQuestionToTarget(nodeElt, eltToDisplay){
@@ -243,4 +255,81 @@ function evalExpression(inputs, numConfig){
 function evalResultToTargetIdx(result){
 	var targetIdx = result ? 0 : 1;
 	return targetIdx
+}
+
+
+
+/*
+	Form dumping 
+*/
+
+// Retrieve all id starting by 'lvl_'
+function getHtmlId(){
+	var elementsId = [];
+	$('#work-data-selected').find('[id^="lvl_"]').map(function(elt){
+		elementsId.push($(this)[0].id);
+	});
+	return elementsId;
+}
+
+function getQuestionFromHtmlId(id, element){
+	var dataId = undefined;
+	if(element){
+		dataId = element.dataId;
+	}
+	else{
+		var s = id.split('-');
+		dataId = s[s.length-1];
+	}
+	return getGraphicNodeElt('question', dataId);
+}
+
+function extractQuestionHtmlAnswer(id, question){
+	var value;
+	if(question.type == 'text' || question.type == 'check'){
+		value = $('#'+id).find('input').val() || undefined;
+	}
+	else if(question.type == 'list'){
+		value = $('#'+id).find('select').val() || undefined;
+	}
+	else if(question.type == 'numeric'){
+		value = [];
+		$('#'+id).find('input').map(function(elt){
+			value.push($(this)[0].value || undefined);
+		});
+	}
+	return value;
+}
+
+function saveForm(){
+	var elementsId = getHtmlId();
+	
+	// For each id, get the child element, which ca be either input/select/textarea
+	dumpedForm = [];
+	elementsId.map(function(id){
+		var element 	= getDecisionTreeElement(id),
+			isBlock 	= element && element.category == 'block',
+			isResult 	= element && element.category == 'result',
+			isNested	= !element,
+			isQuestion 	= !isBlock && !isResult,
+			value 		= undefined;
+
+		if(isQuestion){
+			var question = getQuestionFromHtmlId(id, element);
+			value = extractQuestionHtmlAnswer(id, question);
+		}
+		else if(isResult){
+			value = $('#'+id).find('textarea').val() || undefined;
+		}
+
+		if(!isBlock){
+			dumpedForm.push(new FormEntry(id, value));
+		}
+	});
+	console.log(dumpedForm);
+}
+
+function FormEntry(htmlId, value){
+	this.htmlId = htmlId;
+	this.value 	= value;
 }
