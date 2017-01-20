@@ -301,16 +301,13 @@ function extractQuestionHtmlAnswer(id, question){
 	return value;
 }
 
-function saveForm(){
-	var elementsId = getHtmlId();
-	
-	// For each id, get the child element, which ca be either input/select/textarea
-	dumpedForm = [];
-	elementsId.map(function(id){
+// For each id, get interest child element (input/select/textarea), and get value
+function dumpHtmlForm(){
+	var formData = [];
+	getHtmlId().map(function(id){
 		var element 	= getDecisionTreeElement(id),
 			isBlock 	= element && element.category == 'block',
 			isResult 	= element && element.category == 'result',
-			isNested	= !element,
 			isQuestion 	= !isBlock && !isResult,
 			value 		= undefined;
 
@@ -323,10 +320,37 @@ function saveForm(){
 		}
 
 		if(!isBlock){
-			dumpedForm.push(new FormEntry(id, value));
+			formData.push(new FormEntry(id, value));
 		}
 	});
-	console.log(dumpedForm);
+	return formData;	
+}
+
+function saveForm(){
+	dumpedForm.json = dumpHtmlForm();
+	if(!dumpedForm.webHook){
+		function cb(status){
+			if(status){
+				alert("Report injected in database \nWebhook is : "+dumpedForm.webHook);
+			}
+			else{
+				alert("Failed to save report in database ");
+			}
+		}
+		var workId = $('#choose-work').val();
+		ajaxPutForm(dumpedForm, workId, cb);
+	}
+	else{
+		function cb(status){
+			if(status){
+				alert("Report correclty updated");
+			}
+			else{
+				alert("Failed to update report in database ");
+			}
+		}
+		updateElt('Form', dumpedForm, cb);
+	}
 }
 
 function FormEntry(htmlId, value){

@@ -81,6 +81,9 @@ function handle_get_request(req, res, connection){
 			}          
 		});
 	}
+	else if(currentTable == 'Form'){
+		var webHook = req.query.webHook;
+	}
 	else{
 		console.log("Unknown table : ", currentTable);
 	}
@@ -160,10 +163,42 @@ function handle_post_request(req, res, connection){
 				}
 			}			
 	}
+	else if(currentTable == 'Form'){
+		if(req.body.insert){
+			var q = "insert into "+currentTable+" (workId, hook, json) values (? , ?, ?)",
+				webHook = genWebHook();
+			connection.query(q, [req.body.foreignKeyId, webHook, req.body.json], function(err, rows){
+				connection.release();
+				if(!err){
+					rows.webHook = webHook;
+					res.json(rows);
+				}
+			});
+		}
+		else if(req.body.update){
+			var q = "update "+currentTable+" set json = ? where hook = ?";
+			connection.query(q, [req.body.json, req.body.webHook], function(err, rows){
+				connection.release();
+				if(!err){
+					res.json(rows);
+				}
+			});
+		}
+	}
 	else{
 		console.log("Unknown table : ", currentTable);
 	}
 }
+
+function genWebHook(){
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for( var i=0; i < 8; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
 
 app.get(dbRoute,function(req,res){      
 	handle_database(req, res);

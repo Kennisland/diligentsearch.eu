@@ -43,6 +43,11 @@ questions = [];
 blocks = [];
 results = [];
 decisionTree = [];
+dumpedForm = {
+	webHook: undefined,
+	json: ''
+};
+
 
 function injectFormRenderer(){
 	getCountry();
