@@ -28,9 +28,7 @@ html_formRenderer =`
 
 		<div id="work-data-selected-save" style="display:none">
 			<button type="button" class="btn btn-success pull-left" onclick="saveForm()">Save</button>
-		</div>
-
-		
+		</div>		
 	</div>
 `;
 

@@ -3,16 +3,19 @@
 */
 function getQuestionElementHtml(decisionTreeId, question){	
 	var content = '<div id="'+decisionTreeId+'" class="form-group">';
-		content += '<label>'+question.title+'</label>';
 
 	if(question.type == 'text'){
+		content += '<label>'+question.title+'</label>';
 		content += '<br>';
 		content += '<input type="text"></input>';
 	}
 	else if(question.type == 'check'){
 		content += '<input type="checkbox" value="off"></input>';
+		content += '<label class="form-question-check">'+question.title+'</label>';
 	}
 	else if(question.type == 'list'){
+		content += '<label>'+question.title+'</label>';
+		content += '<br>';
 		content += '<select>';
 		content += '<option val=""></option>';
 		for (var i = 0; i < question.outputs.length; i++) {
@@ -26,7 +29,7 @@ function getQuestionElementHtml(decisionTreeId, question){
 }
 
 function getNumericQuestionElementHtml(decisionTreeId, question){
-	var content = '<div id="'+decisionTreeId+'" class="form-group">';
+	var content = '<div id="'+decisionTreeId+'" class="form-group form-question-numeric">';
 		content += '<label>'+question.title+'</label>';	
 
 	var inputs = extractExpression(question.numerical.expression).inputs;
@@ -35,10 +38,10 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 		inputs.map(function(elt, i){
 			if(!elt.value){
 				if(isFirst){
-					content += '<div style="padding:10px;">';
+					content += '<div>';
 					isFirst = false;
 				}else{
-					content += '<div style="padding:10px; display:none">';				
+					content += '<div display:none">';				
 				}
 				content += '<label>'+elt.question+'</label>';
 				content += '<br>';
@@ -145,12 +148,11 @@ function getBlockElementHtml(decisionTreeId, block, blockIndex){
 		content += '<label>'+block.introduction+'</label>';
 
 	// Set / Get question data
-	var	innerBlockStyle = 'style="border: 1px;border-style: solid;border-color: #34a301;padding: 5px;"',
-		innerBlockId = decisionTreeId+'-'+blockIndex
+	var	innerBlockId = decisionTreeId+'-'+blockIndex,
 		innerBlockHtml = getBlockQuestionElementHtml(block.questions, innerBlockId);
 
 	// Inject question data
-	content += '<div '+innerBlockStyle+'>';
+	content += '<div class="form-block">';
 	content += innerBlockHtml;
 	content += '</div>';
 
@@ -181,10 +183,8 @@ function getBlockQuestionElementHtml(questions, innerBlockId){
 }
 
 function addBlock(questions, nodeId, index){
-	var innerBlockStyle = 'style="border: 1px;border-style: solid;border-color: #34a301;padding: 5px;"',
-		innerBlockId 	= nodeId+'-'+index;
-
-	var htmlContent = '<div '+innerBlockStyle+'>';
+	var innerBlockId 	= nodeId+'-'+index;
+		htmlContent = '<div class="form-block">';		
 	htmlContent += getBlockQuestionElementHtml(questions, innerBlockId);
 	htmlContent += '</div>';
 
@@ -204,17 +204,8 @@ function addBlock(questions, nodeId, index){
 */
 function getResultElementHtml(decisionTreeId, result){
 	var content = '<div id="'+decisionTreeId+'" class="form-group">';
-	content += '<textarea style="min-width:85%;max-width:85%" disabled>'+result.content+'</textarea>';
+	content += '<textarea class="form-result">'+result.content+'</textarea>';
 	content += '<br>';
 	content += "</div>";
 	return content;
 }
-
-
-
-/*
-
-	Question type events
-
-*/
-

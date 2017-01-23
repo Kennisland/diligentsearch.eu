@@ -19,3 +19,33 @@ div.form-renderer {
 	width:60%;
 	margin:5%;
 }
+
+.form-question-check {
+	margin-left: 10px;
+}
+
+.form-question-numeric > div{
+	padding:15px;
+}
+
+.form-block {
+	border: 1px;
+	border-style: solid;
+	border-color: #34a301;
+	padding: 5px;
+}
+
+.form-block > div > label {
+	margin-right: 10px;
+}
+
+/*.form-block > div {
+	margin-right: 10px;
+	margin-bottom: 5px;
+	float: right;
+}*/
+
+.form-result {
+	min-width:85%;
+	max-width:85%;
+}
