@@ -41,21 +41,37 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 					content += '<div>';
 					isFirst = false;
 				}else{
-					content += '<div display:none">';				
+					content += '<div style="display:none">';
 				}
 				content += '<label>'+elt.question+'</label>';
-				// content += '<br>';
 				content += '<input></input>';
-				// content += '<br>';
-				content += '<small>'+elt.information+'</small>';
-				// content += '<br>';
-				content += "</div>";
+				if(elt.information && elt.information != ""){
+					content += '<a oncLick="moreInfo(`'+elt.information+'`)">more information</a>';
+				}
+				content += '</div>';
 			}
 		});
 	}
 	content += "</div>";
 	return content;
 }
+
+/*
+	More information handler
+*/
+function moreInfo(information){
+	console.log("---");
+	$('#infoBox-content').html(information);
+	console.log("html");
+	$('#infoBox').show();
+	console.log("showed");
+}
+
+function hideInfo(){
+	$('#infoBox-content').html('');
+	$('#infoBox').hide();
+}
+
 
 /*
 	Question events

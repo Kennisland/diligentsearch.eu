@@ -23,7 +23,15 @@ html_formRenderer =`
 			</select>
 		</div>
 
-		<div id="work-data-selected" style="display:none">
+		<div id="infoBox" class="form-infobox">
+			<p id="infoBox-content"></p>
+			<p><a onclick="hideInfo();">Close</a></p>
+		</div>
+
+		<div id="work-data-selected" style="display:none">			
+		</div>
+
+
 		</div>
 
 		<div id="work-data-selected-save" style="display:none">
