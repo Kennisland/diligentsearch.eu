@@ -44,11 +44,11 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 					content += '<div display:none">';				
 				}
 				content += '<label>'+elt.question+'</label>';
-				content += '<br>';
+				// content += '<br>';
 				content += '<input></input>';
-				content += '<br>';
+				// content += '<br>';
 				content += '<small>'+elt.information+'</small>';
-				content += '<br>';
+				// content += '<br>';
 				content += "</div>";
 			}
 		});
