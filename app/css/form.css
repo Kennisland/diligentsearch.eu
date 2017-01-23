@@ -24,6 +24,15 @@ h2, label {
 	font-family: 'Roboto Slab', serif;
 }
 
+a {
+	color:#46723E;
+}
+
+div.form-menu {
+	height:10%;
+	width:60%;
+	margin:5%;
+}
 div.form-renderer {
 	height:90%;
 	width:60%;

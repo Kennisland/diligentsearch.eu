@@ -31,7 +31,24 @@ html_formRenderer =`
 		<div id="work-data-selected" style="display:none">			
 		</div>
 
+		<div id="form-warningModal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal-title">Warning</h3>
+					</div>
 
+					<div class="modal-body">
+						<p>Changing a field can result in losing information.</p>
+						<p>Do you want to proceed anyway ?</p>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" id="form-warning-modal-cancel" class="btn btn-default">Cancel</button>
+						<button type="button" id="form-warning-modal-proceed" class="btn btn-primary">Continue</button>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div id="work-data-selected-save" style="display:none">

@@ -37,14 +37,29 @@
 		</p>
 	</div>
 
-	<div id='form-renderer' class="form-renderer">
+	<div id="form-menu" class="form-menu" style="display:none">
+		<h2>Please select an option below</h2>
+		<ol>
+			<li><a onclick="startResearch();">Start a new diligent search</a></li>
+			<li>Continue working on a diligent search by entering its ID below</li>			
+		</ol>
+		<input id="search-hook" type="text">
+		<a onclick="getSearch();">Continue</a>
+	</div>
 
+	<div id='form-renderer' class="form-renderer">
 	</div>
 </body>
 
 <script type="text/javascript">
-	$(document).ready(function(){
+
+	function startResearch(){
+		$('#form-menu').hide();
 		injectFormRenderer();
+	}
+
+	$(document).ready(function(){
+		$('#form-menu').show();
 	});
 </script>
 </html>

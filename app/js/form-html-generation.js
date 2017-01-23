@@ -10,7 +10,7 @@ function getQuestionElementHtml(decisionTreeId, question){
 		content += '<input type="text"></input>';
 	}
 	else if(question.type == 'check'){
-		content += '<input type="checkbox" value="off"></input>';
+		content += '<input type="checkbox" value=""></input>';
 		content += '<label class="form-question-check">'+question.title+'</label>';
 	}
 	else if(question.type == 'list'){
@@ -84,6 +84,8 @@ function questionTextEvent(htmlId, outputs, targets){
 			toFollow = targets[0];
 		}
 		handleFollowers(toFollow, targets);
+	}).on('click', function(event){
+		setUpWarningModal($(this), event);
 	});
 }
 
@@ -100,6 +102,8 @@ function questionCheckEvent(htmlId, outputs, targets){
 			toFollow = targets[1];
 		}
 		handleFollowers(toFollow, targets);
+	}).on('click', function(event){
+		setUpWarningModal($(this), event);
 	});
 }
 
@@ -114,6 +118,8 @@ function questionListEvent(htmlId, outputs, targets){
 			}
 		}
 		handleFollowers(toFollow, targets);
+	}).on('click', function(event){
+		setUpWarningModal($(this), event);
 	});
 }
 
@@ -127,6 +133,8 @@ function questionNumericEvent(htmlId, htmlIndex, inputs, inputIdx){
 		else{
 			showNextInputElement(selector, inputIdx);
 		}
+	}).on('click', function(event){
+		setUpWarningModal($(this), event);
 	});
 }
 
@@ -141,6 +149,8 @@ function questionNumericDecisionEvent(htmlId, htmlIndex, inputs, inputIdx, numCo
 				toFollow = targets[targetIdx];
 		}
 		handleFollowers(toFollow, targets)
+	}).on('click', function(event){
+		setUpWarningModal($(this), event);
 	});
 }
 
@@ -148,6 +158,30 @@ function questionNumericRemoveEvent(htmlId, inputs, i){
 	$('#'+htmlId).on('remove', function(){
 		inputs[i].value = undefined;
 	});
+}
+
+
+/*
+	Warning modal handler
+*/
+function setUpWarningModal(element, event){
+	// If avlue already set, cancel this click event
+	if(element.val() != ""){
+		event.preventDefault();
+		
+		// Configure modal buttons to perform click, or to just do nothing on the current element
+		$('#form-warning-modal-proceed').on('click', function(){
+			console.log("proceed");
+			element.val("");
+			element.trigger('click');
+			$('#form-warningModal').modal('hide');
+		});
+		$('#form-warning-modal-cancel').on('click', function(){
+			console.log("hidding");
+			$('#form-warningModal').modal('hide');			
+		});
+		$('#form-warningModal').modal('show');
+	}
 }
 
 
