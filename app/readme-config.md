@@ -133,7 +133,7 @@ Besides, the Header configuration is crucial to enable ajax calls from the clien
 
 The server is written with nodeJs. First, download dependecies by fetching packages specified in the package.json file:
 
-	// Go to app/js/server
+	// Go to app/js/server/
 	npm install
 
 Database access configuration available in the file 'db-access.js':
@@ -144,7 +144,13 @@ Database access configuration available in the file 'db-access.js':
 To test if database connection is correctly set, run the following command:
 
 	//Go to app/js/server
-	node db-connection.js
+	node db-access.js
 
 	//And vist the page http://localhost:8000/db-access
 	//It should display the countent of the Country tabel or '[]' if there is no data in database
+
+
+The server also provide a pdf generation, via a third prty software : wkhtmltopdf
+
+To install it, get the sources and put them into server folder
+http://wkhtmltopdf.org/downloads.html

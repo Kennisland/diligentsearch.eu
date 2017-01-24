@@ -242,10 +242,6 @@ app.get(dbRoute+'/pdf', function(req, res){
 });
 
 
-
-
-
-
 const fs 	= require('fs');
 const path 	= require('path');
 const exec 	= require('child_process').exec;
@@ -270,24 +266,22 @@ var htmlFooter = `
 app.post(dbRoute+'/pdf', function(req, res){
 	console.log(__dirname);
 
+	// Create pdf folder within server
 	if (!fs.existsSync(path.resolve(__dirname, './pdf/')) ){
 	    fs.mkdirSync(path.resolve(__dirname, './pdf/'));
 	}
 
-
-
+	// Reference file
 	var content = htmlHeader + req.body.html + htmlFooter,
 		fileName = genWebHook(),
 		filePath = path.resolve(__dirname, './pdf/'+fileName);
 	console.log(filePath);
 
-	// console.log(fs.readFile(path.resolve(__dirname, 'settings.json'), 'UTF-8'));
-	// console.log("loading : \n", wkhtmltopdf);
-
+	// Write file and append pdf to it
 	fs.writeFile(filePath+'.html', content, { flag: 'wx' }, (err) => {
 		if (err) throw err;
-		console.log("\nFile written at ", filePath+'.html\n');
 
+		// Cast html to pdf
 		exec('wkhtmltopdf '+filePath+'.html '+filePath+'.pdf', (error, stdout, stderr) => {
 			if (error) {
 				console.error(`exec error: ${error}`);
@@ -295,31 +289,24 @@ app.post(dbRoute+'/pdf', function(req, res){
 			}
 			console.log(`stdout: ${stdout}`);
 			console.log(`stderr: ${stderr}`);
-
 			res.json({"code" : 200, "file" : fileName+'.pdf'});
 		});
+		console.log("\nFile written at ", filePath+'.html\n');
 	});
 });
 
 
-
-var router = express.Router();
-
-router.get(dbRoute+'/pdf/:file', function(req, res){
-	console.log("using route : ", req.params.file);
+app.get(dbRoute+'/pdf/:file', function(req, res){
+	console.log("using app : ", req.params.file);
 	if(req.params.file){
 		var fileName = path.resolve(__dirname, './pdf/'+req.params.file);
 		var file = fs.createReadStream(fileName);
 		var stat = fs.statSync(fileName);
 		res.setHeader('Content-Length', stat.size);
 		res.setHeader('Content-Type', 'application/pdf');
-		res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
+		res.setHeader('Content-Disposition', 'attachment; filename='+req.params.file);
 		file.pipe(res);
 	}
 });
-
-app.use('/', router);
-
-
 
 app.listen(8888);
