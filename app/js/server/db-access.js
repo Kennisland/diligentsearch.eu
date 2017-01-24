@@ -269,6 +269,13 @@ var htmlFooter = `
 
 app.post(dbRoute+'/pdf', function(req, res){
 	console.log(__dirname);
+
+	if (!fs.existsSync(path.resolve(__dirname, './pdf/')) ){
+	    fs.mkdirSync(path.resolve(__dirname, './pdf/'));
+	}
+
+
+
 	var content = htmlHeader + req.body.html + htmlFooter,
 		fileName = genWebHook(),
 		filePath = path.resolve(__dirname, './pdf/'+fileName);
