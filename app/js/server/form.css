@@ -1,0 +1,115 @@
+/*
+HTML css
+*/
+html,
+body,
+div.container-fluid  {
+	height: 100%;
+	overflow: scroll;
+}
+
+h1{
+	text-align:center;
+}
+
+h2{
+    font-weight: 700;
+    font-size: 25px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+h2, label {
+	color:#46723E;
+	font-family: 'Roboto Slab', serif;
+}
+
+a {
+	color:#46723E;
+}
+
+div.form-menu {
+	height:10%;
+	width:60%;
+	margin:5%;
+}
+div.form-renderer {
+	height:90%;
+	width:60%;
+	margin:5%;
+}
+
+.form-infobox {
+	z-index:99;
+	display:none;
+	position: absolute;
+	left: 65%;
+	width: 30%;
+	height: 300px;
+	background-color:white;
+	padding:10px;
+	border: 1px;
+	border-style:solid;
+	border-color:#34a301;
+}
+
+.form-question-check {
+	margin-left: 10px;
+}
+
+.form-question-numeric > div{
+	margin:10px;
+}
+
+.form-question-numeric > div > label{
+	margin-right: 10px;
+	font-size: 15px;
+
+}
+
+.form-question-numeric > div > input{
+	margin-right: 10px;
+}
+
+.form-block {
+	border: 1px;
+	border-style: solid;
+	border-color: #34A301;
+	padding: 5px;
+	margin: 15px;
+}
+
+.form-block > div {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 5px;
+}
+
+.form-block > div > label {
+	margin-right: 10px;
+	color: #46723E;
+}
+
+.form-block > div > input {
+	text-align: right;
+	float: right;
+}
+
+.form-block > div > select {
+	float: right;
+}
+
+.form-block > div > input[type=checkbox] {
+	float: left;
+}
+
+/*.form-block > div {
+	margin-right: 10px;
+	margin-bottom: 5px;
+	float: right;
+}*/
+
+.form-result {
+	min-width:85%;
+	max-width:85%;
+}

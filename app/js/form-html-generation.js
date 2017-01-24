@@ -79,6 +79,9 @@ function hideInfo(){
 function questionTextEvent(htmlId, outputs, targets){
 	var selector = htmlId+' input';
 	$('#'+selector).on('change', function(){
+		// Pdf generation
+		$(this).attr("value", $(this).val());
+
 		var toFollow = undefined;
 		if($(this).val() != ""){
 			toFollow = targets[0];
@@ -92,6 +95,9 @@ function questionTextEvent(htmlId, outputs, targets){
 function questionCheckEvent(htmlId, outputs, targets){
 	var selector = htmlId+' input';
 	$('#'+selector).on('change', function(){
+		// Pdf generation
+		$(this).attr("checked", $(this).is(':checked'));
+
 		var toFollow = undefined;
 		if($('#'+selector).is(':checked')){
 			$(this).val('on');
@@ -111,6 +117,9 @@ function questionCheckEvent(htmlId, outputs, targets){
 function questionListEvent(htmlId, outputs, targets){
 	var selector = htmlId+' select';
 	$('#'+selector).on('change', function(){
+		// Pdf generation
+		$(this).attr("value", $(this).val());
+
 		var toFollow = undefined;
 		for (var i = 0; i < outputs.length; i++) {
 			if(outputs[i] == $(this).val()){
@@ -126,6 +135,9 @@ function questionListEvent(htmlId, outputs, targets){
 function questionNumericEvent(htmlId, htmlIndex, inputs, inputIdx){
 	var selector = htmlId+' div';
 	$('#'+selector+' input').eq(htmlIndex).on('change', function(){
+		// Pdf generation
+		$(this).attr("value", $(this).val());
+
 		inputs[inputIdx].value = $(this).val();
 		if($(this).val() == ""){
 			hideInputsElement(selector, inputIdx, inputs.length);
@@ -141,8 +153,11 @@ function questionNumericEvent(htmlId, htmlIndex, inputs, inputIdx){
 function questionNumericDecisionEvent(htmlId, htmlIndex, inputs, inputIdx, numConfig, targets){	
 	var selector = htmlId+' div';
 	$('#'+selector+' input').eq(htmlIndex).on('change', function(){
-		var toFollow = undefined;
+		// Pdf generation
+		$(this).attr("value", $(this).val());
+
 		inputs[inputIdx].value = $(this).val();
+		var toFollow = undefined;
 		if($(this).val() != ""){
 			var evalResult = evalExpression(inputs, numConfig),
 				targetIdx = evalResultToTargetIdx(evalResult),
@@ -232,6 +247,25 @@ function getBlockQuestionElementHtml(questions, innerBlockId){
 	return content;
 }
 
+function bindBlockQuestionsToValue(blockId){
+	// Handle input (text & chockbox)
+	$('#'+blockId+' input').on('change', function(){
+		if($(this).attr("type") == "checkbox"){
+			$(this).attr("checked", $(this).is(':checked'));
+		}
+		else{
+			$(this).attr("value", $(this).val());
+		}
+	});
+	// Handle select
+	$('#'+blockId+' select').on('change', function(){
+		$(this).attr("value", $(this).val());
+		// Add selected attribute for pdf generation
+		$(this).find('option:not(:selected)').removeAttr("selected");
+		$(this).find('option:selected').attr("selected", "selected");
+	});
+}
+
 function addBlock(questions, nodeId, index){
 	var innerBlockId 	= nodeId+'-'+index;
 		htmlContent = '<div class="form-block">';		
@@ -241,6 +275,7 @@ function addBlock(questions, nodeId, index){
 	var selector = nodeId+' div',
 		selectorIdx = index-1;
 	$('#'+selector).eq(selectorIdx).after(htmlContent);
+	bindBlockQuestionsToValue(nodeId);
 }
 
 

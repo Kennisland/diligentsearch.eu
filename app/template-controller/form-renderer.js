@@ -52,7 +52,8 @@ html_formRenderer =`
 		</div>
 
 		<div id="work-data-selected-save" style="display:none">
-			<button type="button" class="btn btn-success pull-left" onclick="saveForm()">Save</button>
+			<button type="button" class="btn btn-primary pull-left" onclick="printPDF()">Get Pdf</button>
+			<button type="button" class="btn btn-success pull-right" onclick="saveForm()">Save</button>
 		</div>		
 	</div>
 `;

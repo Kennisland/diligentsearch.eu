@@ -48,6 +48,7 @@ function generateElementHtml(nodeElt){
 	else if(nodeElt.category == 'block'){
 		htmlContent = getBlockElementHtml(nodeElt.id, eltToDisplay, 0);
 		injectElementIntoForm(htmlContent);
+		bindBlockQuestionsToValue(nodeElt.id);
 		// Load the output direclty, to provide further navigation to user
 		loadElement(nodeElt.targets[0]);
 	}
@@ -356,4 +357,21 @@ function saveForm(){
 function FormEntry(htmlId, value){
 	this.htmlId = htmlId;
 	this.value 	= value;
+}
+
+
+/*
+	PDF stuff
+*/
+function printPDF(){
+	var content = $('#work-data-selected').html();
+	$.ajax({
+		type:"POST",
+		url: window.location.origin+"/db-access/pdf",
+		data: {html: content},
+		error: function(err){
+			alert('Error in html sending\n'+err.statusText);
+			console.log("error :", err);
+		}
+	});
 }

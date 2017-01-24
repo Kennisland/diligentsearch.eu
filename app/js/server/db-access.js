@@ -207,4 +207,60 @@ app.post(dbRoute, function(req, res){
 	handle_database(req, res);
 });
 
+
+
+app.get(dbRoute+'/pdf', function(req, res){
+	console.log('get defined');
+
+	res.json({"code" : 200, "status" : "/pdf route defined"});
+});
+
+
+
+
+const fs 	= require('fs');
+const path 	= require('path');
+const exec 	= require('child_process').exec;
+var wkhtmltopdf = require('wkhtmltopdf')
+
+
+var htmlHeader = `
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<!-- Custom css Only -->
+		<link rel="stylesheet" href="`+path.resolve(__dirname, 'form.css') +`">
+	</head>
+	<body>
+`;
+
+var htmlFooter = `
+	</body>
+	</html>
+`;
+
+app.post(dbRoute+'/pdf', function(req, res){
+	console.log(__dirname);
+	var content = htmlHeader + req.body.html + htmlFooter,
+		fileName = path.resolve(__dirname, './pdf/'+genWebHook());
+	console.log(fileName);
+
+	// console.log(fs.readFile(path.resolve(__dirname, 'settings.json'), 'UTF-8'));
+	// console.log("loading : \n", wkhtmltopdf);
+
+	fs.writeFile(fileName+'.html', content, { flag: 'wx' }, (err) => {
+		if (err) throw err;
+		console.log("\nFile written at ", fileName+'.html\n');
+
+		exec('wkhtmltopdf '+fileName+'.html '+fileName+'.pdf', (error, stdout, stderr) => {
+			if (error) {
+				console.error(`exec error: ${error}`);
+				return;
+			}
+			console.log(`stdout: ${stdout}`);
+			console.log(`stderr: ${stderr}`);
+		});
+	});
+});
+
 app.listen(8888);
