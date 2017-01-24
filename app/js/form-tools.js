@@ -364,11 +364,16 @@ function FormEntry(htmlId, value){
 	PDF stuff
 */
 function printPDF(){
-	var content = $('#work-data-selected').html();
+	var content = $('#work-data-selected').html(),
+		targetUrl = window.location.origin+"/db-access/pdf";
 	$.ajax({
 		type:"POST",
-		url: window.location.origin+"/db-access/pdf",
+		url: targetUrl,
 		data: {html: content},
+		success: function(success){
+			console.log("success ", success);
+			window.open(targetUrl+'/'+success.file);
+		},
 		error: function(err){
 			alert('Error in html sending\n'+err.statusText);
 			console.log("error :", err);
