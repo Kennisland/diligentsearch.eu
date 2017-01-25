@@ -443,7 +443,7 @@ function extractQuestionHtmlAnswer(id, question){
 	return value;
 }
 
-// For each id, get interest child element (input/select/textarea), and get value
+// For each id, get interest child element (input/select/p), and get value
 function dumpHtmlForm(){
 	var formData = [];
 	getHtmlId().map(function(id){
@@ -458,7 +458,7 @@ function dumpHtmlForm(){
 			value = extractQuestionHtmlAnswer(id, question);
 		}
 		else if(isResult){
-			value = $('#'+id).find('textarea').val() || undefined;
+			value = $('#'+id).find('p').val() || undefined;
 		}
 
 		if(!isBlock){

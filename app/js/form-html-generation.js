@@ -310,7 +310,7 @@ function addBlock(questions, nodeId, index){
 */
 function getResultElementHtml(decisionTreeId, result){
 	var content = '<div id="'+decisionTreeId+'" class="form-group">';
-	content += '<textarea class="form-result">'+result.content+'</textarea>';
+	content += '<p class="form-result">Result:<br>'+result.content+'</p>';
 	content += '<br>';
 	content += "</div>";
 	return content;
