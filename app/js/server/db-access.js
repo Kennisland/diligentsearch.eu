@@ -268,7 +268,6 @@ app.get(dbRoute+'/pdf', function(req, res){
 const fs 	= require('fs');
 const path 	= require('path');
 const exec 	= require('child_process').exec;
-var wkhtmltopdf = require('wkhtmltopdf')
 
 
 var htmlHeader = `
