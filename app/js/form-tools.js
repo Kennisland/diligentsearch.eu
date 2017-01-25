@@ -1,4 +1,138 @@
-root_node_id = 'lvl_0';
+/*
+	New / Loading stuff
+*/
+function newSearch(){
+	$('#form-menu').hide();
+	injectFormRenderer();
+}
+
+function getSearch(){
+	// Get the web hook provided by user
+	var hook = $('#search-hook').val();
+	if(hook == ""){
+		alert('Please enter the research reference');
+		return;
+	}
+
+	// Inject silently html to avoid concurrency issue on html set up after
+	$('#form-renderer').hide();
+	injectFormRenderer();
+
+
+	// Retrieve the form
+	$.when(ajaxGetForm(hook)).then(
+		function(success){
+			var workId = success[0].workId;
+			var json = success[0].json;
+
+			// Update local object
+			dumpedForm.webHook = hook;
+			dumpedForm.json = JSON.parse(json);
+
+
+			// Retrieve the countryId with the workId
+			$.when(ajaxGetWorkById(workId)).then(
+				function(success){					
+					var workName = success[0].name;
+					var countryId = success[0].countryId;
+					$('#choose-country').val(countryId).trigger('change');
+
+					// Wiat for choose-work to be filled in
+					setTimeout(function(){
+						if($('#choose-work').html != ""){
+							$('#choose-work').val(workId).trigger('change');
+							$('#form-menu').hide();
+							$('#form-renderer').show();
+
+							//Load json
+							console.log("json ", JSON.parse(json));
+							loadSearch();
+						}
+					}, 100);
+				},
+				function(error){
+					console.log("error", error);
+
+				});		
+
+		},
+		function(error){
+			console.log("form Not found", hook, error);
+		});
+}
+
+function loadSearch(){
+
+	setTimeout(function(){
+		var data = dumpedForm.json;
+			console.log(data)
+		for (var i = 0; i < data.length; i++) {
+
+			var isBlock = data[i].htmlId.split('-').length > 1;
+
+
+
+			// console.log("\tisInput", isInput);
+			// console.log("\tisCheckBox", isCheckBox);
+			// console.log("\tisMultiple", isMultiple);
+			// console.log("\tisSelect", isSelect);
+			console.log(data[i].htmlId);
+			console.log("\tisBlock", isBlock);
+			if(isBlock){
+				var s = data[i].htmlId.split('-')
+					rank = parseInt(s[1]),
+					nbBlock = $('#'+s[0]+' > div').length;
+				console.log("\ts : ", s);	
+				console.log("\tcounting ", nbBlock, "vs ", rank);
+
+
+				if(nbBlock - rank == 0){
+					// Simulate click on the addBlock button
+					$('#'+s[0]+' > a').trigger('click');
+				}
+
+			}
+
+			var isInput = $('#'+data[i].htmlId).find('input').length > 0,
+				isText = $('#'+data[i].htmlId).find('input').length == 1 && $('#'+data[i].htmlId+' input').attr("type") == "text",
+				isCheckBox = $('#'+data[i].htmlId).find('input').length == 1 && $('#'+data[i].htmlId+' input').attr("type") == "checkbox",
+				isMultiple = $('#'+data[i].htmlId).find('div input').length > 0,
+				isSelect = $('#'+data[i].htmlId).find('select').length > 0;
+
+
+			var v;
+			if(isCheckBox){
+				v = data[i].value == "on" ? true : false;
+				console.log("\tSetting isCheckBox", v)
+				$('#'+data[i].htmlId+' input').prop('checked', v).trigger('change');
+			}
+
+			if(isText){
+				console.log("\tSetting isText")
+				v = data[i].value;
+				$('#'+data[i].htmlId+' input').val(v).trigger('change');
+			}
+
+			if(isMultiple){
+				console.log("\tSetting isMultiple")
+				for (var j = 0; j < data[i].value.length; j++) {
+					$('#'+data[i].htmlId+' input').eq(j).val(data[i].value[j]).trigger('change');
+				}
+			}
+
+			if(isSelect){
+				console.log("\tSetting isSelect")
+				v = data[i].value;
+				$('#'+data[i].htmlId+' select').val(v).trigger('change');
+			}
+			// console.log($('#'+data[i].htmlId).find('input').length);
+		}
+		// console.log($('#work-data-selected').html());
+
+
+
+	}, 250);
+}
 
 function logData(){	
 	console.log("userInputs ", userInputs);
@@ -9,6 +143,7 @@ function logData(){
 	console.log("decisionTree", decisionTree);
 }
 
+root_node_id = 'lvl_0';
 function loadElement(id){
 	if(!id){
 		id = root_node_id;

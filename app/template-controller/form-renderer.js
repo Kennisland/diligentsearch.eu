@@ -136,7 +136,6 @@ function getData(workId){
 			logData();
 
 			// Now we have data, we do something --> event
-			$('#all-data-downloaded').show();
 			loadElement();
 		},
 		function(error){

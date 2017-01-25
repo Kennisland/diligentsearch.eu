@@ -48,6 +48,18 @@ function ajaxGetWorks(countryId){
 	});
 }
 
+function ajaxGetWorkById(workId){
+	return $.ajax({
+		type:"GET",
+		url:dbAccessUrl,
+		data: {table: 'Work', workId: workId},
+		error: function(err){
+			alert('Error in Work retrieval from database\n'+err.statusText);
+			console.log("error :", err);
+		}
+	});
+}
+
 
 
 /*

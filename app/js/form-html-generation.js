@@ -95,8 +95,11 @@ function questionTextEvent(htmlId, outputs, targets){
 function questionCheckEvent(htmlId, outputs, targets){
 	var selector = htmlId+' input';
 	$('#'+selector).on('change', function(){
+
+		console.log('change event triggered');
 		// Pdf generation
 		$(this).attr("checked", $(this).is(':checked'));
+		$(this).prop("checked", $(this).is(':checked'));
 
 		var toFollow = undefined;
 		if($('#'+selector).is(':checked')){
@@ -252,6 +255,13 @@ function bindBlockQuestionsToValue(blockId){
 	$('#'+blockId+' input').on('change', function(){
 		if($(this).attr("type") == "checkbox"){
 			$(this).attr("checked", $(this).is(':checked'));
+			if($(this).is(':checked')){
+				$(this).val("on");
+			}
+			else{
+				$(this).val("off");
+			}
+
 		}
 		else{
 			$(this).attr("value", $(this).val());

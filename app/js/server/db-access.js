@@ -55,13 +55,30 @@ function handle_get_request(req, res, connection){
 		});
 	}
 	else if(currentTable == 'Work'){
-		var countryId = req.query.countryId;
-		connection.query("select * from Work where countryId = ?", [countryId], function(err,rows){
-			connection.release();
-			if(!err) {
-				res.json(rows);
-			}
-		});
+		console.log("Get work : ", req.query.countryId, req.query.workId);
+
+		if(req.query.countryId){
+			var countryId = req.query.countryId;
+			connection.query("select * from Work where countryId = ?", [countryId], function(err,rows){
+				connection.release();
+				if(!err) {
+					res.json(rows);
+				}
+			});	
+		}
+		else if(req.query.workId){
+			var workId = req.query.workId;
+			connection.query("select * from Work where id = ?", [workId], function(err,rows){
+				connection.release();
+				console.log("returning :" , err, rows);
+				if(!err) {
+					res.json(rows);
+				}
+			});
+		}
+		else{
+			res.json({"code" : 100, "status" : "Error Mysql parameter not found"});
+		}
 	}
 	else if(currentTable == 'SharedUserInput' || currentTable == 'SharedRefValue'){
 		var countryId = req.query.foreignKeyId;
@@ -78,11 +95,17 @@ function handle_get_request(req, res, connection){
 			connection.release();
 			if(!err) {
 				res.json(rows);
-			}          
+			}
 		});
 	}
 	else if(currentTable == 'Form'){
 		var webHook = req.query.webHook;
+		connection.query("select * from "+currentTable+" where hook = ?", [webHook], function(err,rows){
+			connection.release();
+			if(!err) {
+				res.json(rows);
+			}          
+		});
 	}
 	else{
 		console.log("Unknown table : ", currentTable);
