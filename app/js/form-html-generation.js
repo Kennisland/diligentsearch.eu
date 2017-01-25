@@ -226,7 +226,7 @@ function getBlockElementHtml(decisionTreeId, block, blockIndex){
 
 	// Inject add button
 	var nextBlockIdx = blockIndex+1;
-	content += '<a onclick="addBlock(['+block.questions+'], `'+decisionTreeId+'`, '+nextBlockIdx+')">Add a block section</a>';
+	content += '<a>Add a block section</a>'; //onclick="addBlock(['+block.questions+'], `'+decisionTreeId+'`, '+nextBlockIdx+')"
 	content += '</div>';
 	return content;
 }
@@ -276,16 +276,27 @@ function bindBlockQuestionsToValue(blockId){
 	});
 }
 
+function bindAddBlock(blockId, questions, index){
+	// Half global function for this variable
+	blockIdx = index;
+	$('#'+blockId+' a').on('click', function(){
+		addBlock(questions, blockId, blockIdx);
+	});
+}
+
 function addBlock(questions, nodeId, index){
+	console.log("adding block at position ", index);
 	var innerBlockId 	= nodeId+'-'+index;
 		htmlContent = '<div class="form-block">';		
-	htmlContent += getBlockQuestionElementHtml(questions, innerBlockId);
-	htmlContent += '</div>';
+		htmlContent += getBlockQuestionElementHtml(questions, innerBlockId);
+		htmlContent += '</div>';
 
-	var selector = nodeId+' div',
+	var selector = nodeId+' div.form-block',
 		selectorIdx = index-1;
+
 	$('#'+selector).eq(selectorIdx).after(htmlContent);
 	bindBlockQuestionsToValue(nodeId);
+	bindAddBlock(questions, nodeId, index+1);
 }
 
 

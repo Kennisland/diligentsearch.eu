@@ -76,18 +76,23 @@ function loadSearch(){
 			// console.log("\tisCheckBox", isCheckBox);
 			// console.log("\tisMultiple", isMultiple);
 			// console.log("\tisSelect", isSelect);
-			console.log(data[i].htmlId);
-			console.log("\tisBlock", isBlock);
+			// console.log(data[i].htmlId);
+			// console.log("\tisBlock", isBlock);
+
+
+
+
 			if(isBlock){
 				var s = data[i].htmlId.split('-')
 					rank = parseInt(s[1]),
 					nbBlock = $('#'+s[0]+' > div').length;
-				console.log("\ts : ", s);	
-				console.log("\tcounting ", nbBlock, "vs ", rank);
+				// console.log("\ts : ", s);	
+				// console.log("\tcounting ", nbBlock, "vs ", rank);
 
 
 				if(nbBlock - rank == 0){
 					// Simulate click on the addBlock button
+					console.log(data[i].htmlId, "triggering click")
 					$('#'+s[0]+' > a').trigger('click');
 				}
 
@@ -103,25 +108,25 @@ function loadSearch(){
 			var v;
 			if(isCheckBox){
 				v = data[i].value == "on" ? true : false;
-				console.log("\tSetting isCheckBox", v)
+				// console.log("\tSetting isCheckBox", v)
 				$('#'+data[i].htmlId+' input').prop('checked', v).trigger('change');
 			}
 
 			if(isText){
-				console.log("\tSetting isText")
+				// console.log("\tSetting isText")
 				v = data[i].value;
 				$('#'+data[i].htmlId+' input').val(v).trigger('change');
 			}
 
 			if(isMultiple){
-				console.log("\tSetting isMultiple")
+				// console.log("\tSetting isMultiple")
 				for (var j = 0; j < data[i].value.length; j++) {
 					$('#'+data[i].htmlId+' input').eq(j).val(data[i].value[j]).trigger('change');
 				}
 			}
 
 			if(isSelect){
-				console.log("\tSetting isSelect")
+				// console.log("\tSetting isSelect")
 				v = data[i].value;
 				$('#'+data[i].htmlId+' select').val(v).trigger('change');
 			}
@@ -183,7 +188,8 @@ function generateElementHtml(nodeElt){
 	else if(nodeElt.category == 'block'){
 		htmlContent = getBlockElementHtml(nodeElt.id, eltToDisplay, 0);
 		injectElementIntoForm(htmlContent);
-		bindBlockQuestionsToValue(nodeElt.id);
+		bindBlockQuestionsToValue(nodeElt.id, eltToDisplay.questions, 0);
+		bindAddBlock(nodeElt.id, eltToDisplay.questions, 1);
 		// Load the output direclty, to provide further navigation to user
 		loadElement(nodeElt.targets[0]);
 	}
