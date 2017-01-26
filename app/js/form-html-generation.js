@@ -60,11 +60,8 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 	More information handler
 */
 function moreInfo(information){
-	console.log("---");
 	$('#infoBox-content').html(information);
-	console.log("html");
 	$('#infoBox').show();
-	console.log("showed");
 }
 
 function hideInfo(){
@@ -87,16 +84,14 @@ function questionTextEvent(htmlId, outputs, targets){
 			toFollow = targets[0];
 		}
 		handleFollowers(toFollow, targets);
-	}).on('click', function(event){
-		setUpWarningModal($(this), event);
 	});
+
+	setUpWarningModal($('#'+selector));
 }
 
 function questionCheckEvent(htmlId, outputs, targets){
 	var selector = htmlId+' input';
 	$('#'+selector).on('change', function(){
-
-		console.log('change event triggered');
 		// Pdf generation
 		$(this).attr("checked", $(this).is(':checked'));
 		$(this).prop("checked", $(this).is(':checked'));
@@ -111,16 +106,16 @@ function questionCheckEvent(htmlId, outputs, targets){
 			toFollow = targets[1];
 		}
 		handleFollowers(toFollow, targets);
-	}).on('click', function(event){
-		setUpWarningModal($(this), event);
-	});
+	}).trigger('change');
+
+	setUpWarningModal($('#'+selector));
 }
 
 
 function questionListEvent(htmlId, outputs, targets){
 	var selector = htmlId+' select';
+
 	$('#'+selector).on('change', function(){
-		// Pdf generation
 		$(this).attr("value", $(this).val());
 
 		var toFollow = undefined;
@@ -130,9 +125,23 @@ function questionListEvent(htmlId, outputs, targets){
 			}
 		}
 		handleFollowers(toFollow, targets);
-	}).on('click', function(event){
-		setUpWarningModal($(this), event);
 	});
+
+
+	clickNb = 0;
+	$('#'+selector).on('click', function(event){
+		// Display the modal only on second click
+		if(clickNb % 2 == 1){
+			setUpListWarningModal($(this));
+			event.preventDefault();
+		}
+		clickNb++;
+	});
+
+
+
+
+	// setUpWarningModal($('#'+selector));
 }
 
 function questionNumericEvent(htmlId, htmlIndex, inputs, inputIdx){
@@ -148,9 +157,8 @@ function questionNumericEvent(htmlId, htmlIndex, inputs, inputIdx){
 		else{
 			showNextInputElement(selector, inputIdx);
 		}
-	}).on('click', function(event){
-		setUpWarningModal($(this), event);
 	});
+	setUpWarningModal($('#'+selector+' input').eq(htmlIndex));
 }
 
 function questionNumericDecisionEvent(htmlId, htmlIndex, inputs, inputIdx, numConfig, targets){	
@@ -167,9 +175,8 @@ function questionNumericDecisionEvent(htmlId, htmlIndex, inputs, inputIdx, numCo
 				toFollow = targets[targetIdx];
 		}
 		handleFollowers(toFollow, targets)
-	}).on('click', function(event){
-		setUpWarningModal($(this), event);
 	});
+	setUpWarningModal($('#'+selector+' input').eq(htmlIndex));
 }
 
 function questionNumericRemoveEvent(htmlId, inputs, i){
@@ -182,27 +189,56 @@ function questionNumericRemoveEvent(htmlId, inputs, i){
 /*
 	Warning modal handler
 */
-function setUpWarningModal(element, event){
-	// If avlue already set, cancel this click event
-	if(element.val() != ""){
-		event.preventDefault();
+function setUpWarningModal(element){
+	element.on('click', function(event){
+		if(element.val() != "" ){
+			event.preventDefault();
+
+			// Configure modal buttons to perform click, or to just do nothing on the current element
+			$('#form-warning-modal-proceed').off().on('click', function(){
+				element.val("");
+				if(element.attr("type") == "checkbox" ){
+					var v = !element.is(':checked');
+					element.attr("checked", v);
+					element.prop("checked", v);
+				}					
+				element.trigger('change');
+				$('#form-warningModal').modal('hide');
+			});
+
+			// Cancel configuration
+			$('#form-warning-modal-cancel').off().on('click', function(){
+				$('#form-warningModal').modal('hide');			
+			});
 		
-		// Configure modal buttons to perform click, or to just do nothing on the current element
-		$('#form-warning-modal-proceed').on('click', function(){
-			console.log("proceed");
-			element.val("");
-			element.trigger('click');
-			$('#form-warningModal').modal('hide');
-		});
-		$('#form-warning-modal-cancel').on('click', function(){
-			console.log("hidding");
-			$('#form-warningModal').modal('hide');			
-		});
-		$('#form-warningModal').modal('show');
-	}
+			// Display finally the modal
+			$('#form-warningModal').modal('show');
+		}
+	});
 }
 
+function setUpListWarningModal(element){
+	element.blur();
 
+	// Focus on modal appearance
+	$('#form-warningModal').off().on('shown.bs.modal', function(){
+		$('#form-warning-modal-cancel').focus();
+	});
+
+	// Configure modal buttons to perform click, or to just do nothing on the current element
+	$('#form-warning-modal-proceed').off().on('click', function(){
+		$('#form-warningModal').modal('hide');
+	});
+
+	// Cancel configuration
+	$('#form-warning-modal-cancel').off().on('click', function(){
+		element.val("").trigger('change');
+		$('#form-warningModal').modal('hide');
+	});
+
+	// Display finally the modal
+	$('#form-warningModal').modal('show');
+}
 
 
 
@@ -261,7 +297,6 @@ function bindBlockQuestionsToValue(blockId){
 			else{
 				$(this).val("off");
 			}
-
 		}
 		else{
 			$(this).attr("value", $(this).val());
@@ -285,7 +320,6 @@ function bindAddBlock(blockId, questions, index){
 }
 
 function addBlock(questions, nodeId, index){
-	console.log("adding block at position ", index);
 	var innerBlockId 	= nodeId+'-'+index;
 		htmlContent = '<div class="form-block">';		
 		htmlContent += getBlockQuestionElementHtml(questions, innerBlockId);

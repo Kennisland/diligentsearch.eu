@@ -44,8 +44,8 @@ html_formRenderer =`
 					</div>
 
 					<div class="modal-footer">
-						<button type="button" id="form-warning-modal-cancel" class="btn btn-default">Cancel</button>
-						<button type="button" id="form-warning-modal-proceed" class="btn btn-primary">Continue</button>
+						<button id="form-warning-modal-cancel" type="button" class="btn btn-default">Cancel</button>
+						<button id="form-warning-modal-proceed" type="button" class="btn btn-primary">Continue</button>
 					</div>
 				</div>
 			</div>

@@ -43,9 +43,6 @@ function getSearch(){
 							$('#choose-work').val(workId).trigger('change');
 							$('#form-menu').hide();
 							$('#form-renderer').show();
-
-							//Load json
-							console.log("json ", JSON.parse(json));
 							loadSearch();
 						}
 					}, 100);
@@ -65,41 +62,22 @@ function loadSearch(){
 
 	setTimeout(function(){
 		var data = dumpedForm.json;
-			console.log(data)
 		for (var i = 0; i < data.length; i++) {
 
 			var isBlock = data[i].htmlId.split('-').length > 1;
-
-
-
-			// console.log("\tisInput", isInput);
-			// console.log("\tisCheckBox", isCheckBox);
-			// console.log("\tisMultiple", isMultiple);
-			// console.log("\tisSelect", isSelect);
-			// console.log(data[i].htmlId);
-			// console.log("\tisBlock", isBlock);
-
-
-
-
 			if(isBlock){
 				var s = data[i].htmlId.split('-')
 					rank = parseInt(s[1]),
 					nbBlock = $('#'+s[0]+' > div').length;
-				// console.log("\ts : ", s);	
-				// console.log("\tcounting ", nbBlock, "vs ", rank);
-
 
 				if(nbBlock - rank == 0){
 					// Simulate click on the addBlock button
-					console.log(data[i].htmlId, "triggering click")
 					$('#'+s[0]+' > a').trigger('click');
 				}
 
 			}
 
-			var isInput = $('#'+data[i].htmlId).find('input').length > 0,
-				isText = $('#'+data[i].htmlId).find('input').length == 1 && $('#'+data[i].htmlId+' input').attr("type") == "text",
+			var	isText = $('#'+data[i].htmlId).find('input').length == 1 && $('#'+data[i].htmlId+' input').attr("type") == "text",
 				isCheckBox = $('#'+data[i].htmlId).find('input').length == 1 && $('#'+data[i].htmlId+' input').attr("type") == "checkbox",
 				isMultiple = $('#'+data[i].htmlId).find('div input').length > 0,
 				isSelect = $('#'+data[i].htmlId).find('select').length > 0;
@@ -108,33 +86,25 @@ function loadSearch(){
 			var v;
 			if(isCheckBox){
 				v = data[i].value == "on" ? true : false;
-				// console.log("\tSetting isCheckBox", v)
 				$('#'+data[i].htmlId+' input').prop('checked', v).trigger('change');
 			}
 
 			if(isText){
-				// console.log("\tSetting isText")
 				v = data[i].value;
 				$('#'+data[i].htmlId+' input').val(v).trigger('change');
 			}
 
 			if(isMultiple){
-				// console.log("\tSetting isMultiple")
 				for (var j = 0; j < data[i].value.length; j++) {
 					$('#'+data[i].htmlId+' input').eq(j).val(data[i].value[j]).trigger('change');
 				}
 			}
 
 			if(isSelect){
-				// console.log("\tSetting isSelect")
 				v = data[i].value;
 				$('#'+data[i].htmlId+' select').val(v).trigger('change');
 			}
-			// console.log($('#'+data[i].htmlId).find('input').length);
 		}
-		// console.log($('#work-data-selected').html());
-
-
 
 	}, 250);
 }
@@ -216,6 +186,7 @@ function bindQuestionToTarget(nodeElt, eltToDisplay){
 	}
 	else if(type == 'check'){
 		questionCheckEvent(nodeElt.id, outputs, targets);
+		
 	}
 	else if(type == 'list'){
 		questionListEvent(nodeElt.id, outputs, targets);
