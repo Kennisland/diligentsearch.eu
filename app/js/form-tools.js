@@ -14,56 +14,63 @@ function getSearch(){
 		return;
 	}
 
-	// Inject silently html to avoid concurrency issue on html set up after
-	$('#form-renderer').hide();
-	injectFormRenderer();
-
-
 	// Retrieve the form
 	$.when(ajaxGetForm(hook)).then(
 		function(success){
-			var workId = success[0].workId;
-			var json = success[0].json;
 
-			// Update local object
-			dumpedForm.webHook = hook;
-			dumpedForm.json = JSON.parse(json);
+			if(success.length == 0){
+				alert("Form reference "+hook+" not found in database");
+				return;
+			}
+			else{
+				// Inject silently html to avoid concurrency issue on html set up afterwards
+				$('#form-renderer').hide();
+				injectFormRenderer();
 
+				var workId = success[0].workId;
+				var json = success[0].json;
 
-			// Retrieve the countryId with the workId
-			$.when(ajaxGetWorkById(workId)).then(
-				function(success){					
-					var workName = success[0].name;
-					var countryId = success[0].countryId;
-					$('#choose-country').val(countryId).trigger('change');
+				// Update local object
+				dumpedForm.webHook = hook;
+				dumpedForm.json = JSON.parse(json);
 
-					// Wiat for choose-work to be filled in
-					setTimeout(function(){
-						if($('#choose-work').html != ""){
-							$('#choose-work').val(workId).trigger('change');
-							$('#form-menu').hide();
-							$('#form-renderer').show();
-							loadSearch();
-						}
-					}, 100);
-				},
-				function(error){
-					console.log("error", error);
+				// Retrieve the countryId with the workId
+				$.when(ajaxGetWorkById(workId)).then(
+					function(success){
+						var workName = success[0].name;
+						var countryId = success[0].countryId;
+						$('#choose-country').val(countryId).trigger('change');
 
-				});		
+						// Wait for choose-work to be filled in
+						setTimeout(function(){
+							if($('#choose-work').html != ""){
+								$('#choose-work').val(workId).trigger('change');
+								$('#form-menu').hide();
+								$('#form-renderer').show();
+								loadSearch();
+							}
+						}, 100);
+					},
+					function(error){
+						console.log("error", error);
 
+					});					
+			}
 		},
 		function(error){
 			console.log("form Not found", hook, error);
 		});
 }
 
+// Load the form data setp by step into the html
+// The loadElement function is silently triggered after insertion of each value
 function loadSearch(){
 
 	setTimeout(function(){
 		var data = dumpedForm.json;
 		for (var i = 0; i < data.length; i++) {
 
+			// Inject a new block section if necessary
 			var isBlock = data[i].htmlId.split('-').length > 1;
 			if(isBlock){
 				var s = data[i].htmlId.split('-')
@@ -74,38 +81,34 @@ function loadSearch(){
 					// Simulate click on the addBlock button
 					$('#'+s[0]+' > a').trigger('click');
 				}
-
 			}
 
+			// According to element to fill in, append the right value at the good place
+			// The 'trigger('change')'' will trigger the next element of the form to display
 			var	isText = $('#'+data[i].htmlId).find('input').length == 1 && $('#'+data[i].htmlId+' input').attr("type") == "text",
 				isCheckBox = $('#'+data[i].htmlId).find('input').length == 1 && $('#'+data[i].htmlId+' input').attr("type") == "checkbox",
 				isMultiple = $('#'+data[i].htmlId).find('div input').length > 0,
 				isSelect = $('#'+data[i].htmlId).find('select').length > 0;
-
 
 			var v;
 			if(isCheckBox){
 				v = data[i].value == "on" ? true : false;
 				$('#'+data[i].htmlId+' input').prop('checked', v).trigger('change');
 			}
-
 			if(isText){
 				v = data[i].value;
 				$('#'+data[i].htmlId+' input').val(v).trigger('change');
 			}
-
 			if(isMultiple){
 				for (var j = 0; j < data[i].value.length; j++) {
 					$('#'+data[i].htmlId+' input').eq(j).val(data[i].value[j]).trigger('change');
 				}
 			}
-
 			if(isSelect){
 				v = data[i].value;
 				$('#'+data[i].htmlId+' select').val(v).trigger('change');
 			}
 		}
-
 	}, 250);
 }
 
@@ -118,6 +121,10 @@ function logData(){
 	console.log("decisionTree", decisionTree);
 }
 
+
+/*
+	HTML injection
+*/
 root_node_id = 'lvl_0';
 function loadElement(id){
 	if(!id){
@@ -312,6 +319,7 @@ function getLastToCompute(inputs){
 	return lastToCompute;
 }
 
+// Append here the constant values
 function replaceReference(value){
 	switch(value){
 		case 'now':
