@@ -1,5 +1,6 @@
-dbAccessUrl = window.location.origin+"/db-access";
-pdfPrintingUrl = dbAccessUrl+'/pdf';
+apiAccessUrl 	= window.location.origin+'/db-access';
+dbAccessUrl 	= apiAccessUrl+'/search';
+pdfPrintingUrl 	= apiAccessUrl+'/print';
 
 /*
 	Helper functions
@@ -104,17 +105,24 @@ function ajaxUpdateForm(form){
 /*
 	PDF printing handler
 */
-function ajaxPrintPdf(htmlContent){
-	return $.ajax({
+function ajaxPrintPdf(htmlContent, key){
+	$.ajax({
 		type:"POST",
 		url: pdfPrintingUrl,
-		data: {html: htmlContent},
+		data: {html: htmlContent, key:key},
 		success: function(success){
-			window.open(pdfPrintingUrl+'/'+success.file);
+			console.log("success : ", success);
+			if(success.file){
+				window.open(pdfPrintingUrl+'/'+success.file);				
+			}
+			// Unlock button
+			$('#work-print-btn').removeAttr("disabled");
 		},
 		error: function(err){
 			alert('Error in html sending\n'+err.statusText);
 			console.log("error :", err);
+			// Unlock button
+			$('#work-print-btn').removeAttr("disabled");
 		}
 	});
 }

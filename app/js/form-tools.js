@@ -496,13 +496,21 @@ function bindHtmlForPdf(element){
 	else if(element.prop("tagName") == 'SELECT'){
 		element.find('option:not(:selected)').removeAttr("selected");
 		element.find('option:selected').attr("selected", "selected");
-
 	}
+}
+
+function getRandomKey(){
+	var text = "";
+	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	for( var i=0; i < 8; i++ )
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
+	return text;
 }
 
 
 function printPDF(){
 	var htmlContent = $('#work-data-selected').html();
-	console.log("printing : ", htmlContent);
-	ajaxPrintPdf(htmlContent);
+	// Lock the getPdf button
+	// $('#work-print-btn').attr("disabled", "disabled");
+	ajaxPrintPdf(htmlContent, getRandomKey());
 }
