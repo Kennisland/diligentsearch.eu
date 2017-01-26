@@ -483,7 +483,26 @@ function FormEntry(htmlId, value){
 /*
 	PDF stuff
 */
+function bindHtmlForPdf(element){
+	// Bind value
+	element.attr("value", element.val());
+
+	if(element.prop("tagName") == 'INPUT'){
+		if(element.attr("type") == "checkbox" ){
+			element.attr("checked", element.is(':checked'));
+			element.prop("checked", element.is(':checked'));
+		}
+	}
+	else if(element.prop("tagName") == 'SELECT'){
+		element.find('option:not(:selected)').removeAttr("selected");
+		element.find('option:selected').attr("selected", "selected");
+
+	}
+}
+
+
 function printPDF(){
 	var htmlContent = $('#work-data-selected').html();
+	console.log("printing : ", htmlContent);
 	ajaxPrintPdf(htmlContent);
 }

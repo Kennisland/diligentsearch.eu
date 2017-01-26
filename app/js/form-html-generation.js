@@ -76,14 +76,13 @@ function hideInfo(){
 function questionTextEvent(htmlId, outputs, targets){
 	var selector = htmlId+' input';
 	$('#'+selector).on('change', function(){
-		// Pdf generation
-		$(this).attr("value", $(this).val());
 
 		var toFollow = undefined;
 		if($(this).val() != ""){
 			toFollow = targets[0];
 		}
-		handleFollowers(toFollow, targets);
+		handleFollowers(toFollow, targets);		
+		bindHtmlForPdf($(this));
 	});
 
 	setUpWarningModal($('#'+selector));
@@ -92,9 +91,6 @@ function questionTextEvent(htmlId, outputs, targets){
 function questionCheckEvent(htmlId, outputs, targets){
 	var selector = htmlId+' input';
 	$('#'+selector).on('change', function(){
-		// Pdf generation
-		$(this).attr("checked", $(this).is(':checked'));
-		$(this).prop("checked", $(this).is(':checked'));
 
 		var toFollow = undefined;
 		if($('#'+selector).is(':checked')){
@@ -105,7 +101,8 @@ function questionCheckEvent(htmlId, outputs, targets){
 			$(this).val('off');
 			toFollow = targets[1];
 		}
-		handleFollowers(toFollow, targets);
+		handleFollowers(toFollow, targets);		
+		bindHtmlForPdf($(this));
 	}).trigger('change');
 
 	setUpWarningModal($('#'+selector));
@@ -116,7 +113,6 @@ function questionListEvent(htmlId, outputs, targets){
 	var selector = htmlId+' select';
 
 	$('#'+selector).on('change', function(){
-		$(this).attr("value", $(this).val());
 
 		var toFollow = undefined;
 		for (var i = 0; i < outputs.length; i++) {
@@ -124,9 +120,9 @@ function questionListEvent(htmlId, outputs, targets){
 				toFollow = targets[i];
 			}
 		}
-		handleFollowers(toFollow, targets);
+		handleFollowers(toFollow, targets);		
+		bindHtmlForPdf($(this));
 	});
-
 
 	clickNb = 0;
 	$('#'+selector).on('click', function(event){
@@ -137,18 +133,11 @@ function questionListEvent(htmlId, outputs, targets){
 		}
 		clickNb++;
 	});
-
-
-
-
-	// setUpWarningModal($('#'+selector));
 }
 
 function questionNumericEvent(htmlId, htmlIndex, inputs, inputIdx){
 	var selector = htmlId+' div';
 	$('#'+selector+' input').eq(htmlIndex).on('change', function(){
-		// Pdf generation
-		$(this).attr("value", $(this).val());
 
 		inputs[inputIdx].value = $(this).val();
 		if($(this).val() == ""){
@@ -157,6 +146,7 @@ function questionNumericEvent(htmlId, htmlIndex, inputs, inputIdx){
 		else{
 			showNextInputElement(selector, inputIdx);
 		}
+		bindHtmlForPdf($(this));
 	});
 	setUpWarningModal($('#'+selector+' input').eq(htmlIndex));
 }
@@ -164,8 +154,6 @@ function questionNumericEvent(htmlId, htmlIndex, inputs, inputIdx){
 function questionNumericDecisionEvent(htmlId, htmlIndex, inputs, inputIdx, numConfig, targets){	
 	var selector = htmlId+' div';
 	$('#'+selector+' input').eq(htmlIndex).on('change', function(){
-		// Pdf generation
-		$(this).attr("value", $(this).val());
 
 		inputs[inputIdx].value = $(this).val();
 		var toFollow = undefined;
@@ -175,6 +163,7 @@ function questionNumericDecisionEvent(htmlId, htmlIndex, inputs, inputIdx, numCo
 				toFollow = targets[targetIdx];
 		}
 		handleFollowers(toFollow, targets)
+		bindHtmlForPdf($(this));
 	});
 	setUpWarningModal($('#'+selector+' input').eq(htmlIndex));
 }
@@ -288,26 +277,22 @@ function getBlockQuestionElementHtml(questions, innerBlockId){
 
 function bindBlockQuestionsToValue(blockId){
 	// Handle input (text & chockbox)
-	$('#'+blockId+' input').on('change', function(){
+	$('#'+blockId+' input').on('change', function(){		
+
+		// Set up value first
 		if($(this).attr("type") == "checkbox"){
-			$(this).attr("checked", $(this).is(':checked'));
 			if($(this).is(':checked')){
-				$(this).val("on");
+				$(this).val('on');
 			}
 			else{
-				$(this).val("off");
+				$(this).val('off');
 			}
 		}
-		else{
-			$(this).attr("value", $(this).val());
-		}
+		bindHtmlForPdf($(this));
 	});
 	// Handle select
 	$('#'+blockId+' select').on('change', function(){
-		$(this).attr("value", $(this).val());
-		// Add selected attribute for pdf generation
-		$(this).find('option:not(:selected)').removeAttr("selected");
-		$(this).find('option:selected').attr("selected", "selected");
+		bindHtmlForPdf($(this));
 	});
 }
 
