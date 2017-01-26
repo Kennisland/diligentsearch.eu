@@ -28,8 +28,8 @@ Set the DirectoryRoot to the location of the index.html master main file of proj
 	        Require all granted
 	</Directory>
 	Header set Access-Control-Allow-Origin "*"
-	ProxyPass "/db-access" "http://localhost:8888/"
-	ProxyPassReverse "/db-access" "http://localhost:8888/"
+	ProxyPass "/api" "http://localhost:8888"
+	ProxyPassReverse "/api" "http://localhost:8888"
 
 *There is no final slash '/' at the end of the DocumentRoot*
 
@@ -38,7 +38,7 @@ The 8000 port is used by default in several nodeJS servers, so 8888 should be av
 	netstat -tulpn
 
 
-The '/db-access' route is required to perform GET & POST requests to the database.
+The ProxyPass route is required to perform GET & POST requests to the server.
 
 Enable the Header configuration
 	
@@ -58,7 +58,7 @@ Set the serverName used as a valid IP address
 	nano /etc/hosts
 	127.0.0.1	diligentsearch.local
 
-The index.html file located in /home/user/diligent-search will be available at the diligentsearch.local URL
+The index.html file located in /home/user/diligentsearch-website will be available at the diligentsearch.local URL
 
 
 
@@ -144,10 +144,10 @@ Database access configuration available in the file 'db-access.js':
 To test if database connection is correctly set, run the following command:
 
 	//Go to app/js/server
-	node db-access.js
+	node server.js
 
-	//And vist the page http://localhost:8000/db-access
-	//It should display the countent of the Country tabel or '[]' if there is no data in database
+	//And vist the page diligentsearch.local/api
+	//It should display the welcome message
 
 
 The server also provide a pdf generation, via a third prty software : wkhtmltopdf

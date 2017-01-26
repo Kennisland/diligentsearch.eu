@@ -1,4 +1,4 @@
-apiAccessUrl 	= window.location.origin+'/db-access';
+apiAccessUrl 	= window.location.origin+'/api';
 dbAccessUrl 	= apiAccessUrl+'/search';
 pdfPrintingUrl 	= apiAccessUrl+'/print';
 
