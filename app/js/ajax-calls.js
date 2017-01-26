@@ -1,4 +1,5 @@
 dbAccessUrl = window.location.origin+"/db-access";
+pdfPrintingUrl = dbAccessUrl+'/pdf';
 
 /*
 	Helper functions
@@ -100,13 +101,31 @@ function ajaxUpdateForm(form){
 	});
 }
 
+/*
+	PDF printing handler
+*/
+function ajaxPrintPdf(htmlContent){
+	return $.ajax({
+		type:"POST",
+		url: pdfPrintingUrl,
+		data: {html: htmlContent},
+		success: function(success){
+			window.open(pdfPrintingUrl+'/'+success.file);
+		},
+		error: function(err){
+			alert('Error in html sending\n'+err.statusText);
+			console.log("error :", err);
+		}
+	});
+}
+
 
 
 
 
 
 /*
-	Element manipulation handler
+	Generic element manipulation handler
 */
 function ajaxGetElt(table, foreignKey){
 	if( isDecisionTree(table) || isPrimaryData(table)){
@@ -221,6 +240,11 @@ function removeElt(table, eltId, callback){
 	}
 }
 
+
+
+/*
+	Ajax calls for generic elements
+*/
 function ajaxInsertElt(table, elt, foreignKeyId){
 	return $.ajax({
 		type: "POST",
