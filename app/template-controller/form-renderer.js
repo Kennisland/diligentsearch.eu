@@ -96,6 +96,10 @@ function getLanguages(){
 				languages = success.lg;
 			}
 
+			if(languages.length == 0){
+				languages.push('Default');
+			}
+
 			// Inject it into select tag
 			injectLanguageIntoForm();
 			$('#choose-lg').on('change', function(){

@@ -173,9 +173,10 @@ function handle_post_request(req, res, connection){
 	else if(currentTable == 'Form'){
 		if(req.body.insert){
 			var webHook = genWebHook();
-			q = "insert into Form (workId, hook, json) values (? , ?, ?)";
+			q = "insert into Form (workId, hook, version, json) values (? , ?, ?, ?)";
 			params.push(req.body.foreignKeyId);
 			params.push(webHook);
+			params.push(42);
 			params.push(req.body.json);
 			cb = function(err, rows){
 				connection.release();
@@ -253,17 +254,16 @@ var getTranslations = function(req, res){
 	var i18n = path.resolve(__dirname, './i18n/'),
 		translations = [];
 
-	fs.readdir(i18n, (err, files) => {
-		if(err) throw err,
-		
-		files.forEach(file => {
-			if(file != "template.json"){
-				translations.push(file.replace('.json', ''));				
-			}
-		});
-		res.json({"lg": translations});
+	// Read files within folder and push their names
+	var files = fs.readdirSync(i18n);
+	files.forEach(file => {
+		if(file != "template.json" && file != 'test.json'){
+			translations.push(file.replace('.json', ''));				
+		}
 	});
+	res.json({"lg": translations});
 }
+
 module.exports.getTranslations = getTranslations;
 
 
