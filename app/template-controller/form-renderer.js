@@ -1,14 +1,12 @@
 html_formRenderer =`
+	<h2 id="search-report-ref">Search-report not saved yet</h2>
 
-	
 	<label>
 		Language : 
 		<select id="choose-lg">
 			<option value="">Default</option>
 		</select>
 	</label>
-
-	<h2>Search-report()</h2>
 
 	<div id="language-selected" class="form-group" style="display:none">
 		<label for="choose-country">
@@ -92,8 +90,6 @@ function injectFormRenderer(){
 */
 function getLanguages(){
 	languages = [];
-
-	// Get back languages
 	$.when(ajaxGetLanguages()).then(
 		function(success){
 			if(success.lg){
@@ -245,6 +241,10 @@ function bindDecisionTreeData(){
 			oldWorkId = $(this).val();
 		}
 	});
+}
+
+function updateSearchReportId(){
+	$('#search-report-ref').text('Search-report('+dumpedForm.webHook+')');
 }
 
 

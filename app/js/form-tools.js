@@ -27,34 +27,46 @@ function getSearch(){
 				$('#form-renderer').hide();
 				injectFormRenderer();
 
-				var workId = success[0].workId;
-				var json = success[0].json;
+				var workId 	= success[0].workId
+					json = JSON.parse(success[0].json);
+
+				// console.log("sucess json ", success[0].json);
+				console.log("json : ", json);
 
 				// Update local object
 				dumpedForm.webHook = hook;
-				dumpedForm.json = JSON.parse(json);
+				dumpedForm.json = json.formData;
 
-				// Retrieve the countryId with the workId
-				$.when(ajaxGetWorkById(workId)).then(
-					function(success){
-						var workName = success[0].name;
-						var countryId = success[0].countryId;
-						$('#choose-country').val(countryId).trigger('change');
+				setTimeout(function(){
+					updateSearchReportId();
+					$('#choose-lg').val(json.lg).trigger('change');
+								
 
-						// Wait for choose-work to be filled in
-						setTimeout(function(){
-							if($('#choose-work').html != ""){
-								$('#choose-work').val(workId).trigger('change');
-								$('#form-menu').hide();
-								$('#form-renderer').show();
-								loadSearch();
-							}
-						}, 100);
-					},
-					function(error){
-						console.log("error", error);
+					// Retrieve the countryId with the workId
+					$.when(ajaxGetWorkById(workId)).then(
+						function(success){
+							var workName = success[0].name;
+							var countryId = success[0].countryId;
+							$('#choose-country').val(countryId).trigger('change');
 
-					});					
+							// Wait for choose-work to be filled in
+							setTimeout(function(){
+								if($('#choose-work').html != ""){
+									$('#choose-work').val(workId).trigger('change');
+									$('#form-menu').hide();
+									$('#form-renderer').show();
+									loadSearch();
+								}
+							}, 100);
+						},
+						function(error){
+							console.log("error", error);
+
+						});					
+
+				}, 100);
+
+
 			}
 		},
 		function(error){
@@ -424,7 +436,8 @@ function extractQuestionHtmlAnswer(id, question){
 
 // For each id, get interest child element (input/select/p), and get value
 function dumpHtmlForm(){
-	var formData = [];
+	var language = $('#choose-lg').val(),
+		formData = [];
 	getHtmlId().map(function(id){
 		var element 	= getDecisionTreeElement(id),
 			isBlock 	= element && element.category == 'block',
@@ -444,7 +457,12 @@ function dumpHtmlForm(){
 			formData.push(new FormEntry(id, value));
 		}
 	});
-	return formData;	
+	return {'lg':language, 'formData':formData};
+}
+
+function FormEntry(htmlId, value){
+	this.htmlId = htmlId;
+	this.value 	= value;
 }
 
 function saveForm(){
@@ -453,6 +471,7 @@ function saveForm(){
 		function cb(status){
 			if(status){
 				alert("Report injected in database \nWebhook is : "+dumpedForm.webHook);
+				updateSearchReportId();
 			}
 			else{
 				alert("Failed to save report in database ");
@@ -474,10 +493,7 @@ function saveForm(){
 	}
 }
 
-function FormEntry(htmlId, value){
-	this.htmlId = htmlId;
-	this.value 	= value;
-}
+
 
 
 /*
@@ -510,7 +526,5 @@ function getRandomKey(){
 
 function printPDF(){
 	var htmlContent = $('#work-data-selected').html();
-	// Lock the getPdf button
-	// $('#work-print-btn').attr("disabled", "disabled");
 	ajaxPrintPdf(htmlContent, getRandomKey());
 }
