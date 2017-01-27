@@ -30,9 +30,6 @@ function getSearch(){
 				var workId 	= success[0].workId
 					json = JSON.parse(success[0].json);
 
-				// console.log("sucess json ", success[0].json);
-				console.log("json : ", json);
-
 				// Update local object
 				dumpedForm.webHook = hook;
 				dumpedForm.json = json.formData;

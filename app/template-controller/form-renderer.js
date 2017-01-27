@@ -95,12 +95,10 @@ function getLanguages(){
 			if(success.lg){
 				languages = success.lg;
 			}
-			console.log("languages : ", languages);
 
 			// Inject it into select tag
 			injectLanguageIntoForm();
 			$('#choose-lg').on('change', function(){
-				console.log("lg changed");
 				ajaxSetTranslation($(this).val());
 				getCountry();
 				$('#language-selected').show();
@@ -164,7 +162,7 @@ function getData(workId){
 			results 	= resultResults[0].map(function(elt){ 	return JSON.parse(elt.json); 	});
 			decisionTree = JSON.parse(resultDecisionTree[0][0].json);
 			logData();
-			// Now we have data, we do something --> event
+			// Now we have data, we do something --> load first element
 			loadElement();
 		},
 		function(error){
@@ -227,7 +225,6 @@ function bindDecisionTreeData(){
 	$('#choose-work').on('change', function(){
 
 		if($(this).val() != oldWorkId){
-			console.log("work has changed", $(this).val());
 			var workId = $(this).val();
 			if(workId == ""){
 				works = [];

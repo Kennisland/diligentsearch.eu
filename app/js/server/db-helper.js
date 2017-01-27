@@ -250,19 +250,17 @@ const fs 	= require('fs');
 const path 	= require('path');
 
 var getTranslations = function(req, res){
-	console.log("get translation");
 	var i18n = path.resolve(__dirname, './i18n/'),
 		translations = [];
+
 	fs.readdir(i18n, (err, files) => {
 		if(err) throw err,
-		console.log("files : ", files);
+		
 		files.forEach(file => {
-			console.log("\tfile : ", file);
 			if(file != "template.json"){
 				translations.push(file.replace('.json', ''));				
 			}
 		});
-		console.log("translations :", translations);
 		res.json({"lg": translations});
 	});
 }
