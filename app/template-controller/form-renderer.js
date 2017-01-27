@@ -1,7 +1,16 @@
 html_formRenderer =`
+
+	
+	<label>
+		Language : 
+		<select id="choose-lg">
+			<option value="">Default</option>
+		</select>
+	</label>
+
 	<h2>Search-report()</h2>
 
-	<div class="form-group">
+	<div id="language-selected" class="form-group" style="display:none">
 		<label for="choose-country">
 			Select the jurisdiction you want to determine an orphan work in:
 		</label>
@@ -58,7 +67,7 @@ html_formRenderer =`
 	</div>
 `;
 
-
+languages = [];
 countries = [];
 works = [];
 userInputs = [];
@@ -74,13 +83,38 @@ dumpedForm = {
 
 
 function injectFormRenderer(){
-	getCountry();
+	getLanguages();
 	$('#form-renderer').html(html_formRenderer);
 }
 
 /*
 	Get data model
 */
+function getLanguages(){
+	languages = [];
+
+	// Get back languages
+	$.when(ajaxGetLanguages()).then(
+		function(success){
+			if(success.lg){
+				languages = success.lg;
+			}
+			console.log("languages : ", languages);
+
+			// Inject it into select tag
+			injectLanguageIntoForm();
+			$('#choose-lg').on('change', function(){
+				console.log("lg changed");
+				ajaxSetTranslation($(this).val());
+				getCountry();
+				$('#language-selected').show();
+			});
+		},
+		function(error){
+			console.log(error);
+		});
+}
+
 
 function getCountry(){
 	// Reset countries data
@@ -133,7 +167,7 @@ function getData(workId){
 			blocks 		= resultBlocks[0].map(function(elt){ 	return JSON.parse(elt.json); 	});
 			results 	= resultResults[0].map(function(elt){ 	return JSON.parse(elt.json); 	});
 			decisionTree = JSON.parse(resultDecisionTree[0][0].json);
-			logData();
+			console.log("\n-----------------\n", logData());
 
 			// Now we have data, we do something --> event
 			loadElement();
@@ -146,6 +180,27 @@ function getData(workId){
 /*
 	HTML injection and JS bindings
 */
+function injectLanguageIntoForm(){
+	var lgContent = '<option value="">Choose a language</option>';
+	for (var i = 0; i < languages.length; i++) {
+		var lgName = languages[i],
+			displayedName = languages[i].charAt(0).toUpperCase() + languages[i].slice(1);
+		lgContent += '<option value="'+lgName+'">'+displayedName+'</option>';
+	}
+	$('#choose-lg').html(lgContent);
+}
+	
+function injectCountriesIntoForm(){
+	var selectContent = '<option value="">Choose a country</option>';
+	for (var i = 0; i < countries.length; i++) {
+		var countryId = countries[i].id,
+			countryName = countries[i].name;
+		selectContent += '<option value="'+countryId+'">'+countryName+'</option>';
+	}
+	$('#choose-country').html(selectContent);
+	bindTypeOfWork();
+}
+
 function bindTypeOfWork(){	
 	$('#choose-country').on('change', function(){
 		var countryId = $(this).val();
@@ -160,31 +215,6 @@ function bindTypeOfWork(){
 	});	
 }
 
-function bindDecisionTreeData(){
-	$('#choose-work').on('change', function(){
-		var workId = $(this).val();
-		if(workId == ""){
-			works = [];
-			$('div [id^="work-data-selected"]').hide();
-		}
-		else{
-			getData(workId);
-			$('#work-data-selected').html('');
-			$('div [id^="work-data-selected"]').show();
-		}
-	});
-}
-
-function injectCountriesIntoForm(){
-	var selectContent = '<option value="">Choose a country</option>';
-	for (var i = 0; i < countries.length; i++) {
-		var countryId = countries[i].id,
-			countryName = countries[i].name;
-		selectContent += '<option value="'+countryId+'">'+countryName+'</option>';
-	}
-	$('#choose-country').html(selectContent);
-	bindTypeOfWork();
-}
 
 function injectWorksIntoForm(){
 	var selectContent = '<option value="">Choose a type of work</option>';
@@ -197,6 +227,32 @@ function injectWorksIntoForm(){
 	bindDecisionTreeData();
 }
 
+function bindDecisionTreeData(){
+	oldWorkId = "";
+	$('#choose-work').on('change', function(){
+
+		if($(this).val() != oldWorkId){
+			console.log("work has changed", $(this).val());
+			var workId = $(this).val();
+			if(workId == ""){
+				works = [];
+				$('div [id^="work-data-selected"]').hide();
+			}
+			else{
+				getData(workId);
+				$('#work-data-selected').html('');
+				$('div [id^="work-data-selected"]').show();
+			}			
+			oldWorkId = $(this).val();
+		}
+	});
+}
+
+
+
+/*
+	Generic HTML element injection for the rest of Form
+*/
 function injectElementIntoForm(html){
 	$('#work-data-selected').append(html);
 }

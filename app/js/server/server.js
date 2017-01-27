@@ -25,7 +25,12 @@ var pdf = require('./pdf-helper.js');
 	Route configuration
 */
 app.get(mainRoute,function(req,res){
-	res.json("You are on the main route of the server. Available route : /search & /print");
+	if(req.query.translationRequired){
+		db.getTranslations(req, res);
+	}
+	else{
+		res.json("You are on the main route of the server. Available route : /search & /print");		
+	}
 });
 
 

@@ -47,6 +47,7 @@ function handle_get_request(req, res, connection){
 	function defaultCallback(err, rows){
 		connection.release();
 		if(!err){
+			translate(currentTable, rows, req.query.language);
 			res.json(rows);
 		}else{
 			res.json(err);
@@ -83,6 +84,16 @@ function handle_get_request(req, res, connection){
 	else if(currentTable == 'DecisionTree' || currentTable == 'Question' || currentTable == 'Block' || currentTable == 'Result') {
 		q = "select * from "+currentTable+" where workId = ?";
 		params.push(req.query.foreignKeyId);
+		if(currentTable == 'DecisionTree'){
+			cb = function(err, rows){
+				connection.release();
+				if(!err){
+					res.json(rows);
+				}else{
+					res.json(err);
+				}
+			}
+		}
 	}
 	else if(currentTable == 'Form'){
 		q = "select * from "+currentTable+" where hook = ?"
@@ -228,5 +239,152 @@ function genWebHook(){
 	return text;
 }
 
-
 module.exports.handle = handle_database;
+
+
+
+/*
+	I18n translation support
+*/
+const fs 	= require('fs');
+const path 	= require('path');
+
+var getTranslations = function(req, res){
+	console.log("get translation");
+	var i18n = path.resolve(__dirname, './i18n/'),
+		translations = [];
+	fs.readdir(i18n, (err, files) => {
+		if(err) throw err,
+		console.log("files : ", files);
+		files.forEach(file => {
+			console.log("\tfile : ", file);
+			if(file != "template.json"){
+				translations.push(file.replace('.json', ''));				
+			}
+		});
+		console.log("translations :", translations);
+		res.json({"lg": translations});
+	});
+}
+module.exports.getTranslations = getTranslations;
+
+
+
+function translate(sqlTable, rows, lg){
+	// identify language file wanted by user
+	var lgFile = path.resolve(__dirname, './i18n/'+lg+'.json');
+	if(!fs.existsSync(lgFile)) {
+		return;
+	}
+	else{
+		var obj = JSON.parse(fs.readFileSync(lgFile, 'utf8')),
+			sqlTranslation = obj[sqlTable],
+			modified = false;
+
+		rows.forEach(function(row){	
+
+			if(sqlTable == 'Country' || sqlTable == 'Work'){
+				if(sqlTranslation[row.id]){
+					if(sqlTranslation[row.id].translated != ""){
+						row.name = sqlTranslation[row.id].translated;
+					}
+				}else{
+					sqlTranslation[row.id] = {
+						"original"	 : row.name,
+						"translated" : ''
+					};
+					modified = true;
+				}
+			}
+			else{
+				// Get sub Json object
+				var subJson = JSON.parse(row.json);
+
+				// Operate modification on subJson
+				if(sqlTable == 'SharedUserInput'){
+					if(sqlTranslation[row.id]){
+						if(sqlTranslation[row.id].translatedQuestion != ""){
+							subJson.question = sqlTranslation[row.id].translatedQuestion;
+						}
+						if(sqlTranslation[row.id].translatedInformation != ""){
+							subJson.information = sqlTranslation[row.id].translatedInformation;
+						}
+					}else{
+						sqlTranslation[row.id] = {
+							"originalQuestion"	 : subJson.question,
+							"translatedQuestion" : '',
+							"originalInformation"	: subJson.information,
+							"translatedInformation" : ''
+						};
+						modified = true;
+					}
+				}
+
+				if(sqlTable == 'SharedRefValue'){
+					if(sqlTranslation[row.id]){
+						if(sqlTranslation[row.id].translatedInformation != ""){
+							subJson.information = sqlTranslation[row.id].translatedInformation;
+						}
+					}else{
+						sqlTranslation[row.id] = {
+							"originalInformation"	: subJson.information,
+							"translatedInformation" : ''
+						};
+						modified = true;
+					}
+				}
+				
+				if(sqlTable == "Question"){
+					if(sqlTranslation[row.id]){
+						if(sqlTranslation[row.id].translatedTitle != ""){
+							subJson.title = sqlTranslation[row.id].translatedTitle;
+						}
+					}else{
+						sqlTranslation[row.id] = {
+							"originalTitle"	 : subJson.title,
+							"translatedTitle": ''
+						};
+						modified = true;
+					}
+				}
+
+				if(sqlTable == "Result"){
+					if(sqlTranslation[row.id]){
+						if(sqlTranslation[row.id].translatedContent != ""){
+							subJson.content = sqlTranslation[row.id].translatedContent;
+						}
+					}else{
+						sqlTranslation[row.id] = {
+							"originalContent"	 : subJson.content,
+							"translatedContent": ''
+						};
+						modified = true;
+					}
+				}
+
+				if(sqlTable == 'Block'){
+					if(sqlTranslation[row.id]){
+						if(sqlTranslation[row.id].translatedIntroduction != ""){
+							subJson.introduction = sqlTranslation[row.id].translatedIntroduction;
+						}
+					}else{
+						sqlTranslation[row.id] = {
+							"originalIntroduction"	: subJson.introduction,
+							"translatedIntroduction": ''
+						};
+						modified = true;
+					}
+				}
+
+				// ReWrite json into the row
+				row.json = JSON.stringify(subJson);				
+			}
+
+
+		});
+		if(modified){
+			fs.writeFileSync(lgFile, JSON.stringify(obj), 'utf8');
+		}
+	}
+}
+
