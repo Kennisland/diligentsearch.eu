@@ -167,8 +167,7 @@ function getData(workId){
 			blocks 		= resultBlocks[0].map(function(elt){ 	return JSON.parse(elt.json); 	});
 			results 	= resultResults[0].map(function(elt){ 	return JSON.parse(elt.json); 	});
 			decisionTree = JSON.parse(resultDecisionTree[0][0].json);
-			console.log("\n-----------------\n", logData());
-
+			logData();
 			// Now we have data, we do something --> event
 			loadElement();
 		},

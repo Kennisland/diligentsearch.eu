@@ -150,7 +150,23 @@ To test if database connection is correctly set, run the following command:
 	//It should display the welcome message
 
 
-The server also provide a pdf generation, via a third prty software : wkhtmltopdf
+The server requires a third party software to generate pdf : wkhtmltopdf
 
-To install it, get the sources and put them into server folder
-http://wkhtmltopdf.org/downloads.html
+## PDF generation : wkhtmltopdf
+
+The precompiled sources can be found here :
+
+	http://wkhtmltopdf.org/downloads.html
+
+Grab the sources, extract it somewhere, and add the executable to the path of your system
+
+Under Ubuntu / Debian, you can do the following :
+
+	cp <path/to/executable/third-party-software>/wkhtmltopdf $HOME/bin/
+	export PATH=$PATH:$HOME/bin
+
+Reset shell session to enable changes
+
+If the installation and the binding correct, wkhtmltopdf is available as a command line.
+
+Thus wkhtmltopdf is available throw node js server.
