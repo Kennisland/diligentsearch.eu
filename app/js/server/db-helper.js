@@ -95,10 +95,8 @@ function handle_get_request(req, res, connection){
 			}
 		}
 	}
-	else if(currentTable == 'Form'){
-		
-		params.push(req.query.webHook);
-		
+	else if(currentTable == 'Form'){		
+		params.push(req.query.webHook);		
 		if(!req.query.version){
 			q = "select * from "+currentTable+" where hook = ? order by version DESC";
 		}else{
@@ -107,12 +105,11 @@ function handle_get_request(req, res, connection){
 		}
 		cb = function(err, rows, webHook){
 			connection.release();
-			console.log(rows);
 			if(!err){
+				rows.webHook = req.query.webHook;
 				if(req.query.getLast){
 					res.json(rows[0]);
 				}else{
-					rows.webHook = req.query.webHook;
 					res.json(rows);					
 				}
 			}else{

@@ -13,9 +13,15 @@ function getSearch(){
 		alert('Please enter the research reference');
 		return;
 	}
+	
+	var version = $('#search-version').val();
+	if(version && version != parseInt(version, 10)){
+		alert('Please enter a valid version number');
+		return;	
+	}
 
 	// Retrieve the form
-	$.when(ajaxGetForm(hook)).then(
+	$.when(ajaxGetForm(hook, version)).then(
 		function(success){
 
 			if(success.length == 0){
@@ -33,7 +39,6 @@ function getSearch(){
 				// Update local object
 				dumpedForm.webHook = hook;
 				dumpedForm.json = json.formData;
-
 				setTimeout(function(){
 					updateSearchReportId();
 					$('#choose-lg').val(json.lg).trigger('change');
@@ -53,6 +58,10 @@ function getSearch(){
 									$('#form-menu').hide();
 									$('#form-renderer').show();
 									loadSearch();
+									if(version){
+										$('#work-save-btn').attr("disabled", "disabled");
+									}
+
 								}
 							}, 100);
 						},

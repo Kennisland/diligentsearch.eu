@@ -58,7 +58,8 @@ app.get(dbRoute+"/:webHook/:version", function(req, res){
 });
 
 
-// PDF printing
+
+// PDF printing 
 app.get(pdfRoute+'/:file', function(req, res){
 	pdf.get(req, res);
 });
@@ -66,6 +67,8 @@ app.get(pdfRoute+'/:file', function(req, res){
 app.post(pdfRoute, function(req, res){
 	pdf.generate(req, res);
 });
+
+
 
 
 

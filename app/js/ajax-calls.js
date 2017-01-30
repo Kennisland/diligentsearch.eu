@@ -98,11 +98,11 @@ function ajaxGetWorkById(workId){
 /*
 	Form ajax handler
 */
-function ajaxGetForm(webHook){
+function ajaxGetForm(webHook, version){
 	return $.ajax({
 		type:"GET",
 		url:dbAccessUrl,
-		data: {table: 'Form', webHook: webHook},
+		data: {table: 'Form', webHook: webHook, version: version},
 		error: function(err){
 			alert('Error in form retrieval from database\n'+err.statusText);
 			console.log("error :", err);
