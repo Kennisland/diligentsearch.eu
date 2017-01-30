@@ -98,18 +98,6 @@ function ajaxGetWorkById(workId){
 /*
 	Form ajax handler
 */
-function ajaxPutForm(form, foreignKey, callback){
-	$.when(ajaxInsertElt('Form', form.json, foreignKey)).then(
-		function(result){
-			form.webHook = result.webHook;
-			callback(true);
-		},
-		function(error){
-			callback(false);
-		}
-	);
-}
-
 function ajaxGetForm(webHook){
 	return $.ajax({
 		type:"GET",
@@ -122,11 +110,32 @@ function ajaxGetForm(webHook){
 	});
 }
 
-function ajaxUpdateForm(form){
+function ajaxPutForm(form, foreignKey, callback){
+	console.log("injecting form", dbAccessUrl);
+	$.when(ajaxInsertElt('Form', form.json, foreignKey)).then(
+		function(result){
+			form.webHook = result.webHook;
+			callback(true);
+		},
+		function(error){
+			callback(false);
+		}
+	);
+}
+
+
+function ajaxUpdateForm(form, foreignKey){
+	console.log("Updating form", dbAccessUrl);
 	return $.ajax({
 		type: 'POST', 
 		url: dbAccessUrl,
-		data: {table: 'Form', update: true, webHook: form.webHook, json:JSON.stringify(form.json)},
+		data: {
+			table: 'Form',
+			foreignKeyId: foreignKey,
+			update: true,
+			webHook: form.webHook,
+			json:JSON.stringify(form.json)
+		},
 		error: function(error){
 			console.log("ERROR : element ", eltId, " not removed from ", table, " - ", error.status);
 		}

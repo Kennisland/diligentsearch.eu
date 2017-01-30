@@ -96,13 +96,25 @@ function handle_get_request(req, res, connection){
 		}
 	}
 	else if(currentTable == 'Form'){
-		q = "select * from "+currentTable+" where hook = ?"
+		
 		params.push(req.query.webHook);
+		
+		if(!req.query.version){
+			q = "select * from "+currentTable+" where hook = ? order by version DESC";
+		}else{
+			q = "select * from "+currentTable+" where hook = ? and version = ?;";
+			params.push(req.query.version);
+		}
 		cb = function(err, rows, webHook){
 			connection.release();
+			console.log(rows);
 			if(!err){
-				rows.webHook = req.query.webHook;
-				res.json(rows);
+				if(req.query.getLast){
+					res.json(rows[0]);
+				}else{
+					rows.webHook = req.query.webHook;
+					res.json(rows);					
+				}
 			}else{
 				res.json(err);
 			}
@@ -114,7 +126,7 @@ function handle_get_request(req, res, connection){
 
 
 	if(error != ""){
-		res.json({"code" : 100, "error" : error});	
+		res.json({"code" : 400, "status" : error});	
 		return;
 	}
 
@@ -171,15 +183,21 @@ function handle_post_request(req, res, connection){
 		}
 	}
 	else if(currentTable == 'Form'){
-		if(req.body.insert){
-			var webHook = genWebHook();
-			q = "insert into Form (workId, hook, version, json) values (? , ?, ?, ?)";
+		if(req.body.insert || req.body.update){
+			var webHook = undefined;
+			if(req.body.webHook){
+				webHook = req.body.webHook;
+			}else{
+				webHook = genWebHook();
+			}
+
+			q = "insert into Form (workId, hook, json) values (? , ?, ?)";
 			params.push(req.body.foreignKeyId);
 			params.push(webHook);
-			params.push(42);
 			params.push(req.body.json);
 			cb = function(err, rows){
 				connection.release();
+				console.log(err, rows);
 				if(!err){
 					rows.webHook = webHook;
 					res.json(rows);
@@ -187,11 +205,6 @@ function handle_post_request(req, res, connection){
 					res.json(err);
 				}
 			};
-		}
-		else if(req.body.update){
-			q = "update Form set json = ? where hook = ?";
-			params.push(req.body.json);
-			params.push(req.body.webHook);
 		}
 		else{
 			error += "Error Mysql parameter not found   ";
@@ -225,7 +238,7 @@ function handle_post_request(req, res, connection){
 	}
 
 	if(error != ""){
-		res.json({"code" : 100, "error" : error});	
+		res.json({"code" : 400, "error" : error});	
 		return;
 	}
 

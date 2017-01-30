@@ -34,12 +34,26 @@ app.get(mainRoute,function(req,res){
 });
 
 
-// Databse access
-app.get(dbRoute,function(req,res){  
+// Database access
+app.get(dbRoute,function(req,res){ 
 	db.handle(req, res);
 });
 
 app.post(dbRoute, function(req, res){
+	db.handle(req, res);
+});
+
+app.get(dbRoute+"/:webHook", function(req, res){
+	req.query.table = 'Form';
+	req.query.getLast = true;
+	req.query.webHook = req.params.webHook;
+	db.handle(req, res);
+});
+
+app.get(dbRoute+"/:webHook/:version", function(req, res){
+	req.query.table = 'Form';
+	req.query.webHook = req.params.webHook;
+	req.query.version = req.params.version;
 	db.handle(req, res);
 });
 

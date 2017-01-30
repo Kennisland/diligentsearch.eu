@@ -463,7 +463,9 @@ function FormEntry(htmlId, value){
 }
 
 function saveForm(){
+	var workId = $('#choose-work').val();
 	dumpedForm.json = dumpHtmlForm();
+
 	if(!dumpedForm.webHook){
 		function cb(status){
 			if(status){
@@ -474,19 +476,16 @@ function saveForm(){
 				alert("Failed to save report in database ");
 			}
 		}
-		var workId = $('#choose-work').val();
 		ajaxPutForm(dumpedForm, workId, cb);
 	}
 	else{
-		function cb(status){
-			if(status){
+		$.when(ajaxUpdateForm(dumpedForm, workId)).then(
+			function(success){
 				alert("Report correclty updated");
-			}
-			else{
+			}, 
+			function(error){
 				alert("Failed to update report in database ");
-			}
-		}
-		updateElt('Form', dumpedForm, cb);
+			});
 	}
 }
 
