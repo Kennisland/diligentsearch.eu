@@ -160,7 +160,6 @@ function deleteNode(){
 	var parentId = graphic.inEdges(nodeId)[0].v;
 
 	// Delete this node
-	console.log("deleting : ", nodeId);
 	deleteGraphicNode(nodeId);
 
 

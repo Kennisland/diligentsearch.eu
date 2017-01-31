@@ -115,7 +115,9 @@ function injectGraphicNodeData(index, graphicNodeElt){
 	setUpGraphicNode(graphicNodeElt);
 	// cleanUpGraphicNodes();
 	graphic.nodes().forEach(function(node){
-		if(node != 'lvl_0' && graphic.inEdges(node).length == 0){
+		// Check if not root / orphan / not parent (block case)
+		if(node != 'lvl_0' && graphic.inEdges(node).length == 0 && graphic.children(node).length == 0){
+			console.log("removing node ", node);
 			recursiveDelete(node, 0);
 		}
 	});
@@ -132,15 +134,17 @@ function setUpGraphicNode(graphicNodeElt){
 	// Update graphical node style of current node
 	styleGraphicNode(graphicNodeElt.category, graphicNodeElt.id);
 
+	// Delete all outEdges of this node if they exist to better recreate them
+	graphic.outEdges(graphicNodeElt.id).forEach(function(e){
+		graphic.removeEdge(e);
+	});
+
+
 	// Generate block of questions if necessary
 	if(graphicNodeElt.category == "block"){
 		setNewGraphicBlock(graphicNodeElt.id, graphicNodeElt.dataId);		
 	}
 
-	// Delete all outEdges of this node if they exist to better recreate them
-	graphic.outEdges(graphicNodeElt.id).forEach(function(e){
-		graphic.removeEdge(e);
-	});
 
 
 	// Regarding number of Outputs, draw new nodes if necessary
