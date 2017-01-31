@@ -71,6 +71,8 @@ function loadGraphicNode(index, graphicNodeElt){
 	$('#node-data').val(graphicNodeElt.dataName);
 	$('#node-data-id').val(graphicNodeElt.dataId)
 
+	// Enable autocomplete on modal loading
+	configDataSelection(graphicNodeElt.category);
 
 	// Db effect : retrieve data element based on its db id
 	var dataElt = getGraphicNodeElt(graphicNodeElt.category, graphicNodeElt.dataId);
@@ -204,36 +206,50 @@ function configCategorySelection(){
 		delOutputs();
 
 		// Configure autocomplete
-		var category = $(this).val(),
-			sources = getDataSource(category);
-
-		$('#node-data').autocomplete({
-			minLength: 0,
-			autocomplete: true,
-			source: function(request, response){
-				response($.map(sources, function(value, key){
-					return {
-						label: value.name
-					}
-				}));
-			},
-			open: function() { 
-				var parent_width = $('#node-data').width();
-				$('.ui-autocomplete').width(parent_width);
-			},
-			select: function(event, ui){
-				$(this).val(ui.item.value);
-				// Look for the id
-				for (var i = 0; i < sources.length; i++) {
-					if($(this).val() == sources[i].name){
-						$('#node-data-id').val(sources[i].id);
-						loadDataOutputs(category, sources[i]);
-					}
-				}
-			}
-		}).bind('focus', function(){ $(this).autocomplete("search"); } );
+		configDataSelection($(this).val());		
 	});
 }
+
+// Configure data loading
+function configDataSelection(category){	
+	$('#node-data').on('click', 'focus', function(){
+		$(this).autocomplete();
+	});
+
+	$('#node-data').on('keypress', function(event){
+		event.preventDefault();
+		return false;
+	});
+
+	var sources = getDataSource(category);
+	$('#node-data').autocomplete({
+		minLength: 0,
+		autocomplete: true,
+		source: function(request, response){
+			response($.map(sources, function(value, key){
+				return {
+					label: value.name
+				}
+			}));
+		},
+		open: function() { 
+			var parent_width = $('#node-data').width();
+			$('.ui-autocomplete').width(parent_width);
+		},
+		select: function(event, ui){
+			$(this).val(ui.item.value);
+			// Look for the id
+			for (var i = 0; i < sources.length; i++) {
+				if($(this).val() == sources[i].name){
+					$('#node-data-id').val(sources[i].id);
+					loadDataOutputs(category, sources[i]);
+				}
+			}
+		}
+	}).bind('focus', function(){ $(this).autocomplete("search"); } );
+}
+
+
 
 // Load output texts for the dataElt defined
 function loadDataOutputs(dataCategory, dataElt){
@@ -334,7 +350,7 @@ function configOutputComplete(i){
 		},
 		open: function() { 
 			var parent_width = $('#node-data-output-target-'+i).width();
-			$(this).width(parent_width);
+			$('.ui-autocomplete').width(parent_width);
 		},
 		focus: function(event, ui){
 			$(this).val(ui.item.label);
