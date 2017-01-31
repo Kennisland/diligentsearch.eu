@@ -204,7 +204,7 @@ function getNewQuestion(){
 			<th style="padding:1%">
 				<input id="block-questions-selection-id-`+i+`" type="hidden">
 			</th>
-		</tr>
+		</tr>	
 	`;
 	return question;
 }
