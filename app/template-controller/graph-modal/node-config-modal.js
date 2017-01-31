@@ -149,19 +149,22 @@ function GraphicNodeElt(){
 
 // Delete the current node
 function deleteNode(){
-	var nodeId 	 = $('#node-graphic-id').val(),
-		parentId = graphic.inEdges(nodeId)[0].v;
+	var nodeId 	 = $('#node-graphic-id').val();
 
-	// Root node case
-	if(graphic.predecessors(nodeId).length == 0){
+	if(!graphic.inEdges(nodeId)[0] || graphic.predecessors(nodeId).length == 0){
 		alert('You cannot delete the root node.');
 		return;
 	}
 
+	// Save the parent of the node
+	var parentId = graphic.inEdges(nodeId)[0].v;
+
 	// Delete this node
+	console.log("deleting : ", nodeId);
 	deleteGraphicNode(nodeId);
 
-	// Find the parent, and regen outputs
+
+	// Regen outputs of the parent
 	$('#node-graphic-id').val(parentId);	
 	var parentIndex = graphic.node(parentId).index,
 		parentNode = getGraphicNode(parentId);

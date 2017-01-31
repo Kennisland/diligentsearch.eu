@@ -112,7 +112,14 @@ function injectGraphicNodeData(index, graphicNodeElt){
 	var node = graphic.node($('#node-graphic-id').val());	
 	node.index = index-1; //  Update drawable graphic node information
 
-	setUpGraphicNode(graphicNodeElt);	
+	setUpGraphicNode(graphicNodeElt);
+	// cleanUpGraphicNodes();
+	graphic.nodes().forEach(function(node){
+		if(node != 'lvl_0' && graphic.inEdges(node).length == 0){
+			recursiveDelete(node, 0);
+		}
+	});
+
 	render();
 }
 
@@ -130,32 +137,37 @@ function setUpGraphicNode(graphicNodeElt){
 		setNewGraphicBlock(graphicNodeElt.id, graphicNodeElt.dataId);		
 	}
 
+	// Delete all outEdges of this node if they exist to better recreate them
+	graphic.outEdges(graphicNodeElt.id).forEach(function(e){
+		graphic.removeEdge(e);
+	});
+
+
 	// Regarding number of Outputs, draw new nodes if necessary
 	for (var i = 0; i < graphicNodeElt.targets.length; i++) {
-		// Configure/Get answer text
-		var answer = '';
+		
+		// Configure/Get edge label
+		var edgeLabel = '';
 		if(graphicNodeElt.category == "block"){
-			answer = "Block output";				
+			edgeLabel = "Block output";				
 		}
 		else if(graphicNodeElt.category == "question"){
 			// DB mandatory binding
 			for (var j = 0; j < questions.length; j++) {
 				if(questions[j].id == graphicNodeElt.dataId){
-					answer = questions[j].outputs[i];
+					edgeLabel = questions[j].outputs[i];
 					break;
 				} 
 			}
 		}
 
-		// Create or connect to a node
+		// Create a node if needed and update model
+		if(graphicNodeElt.targets[i] == "New node"){
+			graphicNodeElt.targets[i] = createChildNode(graphicNodeElt.id, edgeLabel);
+		}
+
 		var targetId = graphicNodeElt.targets[i];
-		if(targetId == "New node"){
-			targetId = createChildNode(graphicNodeElt.id, answer);
-			graphicNodeElt.targets[i] = targetId;
-		}
-		else{
-			targetGraphicNode(graphicNodeElt.id, targetId, answer);
-		}
+		targetGraphicNode(graphicNodeElt.id, targetId, edgeLabel);
 		styleGraphicNode(graphicNodeElt.category, targetId);
 	}
 }
@@ -177,12 +189,10 @@ function createChildNode(parentNodeId, edgeLabel){
 		if(nodesList[i].indexOf(base+'_'+childLvl+'_'+childPosition) == 0){
 			childPosition++;		
 		}
-		// console.log("nodeId :", nodesList[i], "base :", base+'_'+childLvl, "current pos :", childPosition);
 	}
 
 	var nodeId = base+'_'+childLvl+'_'+childPosition;
 	createGraphicNode(nodeId);
-	graphic.setEdge(parentNodeId, nodeId, {label:edgeLabel});
 
 	// Return nodeId, to reference the created/used target
 	return nodeId;
@@ -233,7 +243,7 @@ function setNewGraphicBlock(blockNodeId, blockNodeDataId){
 	}
 }
 
-// Points to an existing node
+// Points to an existing node and remove the edge Number i and the node if no predecessors
 function targetGraphicNode(originId, targetId, edgeLabel){
 	graphic.setEdge(originId, targetId, {label:edgeLabel});
 }
@@ -310,7 +320,7 @@ function recursiveDelete(nodeId, depth){
 		// Update other elements index (pointing nowhere is not funny)
 		for (var i = 0; i < graphicNodes.length; i++) {
 			var node = graphic.node(graphicNodes[i].id);
-			if(node.index > nodeIndex){
+			if(node && node.index > nodeIndex){
 				node.index--;
 			}
 		}
@@ -322,13 +332,22 @@ function recursiveDelete(nodeId, depth){
 
 
 function refreshChildren(nodeId){
-	var parentId = graphic.inEdges(nodeId)[0].v,
+	var parentId  = undefined,
+		edgeLabel;
+
+	if(graphic.inEdges(nodeId)[0]){
+		parentId = graphic.inEdges(nodeId)[0].v;
 		edgeLabel = getInEdgeLabel(parentId, nodeId);
-	
+	}
+		
 	// Remove current node, and recreate it
 	recursiveDelete(nodeId, 0);
 	createGraphicNode(nodeId);
-	graphic.setEdge(parentId, nodeId, {label:edgeLabel});
+
+	// Create edge if needed
+	if(parentId){
+		graphic.setEdge(parentId, nodeId, {label:edgeLabel});	
+	}
 }
 
 
