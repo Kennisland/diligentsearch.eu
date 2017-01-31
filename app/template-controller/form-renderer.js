@@ -104,7 +104,7 @@ function getLanguages(){
 			injectLanguageIntoForm();
 			$('#choose-lg').on('change', function(){
 				ajaxSetTranslation($(this).val());
-				getCountry();
+				getCountryForm();
 				$('#language-selected').show();
 			});
 		},
@@ -114,7 +114,7 @@ function getLanguages(){
 }
 
 
-function getCountry(){
+function getCountryForm(){
 	// Reset countries data
 	countries = [];
 	injectCountriesIntoForm();
