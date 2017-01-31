@@ -1,0 +1,90 @@
+/*
+HTML css
+*/
+html,
+body,
+div.container-fluid  {
+	height: 100%;
+	overflow: scroll;
+}
+h1{
+	text-align:center;
+}
+label{
+	color:green;
+}
+
+/*
+div.main-panel{
+	display: table;
+	height:90%;
+	width:100%;
+}
+div.left-panel{
+	width:30%;
+	padding-left: 40px;
+	padding-right: 10px;
+	float: none;
+	display: table-cell;
+	vertical-align: top;
+}
+*/
+div.right-panel{
+	height: 95%;
+}
+
+div.left-panel, div.right-panel{
+	padding: 5%;
+}
+
+
+.ui-autocomplete{
+	position: relative;
+	z-index: 2000;
+}
+
+
+svg.svg-css {
+	height: auto;
+	width:100%;
+	position: absolute;
+	overflow: hidden;
+}
+
+
+
+
+/* SVG css */
+g.type-TK > rect {
+	fill: #00ffd0;
+}
+
+text {
+	font-weight: 300;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 14px;
+}
+
+.node rect{
+	fill: #999;
+	stroke: #57723E;
+	stroke-width: 1.5px;
+}
+
+.node circle{
+	fill: #999;
+	stroke: #57723E;
+	stroke-width: 1.5px;
+}
+
+.clusters rect {
+	fill: #fff;
+	stroke: #57723E;
+	stroke-width: 1.5px;
+}
+
+
+.edgePath path {
+	stroke: #333;
+	stroke-width: 1.5px;
+}
