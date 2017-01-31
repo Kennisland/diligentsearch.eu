@@ -24,7 +24,7 @@ html_nodeConfig = `
 				<div class="form-group">
 					<label for="node-data">Select a data: </label>
 					<br>
-					<input id="node-data" class="ui-autocomplete" type="text" style="width:100%"/>
+					<input id="node-data" type="text" style="min-width:100%; width:100%; max-width:100%;"/>
 					<input id="node-data-id" type="hidden" style="width:100%"/>
 				</div>
 
@@ -302,7 +302,7 @@ function getNewOutput(){
 				<input id="node-data-output-`+i+`" style="margin-left:5%; margin-right:5%; max-width:90%" type="text" disabled="disabled"/>
 			</th>
 			<th style="padding:1%">
-				<input id="node-data-output-target-`+i+`" class="ui-autocomplete" style="margin-left:5%; margin-right:5%; max-width:90%" placeholder="New node"/>
+				<input id="node-data-output-target-`+i+`" style="margin-left:5%; margin-right:5%; max-width:90%" placeholder="New node"/>
 			</th>
 			<th style="padding:1%">
 				<input id="node-data-output-id-`+i+`" value="" type="hidden">
@@ -334,7 +334,7 @@ function configOutputComplete(i){
 		},
 		open: function() { 
 			var parent_width = $('#node-data-output-target-'+i).width();
-			$('.ui-autocomplete').width(parent_width);
+			$(this).width(parent_width);
 		},
 		focus: function(event, ui){
 			$(this).val(ui.item.label);

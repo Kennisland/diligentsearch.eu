@@ -196,7 +196,7 @@ function getNewQuestion(){
 		<tr>
 			<th style="text-align:center">`+j+`</th>
 			<th style="padding:1%">
-				<input id="block-questions-selection-`+i+`" class="ui-autocomplete" style="margin-left:5%; margin-right:5%; width:90%" type="text" placeholder="Question ref"/>
+				<input id="block-questions-selection-`+i+`" style="margin-left:5%; margin-right:5%; width:90%" type="text" placeholder="Question ref"/>
 			</th>
 			<th style="padding:1%">
 				<input id="block-questions-selection-type-`+i+`" style="margin-left:5%; margin-right:5%; width:90%" disabled="disabled"/>

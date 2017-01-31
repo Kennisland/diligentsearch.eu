@@ -60,7 +60,7 @@ html_question = `
 								<label>Reference Value</label>
 							</td>
 							<td>
-								<input id="numeric-reference" class="ui-autocomplete" type="text"style=" min-width:100%;" />								
+								<input id="numeric-reference" type="text"style=" min-width:100%;" />								
 							</td>
 							<td>
 								<input id="numeric-reference-id" type="hidden">
