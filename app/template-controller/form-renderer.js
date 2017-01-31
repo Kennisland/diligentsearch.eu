@@ -131,7 +131,7 @@ function getCountryForm(){
 	});
 }
 
-function getWork(countryId){
+function getWorkForm(countryId){
 	// Reset works data
 	works = [];
 	$('div [id^="work-data-selected"]').hide();
@@ -158,7 +158,7 @@ function getSharedValue(countryId){
 	});	
 }
 
-function getData(workId){	
+function getDataForm(workId){	
 	$.when(ajaxGetElt('Question', workId), ajaxGetElt('Block', workId), ajaxGetElt('Result', workId), ajaxGetElt('DecisionTree', workId)).then(
 		function(resultQuestions, resultBlocks, resultResults, resultDecisionTree){
 			questions 	= resultQuestions[0].map(function(elt){ return JSON.parse(elt.json); 	});
@@ -205,7 +205,7 @@ function bindTypeOfWork(){
 			$('#country-data-selected').hide();			
 		}
 		else{
-			getWork(countryId);
+			getWorkForm(countryId);
 			getSharedValue(countryId);
 			$('#country-data-selected').show();	
 		}
@@ -235,7 +235,7 @@ function bindDecisionTreeData(){
 				$('div [id^="work-data-selected"]').hide();
 			}
 			else{
-				getData(workId);
+				getDataForm(workId);
 				$('#work-data-selected').html('');
 				$('div [id^="work-data-selected"]').show();
 			}			
