@@ -244,7 +244,8 @@ function dumpQuestion(){
 			error_log += "Numeric question requires a reference value\n";
 		}
 
-		var regExp = new RegExp(/^(\w(\s)*)+((-|\+)\s+(\w(\s)*)+)*$/g);
+		// var regExp = new RegExp(/^(\w(\s)*)+((-|\+)\s+(\w(\s)*)+)*$/g);
+		var regExp = new RegExp(/^([^-+](\s)*)+((-|\+)\s+([^-+](\s)*)+)*$/g);
 		if( ! regExp.test($('#numeric-inputs').val()) ){
 			error_log += "Numeric inputs field contains error\n";
 		}
