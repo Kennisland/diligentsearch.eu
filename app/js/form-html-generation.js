@@ -6,23 +6,32 @@ function getQuestionElementHtml(decisionTreeId, question){
 
 	if(question.type == 'text'){
 		content += '<label>'+question.title+'</label>';
+		if(question.information && question.information != ""){
+			content += '<a oncLick="moreInfo(`'+question.information+'`)">more information</a>';
+		}
 		content += '<br>';
 		content += '<input type="text"></input>';
 	}
 	else if(question.type == 'check'){
 		content += '<input type="checkbox" value=""></input>';
 		content += '<label class="form-question-check">'+question.title+'</label>';
+		if(question.information && question.information != ""){
+			content += '<a oncLick="moreInfo(`'+question.information+'`)">more information</a>';
+		}
 	}
 	else if(question.type == 'list'){
 		content += '<label>'+question.title+'</label>';
-		content += '<br>';
+		if(question.information && question.information != ""){
+			content += '<a oncLick="moreInfo(`'+question.information+'`)">more information</a>';
+		}
+		content += '<br>';	
 		content += '<select>';
 		content += '<option val=""></option>';
 		for (var i = 0; i < question.outputs.length; i++) {
 			content += '<option val="'+question.outputs[i]+'">'+question.outputs[i]+'</option>';
 		}
 		content += '</select>';
-	}
+	}	
 	content += '<br>';
 	content += "</div>";
 	return content;
@@ -251,7 +260,7 @@ function getBlockElementHtml(decisionTreeId, block, blockIndex){
 
 	// Inject add button
 	var nextBlockIdx = blockIndex+1;
-	content += '<a>Add another answer</a>'; //onclick="addBlock(['+block.questions+'], `'+decisionTreeId+'`, '+nextBlockIdx+')"
+	content += '<a>Add another answer</a>';
 	content += '</div>';
 	return content;
 }
@@ -268,8 +277,19 @@ function getBlockQuestionElementHtml(questions, innerBlockId){
 		else{
 			eltHtml += getNumericQuestionElementHtml(innerQuestionId, eltToDisplay);
 		}
+
+		// HTML formatting
 		eltHtml = eltHtml.replace(/<br>/g, '');
 		eltHtml = eltHtml.replace(/class="form-group"/g, '');
+		eltHtml = eltHtml.replace(/style="display:none"/g, '');
+		
+		// Look up for more info formatting
+		var moreInfo = eltHtml.match(/<a(.*)<\/a>/g);
+		if(moreInfo != null){
+			eltHtml = eltHtml.replace(/<a(.*)<\/a>/g, '');
+			if(eltToDisplay.type != "numeric")
+				eltHtml = eltHtml.replace(/<\/div>/g, '<br>'+moreInfo+'<\/div>');
+		}
 		content += eltHtml;
 	});
 	return content;
@@ -296,10 +316,11 @@ function bindBlockQuestionsToValue(blockId){
 	});
 }
 
+// Work only on direct a child of the block
 function bindAddBlock(blockId, questions, index){
 	// Half global function for this variable
 	blockIdx = index;
-	$('#'+blockId+' a').on('click', function(){
+	$('#'+blockId+' >a').on('click', function(){
 		addBlock(questions, blockId, blockIdx);
 	});
 }

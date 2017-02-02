@@ -406,9 +406,10 @@ function injectBlockData(index, blockElt){
 
 
 function saveData(dataTable, data, dataId, foreignKeyId, callback){
-	if(dataId == undefined){
+	if(!dataId){
 		saveElt(dataTable, data, foreignKeyId, callback);
 	}else{
+		data.id = dataId
 		updateElt(dataTable, data, callback);
 	}
 }

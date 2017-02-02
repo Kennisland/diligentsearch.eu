@@ -102,7 +102,20 @@ div.form-renderer {
 	font-size: 12px;
 }
 
+.form-block > div > div > label {
+	margin-right: 10px;
+	color: #46723E;
+	max-width: 60%;	
+	font-size: 12px;
+}
+
 .form-block > div > input {
+	float: right;
+	max-width: 40%;	
+	font-size: 12px;
+}
+
+.form-block > div > div > input {
 	float: right;
 	max-width: 40%;	
 	font-size: 12px;

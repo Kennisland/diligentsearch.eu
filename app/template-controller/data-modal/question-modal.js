@@ -30,6 +30,12 @@ html_question = `
 					</select>
 				</div>
 
+				<div class="form-group">
+					<label for="question-details">Further information: </label>
+					<br>
+					<textarea id="question-details" type="text" style="min-width:100%; max-width:100%"/>					
+				</div>
+
 				<div id="question-output-block" class="form-group">
 					<label>Default outputs : </label>
 
@@ -145,6 +151,7 @@ function loadQuestion(index, questionElt){
 	$('#question-identifier').val(questionElt.name);
 	$('#question-asked').val(questionElt.title);
 	$('#question-type').val(questionElt.type);
+	$('#question-details').val(questionElt.information);
 
 	// Answers fields
 	var increasable = questionElt.type == 'list'; 
@@ -324,6 +331,7 @@ function dumpQuestion(){
 
 function dismissQuestionModal(){
 	$('.modal-body').find("input").val("");
+	$('.modal-body').find("textarea").val("");
 	$('#question-type').val("text");
 	toggleQuestionTypeVisibility($('#question-type').val());
 	if(currentQuestionIndex != -1){
@@ -341,6 +349,7 @@ function QuestionElt(){
 	this.name 		= $('#question-identifier').val();
 	this.title 		= $('#question-asked').val();
 	this.type 		= $('#question-type').val();
+	this.information= $('#question-details').val();
 	this.numerical 	= undefined;
 	this.outputs 	= [];				// List of non free choices for the end user
 };
