@@ -237,7 +237,7 @@ function setUpListWarningModal(element){
 	Block HTML / onCLick stuff
 */
 function getBlockElementHtml(decisionTreeId, block, blockIndex){
-	var content = '<div id="'+decisionTreeId+'" class="form-group">';
+	var content = '<div id="'+decisionTreeId+'" class="form-group form-block-header">';
 		content += '<label>'+block.introduction+'</label>';
 
 	// Set / Get question data
