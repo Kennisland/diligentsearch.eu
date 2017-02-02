@@ -57,18 +57,22 @@ div.form-renderer {
 	margin-left: 10px;
 }
 
-.form-question-numeric > div{
-	margin:10px;
+.form-question-input > label{
+	margin-right: 10px;
+	font-size: 15px;
+}
+
+.form-question-input > input{
+	margin-left: 10px;
 }
 
 .form-question-numeric > div > label{
 	margin-right: 10px;
 	font-size: 15px;
-
 }
 
 .form-question-numeric > div > input{
-	margin-right: 10px;
+	margin-left: 10px;
 }
 
 .form-block {
