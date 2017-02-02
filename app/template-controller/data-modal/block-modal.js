@@ -28,8 +28,8 @@ html_block = `
 							<table class"table table-responsive table-bordered table-stripped" style="width:100%">
 								<thead>
 									<th style="width:10%;	min-width:10%;	max-width:10%; text-align:center">#</th>
-									<th style="width:60%;	min-width:60%;	max-width:60%; text-align:center">Question</th>
 									<th style="width:25%;	min-width:25%;	max-width:25%; text-align:center">Type</th>
+									<th style="width:60%;	min-width:60%;	max-width:60%; text-align:center">Question</th>
 									<th style="width:5%;	min-width:5%;	max-width:5%;  text-align:center"></th>
 								</thead>
 								<tbody id="block-questions-selection">
@@ -196,10 +196,10 @@ function getNewQuestion(){
 		<tr>
 			<th style="text-align:center">`+j+`</th>
 			<th style="padding:1%">
-				<input id="block-questions-selection-`+i+`" style="margin-left:5%; margin-right:5%; width:90%" type="text" placeholder="Question ref"/>
+				<input id="block-questions-selection-type-`+i+`" style="margin-left:5%; margin-right:5%; width:90%" disabled="disabled"/>
 			</th>
 			<th style="padding:1%">
-				<input id="block-questions-selection-type-`+i+`" style="margin-left:5%; margin-right:5%; width:90%" disabled="disabled"/>
+				<input id="block-questions-selection-`+i+`" style="margin-left:5%; margin-right:5%; width:90%" type="text" placeholder="Question ref"/>
 			</th>
 			<th style="padding:1%">
 				<input id="block-questions-selection-id-`+i+`" type="hidden">
@@ -222,7 +222,7 @@ function configQuestionComplete(i){
 		},
 		open: function() { 
 			var parent_width = $('#block-questions-selection-'+i).width();
-			$('.ui-autocomplete').width(parent_width);
+			$('.ui-autocomplete').width(2*parent_width);
 		},
 		select: function(event, ui){
 			$(this).val(ui.item.value);
@@ -231,14 +231,11 @@ function configQuestionComplete(i){
 				last = lineSelector.length - 1,
 				rowIdx = parseInt(lineSelector[last]);
 
-			// console.log($(this)[0].id, lineSelector, last, rowIdx);
-
 			// Look for the id of this question and insert it in good position
 			for (var i = 0; i < questions.length; i++) {
 				if($(this).val() == questions[i].name){
 					$('#block-questions-selection-type-'+rowIdx).val(questions[i].type);
 					$('#block-questions-selection-id-'+rowIdx).val(questions[i].id);
-					// console.log("adding : ", rowIdx, i, questions[i].type, questions[i].id);
 				}
 			}
 		}
