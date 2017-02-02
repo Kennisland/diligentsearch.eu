@@ -49,16 +49,7 @@ function dumpWork(){
 	}
 
 	var workElt = new WorkElt();
-	saveWork(workElt);
-}
-
-function WorkElt(){
-	this.countryId = selectedCountry.id;
-	this.name = $('#work-name').val();
-}
-
-function saveWork(work){
-	function cb(success){
+	saveElt('Work', work, work.countryId, function(success){
 		if(success){
 			getWork(work.countryId);
 			dismissWorkModal();			
@@ -66,10 +57,14 @@ function saveWork(work){
 		else{
 			alert("Failed to save element within database");
 		}
-	};
-
-	saveElt('Work', work, work.countryId, cb);
+	});
 }
+
+function WorkElt(){
+	this.countryId = selectedCountry.id;
+	this.name = $('#work-name').val();
+}
+
 
 function dismissWorkModal(){
 	$('.modal-body > input').val('');

@@ -405,6 +405,13 @@ function injectBlockData(index, blockElt){
 
 
 
+function saveData(dataTable, data, dataId, foreignKeyId, callback){
+	if(dataId == undefined){
+		saveElt(dataTable, data, foreignKeyId, callback);
+	}else{
+		updateElt(dataTable, data, callback);
+	}
+}
 
 // Macro to Retrieve specific section of html code based on common id pattern : id-section-#index
 function retrieveSection(tag, sectionId){

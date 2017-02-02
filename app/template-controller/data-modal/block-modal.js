@@ -118,7 +118,17 @@ function dumpBlock(){
 		block.questions.push($('#block-questions-selection-id-'+i).val());
 	}
 
-	saveBlockElt(block);
+
+	// Save block into DB
+	saveData('Block', block, currentBlockId, selectedWork.id, function(success){
+		if(success){
+			injectBlockData(currentBlockIndex, block);	
+			dismissBlockModal();				
+		}
+		else{
+			alert("Failed to save element within database");
+		}
+	});
 };
 
 function dismissBlockModal(){
@@ -141,27 +151,6 @@ function BlockElt(){
 	this.questions 		= [];
 };
 
-
-// Save it into DB
-function saveBlockElt(block){
-	function cb(success){
-		if(success){
-			injectBlockData(currentBlockIndex, block);	
-			dismissBlockModal();				
-		}
-		else{
-			alert("Failed to save element within database");
-		}
-	};
-
-	if(currentBlockId === undefined){
-		saveElt('Block', block, selectedWork.id, cb);
-	}
-	else{
-		block.id = currentBlockId;
-		updateElt('Block', block, cb);
-	}
-}
 
 
 /* 
