@@ -251,7 +251,7 @@ function getBlockElementHtml(decisionTreeId, block, blockIndex){
 
 	// Inject add button
 	var nextBlockIdx = blockIndex+1;
-	content += '<a>Add a block section</a>'; //onclick="addBlock(['+block.questions+'], `'+decisionTreeId+'`, '+nextBlockIdx+')"
+	content += '<a>Add another answer</a>'; //onclick="addBlock(['+block.questions+'], `'+decisionTreeId+'`, '+nextBlockIdx+')"
 	content += '</div>';
 	return content;
 }
