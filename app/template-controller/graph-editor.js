@@ -5,6 +5,7 @@ html_graphEditor = `
 </div>
 
 <div id="decision-process-save" style="text-align:center; padding: 10px; display: none">
+	<button type="button" class="btn btn-default" onclick="configSVG()">Reset Zoom</button>
 	<button type="button" class="btn btn-primary" onclick="saveDecisionTree()">Save Decision Process</button>
 </div>
 
@@ -25,6 +26,7 @@ function injectGraphEditor(){
 function loadGraph(){
 	$('#decision-process-save').show();
 	initSVG();
+	render();
 }
 
 function resetGraph(){
@@ -91,7 +93,7 @@ svg = undefined;
 svgGroup = undefined;
 graphic = undefined;
 zoom = undefined;
-initialScale = 0.75;
+initialScale = 0.70;
 
 // Initiate the graphical object and the first node
 function initSVG(){
@@ -116,8 +118,7 @@ function configSVG(){
 	svg.attr('width', $('#graph-editor').width());	// Update svg width element based on display
 
 	/* Centering */
-	// var xCenterOffset = (svg.attr("width") - graphic.graph().width * 2) / 2;
-	var xCenterOffset = (svg.attr("width") - graphic.graph().width) / 2;
+	var xCenterOffset = (svg.attr("width") - graphic.graph().width/2) / 2;
 	svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
 	svg.attr("height", graphic.graph().height + 40);
 
