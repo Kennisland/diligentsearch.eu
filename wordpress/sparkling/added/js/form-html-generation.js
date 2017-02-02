@@ -2,7 +2,7 @@
 	Question html
 */
 function getQuestionElementHtml(decisionTreeId, question){	
-	var content = '<div id="'+decisionTreeId+'" class="form-group">';
+	var content = '<div id="'+decisionTreeId+'" class="form-group form-question-input">';
 
 	if(question.type == 'text'){
 		content += '<label>'+question.title+'</label>';
@@ -30,7 +30,6 @@ function getQuestionElementHtml(decisionTreeId, question){
 
 function getNumericQuestionElementHtml(decisionTreeId, question){
 	var content = '<div id="'+decisionTreeId+'" class="form-group form-question-numeric">';
-		content += '<label>'+question.title+'</label>';	
 
 	var inputs = extractExpression(question.numerical.expression).inputs;
 	if(inputs.length > 0){
@@ -44,10 +43,11 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 					content += '<div style="display:none">';
 				}
 				content += '<label>'+elt.question+'</label>';
-				content += '<input></input>';
 				if(elt.information && elt.information != ""){
 					content += '<a oncLick="moreInfo(`'+elt.information+'`)">more information</a>';
 				}
+				content += '<br>';
+				content += '<input></input>';
 				content += '</div>';
 			}
 		});
@@ -237,7 +237,7 @@ function setUpListWarningModal(element){
 	Block HTML / onCLick stuff
 */
 function getBlockElementHtml(decisionTreeId, block, blockIndex){
-	var content = '<div id="'+decisionTreeId+'" class="form-group">';
+	var content = '<div id="'+decisionTreeId+'" class="form-group form-block-header">';
 		content += '<label>'+block.introduction+'</label>';
 
 	// Set / Get question data
@@ -251,7 +251,7 @@ function getBlockElementHtml(decisionTreeId, block, blockIndex){
 
 	// Inject add button
 	var nextBlockIdx = blockIndex+1;
-	content += '<a>Add a block section</a>'; //onclick="addBlock(['+block.questions+'], `'+decisionTreeId+'`, '+nextBlockIdx+')"
+	content += '<a>Add another answer</a>'; //onclick="addBlock(['+block.questions+'], `'+decisionTreeId+'`, '+nextBlockIdx+')"
 	content += '</div>';
 	return content;
 }

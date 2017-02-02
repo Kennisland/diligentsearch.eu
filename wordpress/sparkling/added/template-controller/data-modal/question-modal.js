@@ -244,7 +244,8 @@ function dumpQuestion(){
 			error_log += "Numeric question requires a reference value\n";
 		}
 
-		var regExp = new RegExp(/^(\w(\s)*)+((-|\+)\s+(\w(\s)*)+)*$/g);
+		// var regExp = new RegExp(/^(\w(\s)*)+((-|\+)\s+(\w(\s)*)+)*$/g);
+		var regExp = new RegExp(/^([^-+](\s)*)+((-|\+)\s+([^-+](\s)*)+)*$/g);
 		if( ! regExp.test($('#numeric-inputs').val()) ){
 			error_log += "Numeric inputs field contains error\n";
 		}
@@ -309,7 +310,16 @@ function dumpQuestion(){
 		return;
 	}
 
-	saveQuestionElt(question);
+	// Save it into db
+	saveData('Question', question, currentQuestionId, selectedWork.id, function(success){
+		if(success){
+			injectQuestionData(currentQuestionIndex, question);	
+			dismissQuestionModal();				
+		}
+		else{
+			alert("Failed to save element within database");
+		}
+	});
 };
 
 function dismissQuestionModal(){
@@ -359,35 +369,11 @@ function getReferenceId() {
 }
 
 
-// Save it into db
-function saveQuestionElt(question){
-	function cb(success){
-		if(success){
-			injectQuestionData(currentQuestionIndex, question);	
-			dismissQuestionModal();				
-		}
-		else{
-			alert("Failed to save element within database");
-		}
-	};
-
-	if(currentQuestionId === undefined){
-		saveElt('Question', question, selectedWork.id, cb);
-	}
-	else{
-		question.id = currentQuestionId;
-		updateElt('Question', question, cb);
-	}
-}
-
-
-
 /*
  * HTML add-QuestionModal management
  */
 
-
- function configAutocomplete(){
+function configAutocomplete(){
 	$('#numeric-reference').autocomplete({
 		minLength: 0,
 		autocomplete: true,

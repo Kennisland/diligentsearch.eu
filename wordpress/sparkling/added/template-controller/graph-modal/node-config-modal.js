@@ -21,7 +21,7 @@ html_nodeConfig = `
 					</select>			
 				</div>
 
-				<div class="form-group">
+				<div id="node-data-selection" class="form-group">
 					<label for="node-data">Select a data: </label>
 					<br>
 					<input id="node-data" type="text" style="min-width:100%; width:100%; max-width:100%;"/>
@@ -60,6 +60,7 @@ html_nodeConfig = `
 
 function injectNodeConfigModal(){
 	$('#modal-section').append(html_nodeConfig);
+	$('#node-data-selection').hide();
 	$('#node-data-output-block').hide();
 	configCategorySelection();
 }
@@ -67,7 +68,7 @@ function injectNodeConfigModal(){
 currentGraphicNodeIndex = -1;
 function loadGraphicNode(index, graphicNodeElt){
 	currentGraphicNodeIndex = index;
-	$('#node-category').val(graphicNodeElt.category);
+	$('#node-category').val(graphicNodeElt.category).trigger('change');
 	$('#node-data').val(graphicNodeElt.dataName);
 	$('#node-data-id').val(graphicNodeElt.dataId)
 
@@ -130,10 +131,7 @@ function dumpNode(){
 // Reset and hide the modal
 function dismissNodeModal(){
 	$('#node-graphic-id').val("");
-	$('#node-category').val("");
-	$('#node-data-id').val("");
-	$('#node-data').val("");
-	delOutputs();
+	$('#node-category').val("").trigger('change');
 	if(currentGraphicNodeIndex != -1){
 		currentGraphicNodeIndex = -1;
 	}
@@ -202,7 +200,19 @@ function configCategorySelection(){
 	
 	$('#node-category').on('change', function(){
 		// Reset necessary fields
+		console.log("$('#node-category').on('change' : ", $(this).val());
+
+		if($(this).val() == ""){
+			$('#node-data-selection > label').text("");
+			$('#node-data-selection').hide();
+		}
+		else{
+			$('#node-data-selection > label').text("Select a "+ $(this).val() +" identifier");
+			$('#node-data-selection').show();	
+		}
+
 		$('#node-data').val(''); 
+		$('#node-data-id').val("");
 		delOutputs();
 
 		// Configure autocomplete
@@ -376,7 +386,8 @@ function getPotentialTargets(){
 			inUseId.push(elt.value);
 		}
 	});
-	
+
+
 	// Avoid parents first
 	var targetsId = $(nodesId).not(parentsId).get();
 

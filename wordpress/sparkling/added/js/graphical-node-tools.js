@@ -80,7 +80,6 @@ function formatGraphicNodeLabel(graphicNodeElt){
 		creation of children
 		configuration of blocks
 		deletion (recursion)
-
 */
 
 
