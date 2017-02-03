@@ -281,14 +281,22 @@ function getBlockQuestionElementHtml(questions, innerBlockId){
 		// HTML formatting
 		eltHtml = eltHtml.replace(/<br>/g, '');
 		eltHtml = eltHtml.replace(/class="form-group"/g, '');
-		eltHtml = eltHtml.replace(/style="display:none"/g, '');
+		eltHtml = eltHtml.replace(/ style="display:none"/g, '');
 		
-		// Look up for more info formatting
-		var moreInfo = eltHtml.match(/<a(.*)<\/a>/g);
-		if(moreInfo != null){
+		//Revert the a tag and the input tag for more information
+		if(eltToDisplay.type != "numeric"){
+			var moreInfo = eltHtml.match(/<a(.*)<\/a>/g) || '';
 			eltHtml = eltHtml.replace(/<a(.*)<\/a>/g, '');
-			if(eltToDisplay.type != "numeric")
-				eltHtml = eltHtml.replace(/<\/div>/g, '<br>'+moreInfo+'<\/div>');
+			eltHtml = eltHtml.replace(/<\/div>/g, '<br>'+moreInfo+'<\/div>');
+		}
+		else{			
+			var arr = eltHtml.split('<label>');
+			for (var i = 0; i < arr.length; i++) {
+				arr[i] = arr[i].replace(/(<a.+<\/a>)(<input><\/input>)/g, function(match, p1, p2){
+					return [p2, '<br>', p1].join('');
+				});
+			}
+			eltHtml = arr.join('<label>');
 		}
 		content += eltHtml;
 	});
