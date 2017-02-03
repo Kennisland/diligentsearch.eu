@@ -16,7 +16,6 @@ div.main-panel{
 	display: table;
 	height:90%;
 	width:100%;
-	
 }
 div.left-panel{
 	width:30%;
@@ -48,10 +47,9 @@ div.right-panel{
 }
 
 
-
 svg.svg-css {
 	min-height: 700px;
-	width:100%;
+	max-width:100%;
 	position: relative;
 }
 
