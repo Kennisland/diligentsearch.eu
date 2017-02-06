@@ -210,7 +210,7 @@ function setUpWarningModal(element){
 					var v = !element.is(':checked');
 					element.attr("checked", v);
 					element.prop("checked", v);
-				}					
+				}
 				element.trigger('change');
 				$('#form-warningModal').modal('hide');
 			});
@@ -318,9 +318,7 @@ function getBlockQuestionElementHtml(questions, innerBlockId){
 
 function bindBlockQuestionsToValue(blockId){
 	// Handle input (text & chockbox)
-	$('#'+blockId+' input').on('change', function(){		
-
-		// Set up value first
+	$('#'+blockId+' input').on('change', function(){
 		if($(this).attr("type") == "checkbox"){
 			if($(this).is(':checked')){
 				$(this).val('on');
@@ -329,13 +327,24 @@ function bindBlockQuestionsToValue(blockId){
 				$(this).val('off');
 			}
 		}
+		bindHtmlForPdf($(this));
 		setUpWarningModal($(this));
+	});
+
+
+	// Handle select
+	$('#'+blockId+' select').on('change', function(){	
 		bindHtmlForPdf($(this));
 	});
-	// Handle select
-	$('#'+blockId+' select').on('change', function(){
-		setUpWarningModal($(this));
-		bindHtmlForPdf($(this));
+
+	blockClickNb = 0;
+	$('#'+blockId+' select').on('click', function(event){
+		// Display the modal only on second click
+		if(blockClickNb % 2 == 1){
+			setUpListWarningModal($(this));
+			event.preventDefault();
+		}
+		blockClickNb++;
 	});
 }
 

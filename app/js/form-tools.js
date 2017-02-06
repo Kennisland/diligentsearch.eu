@@ -191,7 +191,7 @@ function generateElementHtml(nodeElt){
 	else if(nodeElt.category == 'result'){
 		htmlContent = getResultElementHtml(nodeElt.id, eltToDisplay);
 		injectElementIntoForm(htmlContent);
-	}	
+	}
 }
 
 

@@ -192,6 +192,17 @@ function setUpWarningModal(element){
 		if(element.val() != "" ){
 			event.preventDefault();
 
+			// Check if element value is 
+			// * http://blablablablablabla.somewhere
+			// * wwww.blablablablablabla.somewhere
+			if(element.val().match(/(http:\/\/|wwww.)(.*).(.*)/g)){
+				$('#form-warning-modal-open-link').on('click', function(){
+					window.open(element.val());
+				});
+				$('#form-warning-modal-is-link').show();
+			}
+
+
 			// Configure modal buttons to perform click, or to just do nothing on the current element
 			$('#form-warning-modal-proceed').off().on('click', function(){
 				element.val("");
@@ -199,14 +210,16 @@ function setUpWarningModal(element){
 					var v = !element.is(':checked');
 					element.attr("checked", v);
 					element.prop("checked", v);
-				}					
+				}
 				element.trigger('change');
 				$('#form-warningModal').modal('hide');
 			});
 
 			// Cancel configuration
 			$('#form-warning-modal-cancel').off().on('click', function(){
-				$('#form-warningModal').modal('hide');			
+				$('#form-warning-modal-open-link').blur();
+				$('#form-warning-modal-is-link').hide();	
+				$('#form-warningModal').modal('hide');
 			});
 		
 			// Display finally the modal
@@ -305,9 +318,7 @@ function getBlockQuestionElementHtml(questions, innerBlockId){
 
 function bindBlockQuestionsToValue(blockId){
 	// Handle input (text & chockbox)
-	$('#'+blockId+' input').on('change', function(){		
-
-		// Set up value first
+	$('#'+blockId+' input').on('change', function(){
 		if($(this).attr("type") == "checkbox"){
 			if($(this).is(':checked')){
 				$(this).val('on');
@@ -317,10 +328,23 @@ function bindBlockQuestionsToValue(blockId){
 			}
 		}
 		bindHtmlForPdf($(this));
+		setUpWarningModal($(this));
 	});
+
+
 	// Handle select
-	$('#'+blockId+' select').on('change', function(){
+	$('#'+blockId+' select').on('change', function(){	
 		bindHtmlForPdf($(this));
+	});
+
+	blockClickNb = 0;
+	$('#'+blockId+' select').on('click', function(event){
+		// Display the modal only on second click
+		if(blockClickNb % 2 == 1){
+			setUpListWarningModal($(this));
+			event.preventDefault();
+		}
+		blockClickNb++;
 	});
 }
 

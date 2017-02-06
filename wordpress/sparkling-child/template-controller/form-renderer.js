@@ -46,8 +46,16 @@ html_formRenderer =`
 					</div>
 
 					<div class="modal-body">
-						<p>Changing a field can result in losing information.</p>
-						<p>Do you want to proceed anyway ?</p>
+						<div id="form-warning-modal-is-link" style="display:none">
+							<p>
+								URL detected within this field. Do you want to open it ?
+								<a id="form-warning-modal-open-link">Redirect to the URL</a>
+							</p>
+						</div>
+						<p>
+							Changing a field can result in losing information.
+							Do you want to proceed anyway ?
+						</p>
 					</div>
 
 					<div class="modal-footer">
