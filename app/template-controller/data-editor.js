@@ -7,7 +7,7 @@ html_dataModelEditor = `
 <ul id="breadcrumb" class="breadcrumb">
 	<li><a onclick="getCountry()">Choose a Country</a></li>
 	<li style="display: none"><a onclick="getWork()">Choose a type of Work</a></li>
-	<li style="display: none"><a onclick="getData()">Data</a></li>
+	<li style="display: none"><a onclick="">Data</a></li>
 </ul>
 
 <div id="select-country" style="display: none">

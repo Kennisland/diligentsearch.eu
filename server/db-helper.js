@@ -280,6 +280,11 @@ module.exports.getTranslations = getTranslations;
 
 
 function translate(sqlTable, rows, lg){
+
+	if(!lg || !lg.useCountry || !lg.useTranslation){
+		return;
+	}
+
 	// identify language file wanted by user
 	var country = lg.useCountry,
 		translation = lg.useTranslation;
