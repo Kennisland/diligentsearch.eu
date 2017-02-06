@@ -192,6 +192,17 @@ function setUpWarningModal(element){
 		if(element.val() != "" ){
 			event.preventDefault();
 
+			// Check if element value is 
+			// * http://blablablablablabla.somewhere
+			// * wwww.blablablablablabla.somewhere
+			if(element.val().match(/(http:\/\/|wwww.)(.*).(.*)/g)){
+				$('#form-warning-modal-open-link').on('click', function(){
+					window.open(element.val());
+				});
+				$('#form-warning-modal-is-link').show();
+			}
+
+
 			// Configure modal buttons to perform click, or to just do nothing on the current element
 			$('#form-warning-modal-proceed').off().on('click', function(){
 				element.val("");
@@ -206,7 +217,9 @@ function setUpWarningModal(element){
 
 			// Cancel configuration
 			$('#form-warning-modal-cancel').off().on('click', function(){
-				$('#form-warningModal').modal('hide');			
+				$('#form-warning-modal-open-link').blur();
+				$('#form-warning-modal-is-link').hide();	
+				$('#form-warningModal').modal('hide');
 			});
 		
 			// Display finally the modal
@@ -316,10 +329,12 @@ function bindBlockQuestionsToValue(blockId){
 				$(this).val('off');
 			}
 		}
+		setUpWarningModal($(this));
 		bindHtmlForPdf($(this));
 	});
 	// Handle select
 	$('#'+blockId+' select').on('change', function(){
+		setUpWarningModal($(this));
 		bindHtmlForPdf($(this));
 	});
 }
