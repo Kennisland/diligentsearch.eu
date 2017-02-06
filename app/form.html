@@ -14,6 +14,9 @@
 	<link rel="stylesheet" href="css/font-awesome.min.css">
 	<script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
 
+	<!-- Notify.js -->
+	<script type="text/javascript" src="js/lib/notify.min.js"></script>	
+
 	<!-- Templates simulation -->
 	<link rel="stylesheet" href="../css/form.css">
 	<script type="text/javascript" src="template-controller/form-renderer.js"></script>
@@ -72,7 +75,6 @@
 		  			if(arg == "version"){
 		  				$('#search-version').val(value);
 		  			}
-		  			console.log(args, value);
 		  		});
 	  		}
 	  		return status;
@@ -90,7 +92,6 @@
 			getSearch();
 		}
 		else if(setUrlParameters()){
-			console.log("setUrlParameters true");
 			getSearch();	
 		}
 		else{

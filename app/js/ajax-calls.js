@@ -12,8 +12,7 @@ function ajaxGetLanguages(){
 		url:apiAccessUrl,
 		data: {translationRequired: true},
 		error: function(err){
-			alert('Error in transalation retrieval from database\n'+err.statusText);
-			console.log("error :", err);
+			console.log("Error ajaxGetLanguages :", err);
 		}
 	});
 }
@@ -76,8 +75,7 @@ function ajaxGetCountries(){
 		url:dbAccessUrl,
 		data: {table: 'Country', language: translation},
 		error: function(err){
-			alert('Error in Country retrieval from database\n'+err.statusText);
-			console.log("error :", err);
+			console.log("Error ajaxGetCountries :", err);
 		}
 	});
 }
@@ -88,8 +86,7 @@ function ajaxGetWorks(countryId){
 		url:dbAccessUrl,
 		data: {table: 'Work', language: translation, countryId: countryId},
 		error: function(err){
-			alert('Error in Work retrieval from database\n'+err.statusText);
-			console.log("error :", err);
+			console.log("Error ajaxGetWorks :", err);
 		}
 	});
 }
@@ -100,8 +97,7 @@ function ajaxGetWorkById(workId){
 		url:dbAccessUrl,
 		data: {table: 'Work', language: translation, workId: workId},
 		error: function(err){
-			alert('Error in Work retrieval from database\n'+err.statusText);
-			console.log("error :", err);
+			console.log("Error ajaxGetWorkById :", err);
 		}
 	});
 }
@@ -117,8 +113,7 @@ function ajaxGetForm(webHook, version){
 		url:dbAccessUrl,
 		data: {table: 'Form', webHook: webHook, version: version},
 		error: function(err){
-			alert('Error in form retrieval from database\n'+err.statusText);
-			console.log("error :", err);
+			console.log("Error ajaxGetForm :", err);
 		}
 	});
 }
@@ -150,7 +145,7 @@ function ajaxUpdateForm(form, foreignKey){
 			json:JSON.stringify(form.json)
 		},
 		error: function(error){
-			console.log("ERROR : element ", eltId, " not removed from ", table, " - ", error.status);
+			console.log("ERROR ajaxUpdateForm : element ", eltId, " not removed from ", table, " - ", error.status);
 		}
 	});
 }
@@ -164,7 +159,6 @@ function ajaxPrintPdf(htmlContent, key){
 		url: pdfPrintingUrl,
 		data: {html: htmlContent, key:key},
 		success: function(success){
-			console.log("success : ", success);
 			if(success.file){
 				window.open(pdfPrintingUrl+'/'+success.file);				
 			}
@@ -172,8 +166,7 @@ function ajaxPrintPdf(htmlContent, key){
 			$('#work-print-btn').removeAttr("disabled");
 		},
 		error: function(err){
-			alert('Error in html sending\n'+err.statusText);
-			console.log("error :", err);
+			console.log("Error ajaxPrintPdf :", err);
 			// Unlock button
 			$('#work-print-btn').removeAttr("disabled");
 		}
@@ -199,7 +192,7 @@ function ajaxGetElt(table, foreignKey){
 				language: translation
 			},
 			error: function(err){
-				console.log("error :", err);
+				console.log("Error ajaxGetElt :", err);
 			}
 		});
 	}
@@ -318,7 +311,7 @@ function ajaxInsertElt(table, elt, foreignKeyId){
 			json: JSON.stringify(elt)
 		},
 		error: function(error){
-			console.log("ERROR : element ", elt, " not inserted from ", table, " - ", error.status);
+			console.log("ERROR ajaxInsertElt : element ", elt, " not inserted from ", table, " - ", error.status);
 		}
 	});
 }
@@ -334,7 +327,7 @@ function ajaxUpdateElt(table, eltId, eltJson){
 			json: JSON.stringify(eltJson)
 		},
 		error: function(error){
-			console.log("ERROR : element ", eltId, " not removed from ", table, " - ", error.status);
+			console.log("ERROR ajaxUpdateElt : element ", eltId, " not removed from ", table, " - ", error.status);
 		}
 	});
 }
@@ -349,7 +342,7 @@ function ajaxRemoveElt(table, eltId){
 			id: eltId
 		},
 		error: function(error){
-			console.log("ERROR : element ", eltId, " not removed from ", table, " - ", error.status);	
+			console.log("ERROR ajaxRemoveElt : element ", eltId, " not removed from ", table, " - ", error.status);	
 		}
 	});
 }

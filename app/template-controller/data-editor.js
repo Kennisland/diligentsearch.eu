@@ -92,7 +92,7 @@ function getCountry(){
 			injectCountryData();
 		}, 
 		function(error){
-			$('#select-country').html(error.statusText);
+			$('#select-country').notify("Service unavailable", "error", {position: 'top-left'});
 	});
 	$('#select-country').show();
 }
@@ -113,7 +113,7 @@ function getWork(countryId){
 	}
 
 	if(!selectedCountry){
-		$('#select-work').html('Country id not found');
+		$('#select-country').notify("Country selection error", "error", {position: 'top-left'});
 	}
 	else{
 		// Ajax call to get works from server for this country
@@ -125,8 +125,8 @@ function getWork(countryId){
 				injectWorkData();					
 			},
 			function(error){
-				$('#select-work').html(error.statusText);
-		});		
+				$('#select-work').notify("Error in type of work and global data retrieval", "error", {position: 'top-left'});
+		});	
 	}
 	$('#select-work').show();
 }
@@ -151,7 +151,7 @@ function getData(workIdx){
 			getDecisionTree();
 		},
 		function(error){
-			$('#display-data-model').prepend(error.statusText);			
+			$('#display-data-model').notify("Error in specific data retrieval", "error", {position:'top-left'});
 	});
 	$('#display-data-model').show();
 }
