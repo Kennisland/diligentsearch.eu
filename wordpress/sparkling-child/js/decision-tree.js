@@ -57,7 +57,7 @@ function getDecisionTree(){
 					loadGraphicalNodeData(node, idx);
 				});
 			}
-			render();
+			customRender();
 		},
 		function(error){
 			alert('Fail to retrieve decision process ', error.statusText);

@@ -200,8 +200,6 @@ function configCategorySelection(){
 	
 	$('#node-category').on('change', function(){
 		// Reset necessary fields
-		console.log("$('#node-category').on('change' : ", $(this).val());
-
 		if($(this).val() == ""){
 			$('#node-data-selection > label').text("");
 			$('#node-data-selection').hide();

@@ -121,7 +121,8 @@ function injectGraphicNodeData(index, graphicNodeElt){
 		}
 	});
 
-	render();
+	console.log('calling render');
+	customRender();
 }
 
 // Update graphic, take care of block case, generate outputs
