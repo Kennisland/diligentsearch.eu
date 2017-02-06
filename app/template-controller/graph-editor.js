@@ -107,7 +107,6 @@ function initSVG(){
 
 	// Zoom 
 	zoom.on("zoom", function() {
-		console.log(d3.event.translate, d3.event.scale);
 		svgGroup.attr("transform", 
 			"translate(" + d3.event.translate + ")" + "scale(" + d3.event.scale + ")");
 	});
@@ -130,6 +129,7 @@ function configSVG(){
 	svg.attr('width', $('#graph-editor').width());	// Update svg width element based on display
 	svg.attr('height', graphic.graph().height + 40);
 
+	svgGroup.attr('width', $('#graph-editor').width());	
 	// Click bindings with editor 
 	d3.select("svg g").selectAll("g.node").each(function(v){		
 		var node = graphic.node($(this).context.id);
@@ -158,5 +158,5 @@ function configSVG(){
 
 function resetZoom(){
 	var xCenterOffset = (svg.attr("width") - graphic.graph().width) / 2;
-	svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)" + "scale("+initialScale+")" );
+	svgGroup.attr("transform", "translate(" + xCenterOffset + ")" + "scale("+initialScale+")" );
 }
