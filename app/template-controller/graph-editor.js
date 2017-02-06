@@ -5,7 +5,7 @@ html_graphEditor = `
 </div>
 
 <div id="decision-process-save" style="text-align:center; padding: 10px; display: none">
-	<button type="button" class="btn btn-default" onclick="configSVG()">Reset Zoom</button>
+	<button type="button" class="btn btn-default" onclick="resetZoom()">Reset Zoom</button>
 	<button type="button" class="btn btn-primary" onclick="saveDecisionTree()">Save Decision Process</button>
 </div>
 
@@ -26,7 +26,7 @@ function injectGraphEditor(){
 function loadGraph(){
 	$('#decision-process-save').show();
 	initSVG();
-	render();
+	customRender();
 }
 
 function resetGraph(){
@@ -93,7 +93,7 @@ svg = undefined;
 svgGroup = undefined;
 graphic = undefined;
 zoom = undefined;
-initialScale = 0.70;
+initialScale = 0.7;
 
 // Initiate the graphical object and the first node
 function initSVG(){
@@ -104,38 +104,33 @@ function initSVG(){
 	svg = d3.select("svg");
 	svgGroup = svg.append("g");
 	zoom = d3.behavior.zoom();
-}
 
-// Render the graphic to display
-function render(){		
-	var render = new dagreD3.render();
-	render(svgGroup, graphic);
-	configSVG();
-}
-
-// Configure SVG features (centering, translation, zoom, click)
-function configSVG(){	
-	svg.attr('width', $('#graph-editor').width());	// Update svg width element based on display
-
-	/* Centering */
-	var xCenterOffset = (svg.attr("width") - graphic.graph().width/2) / 2;
-	svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)");
-	svg.attr("height", graphic.graph().height + 40);
-
-	/* Translation */
-	zoom.translate([xCenterOffset, 100])
-	  .scale(initialScale)
-	  .event(svg);
-	svg.attr('height', graphic.graph().height * initialScale + 40);
-
-	/* Zoom */
+	// Zoom 
 	zoom.on("zoom", function() {
+		console.log(d3.event.translate, d3.event.scale);
 		svgGroup.attr("transform", 
 			"translate(" + d3.event.translate + ")" + "scale(" + d3.event.scale + ")");
 	});
 	svg.call(zoom);
 
-	/* Click bindings with editor */
+}
+
+// Render the graphic to display
+function customRender(){
+	// Ensure actual zoom scale is 1 : prevent to make crazy stuff with labels
+	d3.select("g").attr("transform", "scale(" + 1 + ")");
+	var render = new dagreD3.render();
+	render(svgGroup, graphic);
+	configSVG();
+	resetZoom();
+}
+
+// Configure SVG features (centering, translation, zoom, click)
+function configSVG(){	
+	svg.attr('width', $('#graph-editor').width());	// Update svg width element based on display
+	svg.attr('height', graphic.graph().height + 40);
+
+	// Click bindings with editor 
 	d3.select("svg g").selectAll("g.node").each(function(v){		
 		var node = graphic.node($(this).context.id);
 		// Define default click event if this node has no index yet
@@ -159,4 +154,9 @@ function configSVG(){
 			});
 		}
 	});
+}
+
+function resetZoom(){
+	var xCenterOffset = (svg.attr("width") - graphic.graph().width) / 2;
+	svgGroup.attr("transform", "translate(" + xCenterOffset + ", 20)" + "scale("+initialScale+")" );
 }

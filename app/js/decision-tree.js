@@ -40,6 +40,9 @@ function getDecisionTree(){
 
 	$.when(ajaxGetElt('DecisionTree', selectedWork.id)).then(
 		function(decisionTree){
+
+			console.log("received fro server :", decisionTree);
+
 			if(!decisionTree[0] || decisionTree[0].json == "[]") {
 				// New graph
 				createGraphicNode('lvl_0');
@@ -54,7 +57,7 @@ function getDecisionTree(){
 					loadGraphicalNodeData(node, idx);
 				});
 			}
-			render();
+			customRender();
 		},
 		function(error){
 			alert('Fail to retrieve decision process ', error.statusText);
