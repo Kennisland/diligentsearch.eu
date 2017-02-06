@@ -1,4 +1,4 @@
-apiAccessUrl 	= "http://ds.local"+'/api';
+apiAccessUrl 	= window.location.origin+'/api';
 dbAccessUrl 	= apiAccessUrl+'/search';
 pdfPrintingUrl 	= apiAccessUrl+'/print';
 
