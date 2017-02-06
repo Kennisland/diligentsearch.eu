@@ -28,4 +28,4 @@ get_header('custom'); ?>
 		</main><!-- #main -->
 	</div><!-- #primary -->
 
-<?php get_footer('custom'); ?>
+<?php get_footer('form'); ?>

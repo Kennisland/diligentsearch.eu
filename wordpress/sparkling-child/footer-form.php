@@ -39,4 +39,54 @@
 <?php wp_footer(); ?>
 
 </body>
+<script type="text/javascript">
+
+	// Specific jQuery injection within wordpress
+	(function( $ ) {
+
+	  $(function() {
+
+	  	var setUrlParameters = function setUrlParameters(){
+	  		var status = false,
+	  			query = window.location.search.split('?');
+
+	  		if(query.length == 2){
+	  			query[1].split('&').forEach(function(a){
+		  			var arg = a.split('=')[0],
+		  				value = a.split('=')[1];
+		  			if(arg == "hook"){
+		  				status = true;
+		  				$('#search-hook').val(value);
+		  			}
+		  			if(arg == "version"){
+		  				$('#search-version').val(value);
+		  			}
+		  			console.log(args, value);
+		  		});
+	  		}
+	  		return status;
+	  	}
+
+
+	  	var args = window.location.pathname.split('/');
+	  	console.log(args);
+		if(args.length >= 3 && args[2] != ''){
+			var webHook = args[2],
+				version = args[3] || '';
+
+			$('#search-hook').val(webHook);
+			$('#search-version').val(version);
+			getSearch();
+		}
+		else if(setUrlParameters()){
+			console.log("setUrlParameters true");
+			getSearch();	
+		}
+		else{
+			$('#form-menu').show();			
+		}	 
+	  });
+
+	}(jQuery));
+</script>
 </html>
