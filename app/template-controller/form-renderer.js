@@ -200,6 +200,7 @@ function injectCountriesIntoForm(){
 
 function bindTypeOfWork(){	
 	$('#choose-country').on('change', function(){
+		ajaxSetCountry($('#choose-country option:selected').text().toLowerCase());
 		var countryId = $(this).val();
 		if(countryId == ""){
 			$('#country-data-selected').hide();			

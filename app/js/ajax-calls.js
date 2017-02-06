@@ -6,7 +6,6 @@ pdfPrintingUrl 	= apiAccessUrl+'/print';
 /*
 	Translation stuff
 */
-useTranslation 	= undefined;
 function ajaxGetLanguages(){
 	return $.ajax({
 		type:"GET",
@@ -19,14 +18,28 @@ function ajaxGetLanguages(){
 	});
 }
 
-function ajaxSetTranslation(t){
-	if(t == ""){
-		useTranslation = undefined;		
+translation = {
+	useCountry : undefined,
+	useTranslation : undefined
+};
+function ajaxSetCountry(c){
+	if( c == ""){
+		translation.useCountry = undefined;
 	}
 	else{
-		useTranslation = t;	
+		translation.useCountry = c;
 	}
 }
+
+function ajaxSetTranslation(t){
+	if(t == ""){
+		translation.useTranslation = undefined;
+	}
+	else{
+		translation.useTranslation = t;
+	}
+}
+
 
 
 
@@ -61,7 +74,7 @@ function ajaxGetCountries(){
 	return $.ajax({
 		type:"GET",
 		url:dbAccessUrl,
-		data: {table: 'Country', language: useTranslation},
+		data: {table: 'Country', language: translation},
 		error: function(err){
 			alert('Error in Country retrieval from database\n'+err.statusText);
 			console.log("error :", err);
@@ -73,7 +86,7 @@ function ajaxGetWorks(countryId){
 	return $.ajax({
 		type:"GET",
 		url:dbAccessUrl,
-		data: {table: 'Work', language: useTranslation, countryId: countryId},
+		data: {table: 'Work', language: translation, countryId: countryId},
 		error: function(err){
 			alert('Error in Work retrieval from database\n'+err.statusText);
 			console.log("error :", err);
@@ -85,7 +98,7 @@ function ajaxGetWorkById(workId){
 	return $.ajax({
 		type:"GET",
 		url:dbAccessUrl,
-		data: {table: 'Work', language: useTranslation, workId: workId},
+		data: {table: 'Work', language: translation, workId: workId},
 		error: function(err){
 			alert('Error in Work retrieval from database\n'+err.statusText);
 			console.log("error :", err);
@@ -183,7 +196,7 @@ function ajaxGetElt(table, foreignKey){
 			data: {
 				table: table, 
 				foreignKeyId: foreignKey,
-				language: useTranslation
+				language: translation
 			},
 			error: function(err){
 				console.log("error :", err);

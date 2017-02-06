@@ -144,7 +144,8 @@ function handle_post_request(req, res, connection){
 	// Callback
 	function defaultCallback(err, rows){
 		connection.release();
-		if(!err){
+		if(!err){			
+			console.log(currentTable, rows);
 			res.json(rows);
 		}else{
 			res.json(err);
@@ -267,7 +268,7 @@ var getTranslations = function(req, res){
 	// Read files within folder and push their names
 	var files = fs.readdirSync(i18n);
 	files.forEach(file => {
-		if(file != "template.json" && file != 'test.json'){
+		if(file != "template.json"){
 			translations.push(file.replace('.json', ''));				
 		}
 	});
@@ -280,15 +281,36 @@ module.exports.getTranslations = getTranslations;
 
 function translate(sqlTable, rows, lg){
 	// identify language file wanted by user
-	var lgFile = path.resolve(__dirname, './i18n/'+lg+'.json');
+	var country = lg.useCountry,
+		translation = lg.useTranslation;
+
+	console.log(country, translation);
+
+	var lgFile = path.resolve(__dirname, './i18n/'+country+'.json');
 	if(!fs.existsSync(lgFile)) {
 		return;
 	}
 	else{
 		var obj = JSON.parse(fs.readFileSync(lgFile, 'utf8')),
-			sqlTranslation = obj[sqlTable],
 			modified = false;
 
+		if(!obj[translation]){
+			obj[translation] = {
+				"Country":{},
+				"Work": {},
+				"SharedUserInput": {},
+				"SharedRefValue": {},
+				"Result":{},
+				"Question": {},
+				"Block":{}
+			};
+			modified = true;
+		}
+
+		// Points to the actual table, within the desired translation
+		var	sqlTranslation = obj[translation][sqlTable];
+
+		console.log("sqlTranslation", sqlTranslation);
 		rows.forEach(function(row){	
 
 			if(sqlTable == 'Country' || sqlTable == 'Work'){
