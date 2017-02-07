@@ -46,7 +46,7 @@ function dumpCountry(){
 	}
 
 	if(error_log != ""){
-		alert(error_log);
+		$('.modal-header').notify(error_log, 'error');
 		return;
 	}
 
@@ -63,10 +63,11 @@ function saveCountry(country){
 	function cb(success){
 		if(success){
 			getCountry();
+			$.notify('Country inseretd with success in database', 'success');
 			dismissCountryModal();				
 		}
 		else{
-			alert("Failed to save element within database");
+			$('.modal-header').notify('Failed to save country within database', 'error');
 		}
 	};
 

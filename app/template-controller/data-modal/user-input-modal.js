@@ -67,7 +67,7 @@ function dumpUserInput(){
 	}
 
 	if(error_log != ""){
-		alert(error_log);
+		$('.modal-header').notify(error_log, 'error');
 		return;
 	}
 
@@ -76,10 +76,11 @@ function dumpUserInput(){
 	saveData('SharedUserInput', input, currentInputId, selectedCountry.id, function(success){
 		if(success){
 			injectUserInputData(currentInputIndex, input);	
+			$.notify('Element saved in database', 'success');
 			dismissUserInputModal();				
 		}
 		else{
-			alert("Failed to save element within database");
+			$('.modal-header').notify("Failed to save element within database", 'error');
 		}	
 	});
 }
@@ -112,9 +113,10 @@ function deleteUserInputsElt(){
 		removeElt('SharedUserInput', currentInputId, function(success){
 			if(success){
 				$('#data-userInputs-'+currentInputId).remove();
+				$.notify('Element deleted from database', 'success');
 				dismissUserInputModal();
 			}else{
-				alert("Cannot remove element");
+				$('.modal-header').notify("Cannot remove element", 'error');
 			}
 		});		
 	}
