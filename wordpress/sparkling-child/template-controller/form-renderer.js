@@ -117,7 +117,7 @@ function getLanguages(){
 			});
 		},
 		function(error){
-			console.log(error);
+			$('#form-renderer').notify("Error in languages retrieval", "error", {position : 'top-left'});
 		});
 }
 
@@ -135,7 +135,7 @@ function getCountryForm(){
 			injectCountriesIntoForm();
 		}, 
 		function(error){
-			alert(error.statusText);
+			$('#form-renderer').notify("Error in countries retrieval", "error", {position : 'top-left'});
 	});
 }
 
@@ -151,7 +151,7 @@ function getWorkForm(countryId){
 			injectWorksIntoForm();
 		},
 		function(error){
-			alert(error.statusText);
+			$('#form-renderer').notify("Error in type of work retrieval", "error", {position : 'top-left'});
 	});
 }
 
@@ -162,7 +162,7 @@ function getSharedValue(countryId){
 			refValues = resultRefValues[0].map(function(elt){ 	return JSON.parse(elt.json); 	});;
 		},
 		function(error){
-			alert(error.statusText);
+			$('#form-renderer').notify("Error in global data retrieval", "error", {position : 'top-left'});
 	});	
 }
 
@@ -178,7 +178,7 @@ function getDataForm(workId){
 			loadElement();
 		},
 		function(error){
-			alert(error.statusText);
+			$('#form-renderer').notify("Error in specific data retrieval", "error", {position : 'top-left'});
 	});
 }
 

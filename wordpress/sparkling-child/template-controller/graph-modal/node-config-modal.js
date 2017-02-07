@@ -99,7 +99,7 @@ function dumpNode(){
 	}
 
 	if(error_log != ""){
-		alert(error_log);
+		$('.modal-header').notify(error_log, 'error');
 		return;
 	}
 
@@ -152,7 +152,7 @@ function deleteNode(){
 	var nodeId 	 = $('#node-graphic-id').val();
 
 	if(!graphic.inEdges(nodeId)[0] || graphic.predecessors(nodeId).length == 0){
-		alert('You cannot delete the root node.');
+		$('.modal-header').notify('You cannot delete the root node.');
 		return;
 	}
 

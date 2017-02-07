@@ -10,10 +10,10 @@ function saveDecisionTree(){
 	// Callback function
 	function cb(success){
 		if(success){
-			alert('Decision tree correctly saved in database');
+			$('#main').notify('Decision process correctly saved in database', {position:'top-right', className:'success'});
 		}
 		else{
-			alert('Error in decision tree saving process');	
+			$('#main').notify('Error in decision process saving', {position:'top-right', className:'error'});
 		}
 	}
 
@@ -40,9 +40,6 @@ function getDecisionTree(){
 
 	$.when(ajaxGetElt('DecisionTree', selectedWork.id)).then(
 		function(decisionTree){
-
-			console.log("received fro server :", decisionTree);
-
 			if(!decisionTree[0] || decisionTree[0].json == "[]") {
 				// New graph
 				createGraphicNode('lvl_0');
@@ -60,7 +57,7 @@ function getDecisionTree(){
 			customRender();
 		},
 		function(error){
-			alert('Fail to retrieve decision process ', error.statusText);
+			$('#main').notify('Fail to retrieve decision process', {position:'top-right', className:'error'});
 		}
 	);
 }

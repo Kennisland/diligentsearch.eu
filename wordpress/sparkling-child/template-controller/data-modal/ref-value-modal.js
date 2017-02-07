@@ -63,7 +63,7 @@ function dumpRefValue(){
 		error_log += "Reference value is not set\n";
 	}
 	if(error_log != ""){
-		alert(error_log);
+		$('.modal-header').notify(error_log, 'error');
 		return;
 	}
 
@@ -73,10 +73,11 @@ function dumpRefValue(){
 	saveData('SharedRefValue', ref, currentReferenceId, selectedCountry.id, function(success){
 		if(success){
 			injectRefValueData(currentReferenceIndex, ref);	
+			$('#main').notify('Element saved in database', 'success')
 			dismissRefValueModal();				
 		}
 		else{
-			alert("Failed to save element within database");
+			$('.modal-header').notify("Failed to save element within database", 'error');
 		}		
 	});
 };
@@ -111,9 +112,10 @@ function deleteRefValueElt(){
 		removeElt('SharedRefValue', currentReferenceId, function(success){
 			if(success){
 				$('#data-referenceValues-'+currentReferenceId).remove();
+				$('#main').notify('Element deleted from database', {position:'top-right', className:'success'});
 				dismissRefValueModal();
 			}else{
-				alert("Cannot remove element");
+				$('.modal-header').notify("Cannot remove element", 'error');
 			}
 		});	
 	}

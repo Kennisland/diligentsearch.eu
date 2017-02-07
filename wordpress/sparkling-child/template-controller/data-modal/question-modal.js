@@ -313,7 +313,7 @@ function dumpQuestion(){
 	}
 
 	if(error_log != ""){
-		alert(error_log);
+		$('.modal-header').notify(error_log, 'error');
 		return;
 	}
 
@@ -321,10 +321,11 @@ function dumpQuestion(){
 	saveData('Question', question, currentQuestionId, selectedWork.id, function(success){
 		if(success){
 			injectQuestionData(currentQuestionIndex, question);	
+			$('#main').notify('Element saved in database', {position:'top-right', className:'success'});
 			dismissQuestionModal();				
 		}
 		else{
-			alert("Failed to save element within database");
+			$('.modal-header').notify('Failed to save element within database', 'error');
 		}
 	});
 };
@@ -547,9 +548,10 @@ function deleteQuestionElt(){
 		removeElt('Question', currentQuestionId, function(success){
 			if(success){
 				$('#data-questions-'+currentQuestionId).remove();
+				$('#main').notify('Element deleted from database', {position:'top-right', className:'success'});
 				dismissQuestionModal();				
 			}else{
-				alert("Cannot remove element");
+				$('.modal-header').notify('Cannot remove element', 'error');
 			}
 		})
 	}

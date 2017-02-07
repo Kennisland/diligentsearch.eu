@@ -25,6 +25,7 @@ function diligentSearch_enqueue_scripts(){
   wp_enqueue_script('jqry-rdy', get_stylesheet_directory_uri().'/js/enable-jquery.js', array('jquery'), true);
 
   // Shared ones
+  wp_enqueue_script('notify-js', get_stylesheet_directory_uri().'/js/lib/notify.min.js', array('jquery'), true);
   wp_enqueue_script('ajax-calls', get_stylesheet_directory_uri().'/js/ajax-calls.js', array('jquery'), true);
   wp_enqueue_script('graphical-node-tools', get_stylesheet_directory_uri().'/js/graphical-node-tools.js', array('jquery'), true);
 
