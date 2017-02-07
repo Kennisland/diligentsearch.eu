@@ -10,22 +10,22 @@ function getSearch(){
 	// Get the web hook provided by user
 	var hook = $('#search-hook').val();
 	if(hook == ""){
-		alert('Please enter the research reference');
+		$('#search-hook').notify("Research ID required", "warning");
 		return;
 	}
 	
 	var version = $('#search-version').val();
 	if(version && version != parseInt(version, 10)){
-		alert('Please enter a valid version number');
+		$('#search-version').notify("Version not a number", "warning");
 		return;	
 	}
+
 
 	// Retrieve the form
 	$.when(ajaxGetForm(hook, version)).then(
 		function(success){
-
 			if(success.length == 0){
-				alert("Form reference "+hook+" not found in database");
+				$('#search-hook').notify("No form found for this ID or version", "error");
 				return;
 			}
 			else{
@@ -61,14 +61,12 @@ function getSearch(){
 									if(version){
 										$('#work-save-btn').attr("disabled", "disabled");
 									}
-
 								}
 							}, 100);
 						},
 						function(error){
-							console.log("error", error);
-
-						});					
+							$('#choose-country').notify("Country associated to research not found", "error");
+						});
 
 				}, 100);
 
@@ -76,7 +74,7 @@ function getSearch(){
 			}
 		},
 		function(error){
-			console.log("form Not found", hook, error);
+			$('#search-hook').notify("Error detected in form retrieval", "error");
 		});
 }
 
@@ -478,11 +476,11 @@ function saveForm(){
 	if(!dumpedForm.webHook){
 		function cb(status){
 			if(status){
-				alert("Report injected in database \nWebhook is : "+dumpedForm.webHook);
+				$.notify('Report injected in database', "success");
 				updateSearchReportId();
 			}
 			else{
-				alert("Failed to save report in database ");
+				$.notify('Failed to save report in database', "error");
 			}
 		}
 		ajaxPutForm(dumpedForm, workId, cb);
@@ -490,10 +488,10 @@ function saveForm(){
 	else{
 		$.when(ajaxUpdateForm(dumpedForm, workId)).then(
 			function(success){
-				alert("Report correclty updated");
+				$.notify('Report correctly updated', "success");
 			}, 
 			function(error){
-				alert("Failed to update report in database ");
+				$.notify('Failed to update report', "error");
 			});
 	}
 }
