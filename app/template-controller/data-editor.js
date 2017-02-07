@@ -263,146 +263,59 @@ function add(elementType){
 	}
 }
 
-
-
-// called from specific modal
-function injectUserInputData(index, userInputElt){
-
-	if(index == -1){
-		// Insert data in array and update index
-		index = userInputs.push(userInputElt);
+function injectData(elementType, index, element, modalCallback){
+	var dataModel = undefined;
+	if(elementType == 'userInput'){
+		dataModel = userInputs;
 	}
-	else{
-		// Update the data array and increment index (0 based array)
-		userInputs[index] = userInputElt;
-		index++;
+	else if(elementType == 'referenceValue'){
+		dataModel = referenceValues;
+	}
+	else if(elementType == 'result'){
+		dataModel = results;
+	}
+	else if(elementType == 'question'){
+		dataModel = questions;
+	}
+	else if(elementType == 'block'){
+		dataModel = blocks;
+	}
+
+	if(dataModel){
+		if(index == -1){
+			index = dataModel.push(element);
+		}
+		else{
+			dataModel[index] = element;
+			index++;
+		}
+		updateHtmlData(elementType, index, element, modalCallback);		
+	}
+}
+
+function updateHtmlData(elementType, index, element, modalCallback){
+	var selector = '#data-'+elementType+'s',
+		jQueryTiming = 150;
+
+	function updateInnerHtmlData(){
+		$(selector+' li:nth-child('+index+')').attr('id', 'data-'+elementType+'s-'+element.id);
+		$(selector+' li:nth-child('+index+')').text(element.name);
+		$(selector+' li:nth-child('+index+')').click(function(){
+			modalCallback(index-1, element);
+		});
 	}
 
 	// Create list element if needed
-	if($('#data-userInputs li').length < index){
-		var userInputHtml = '<li class="list-group-item"></li>';
-		$('#data-userInputs').append(userInputHtml);
-	}
-
-	// Fill in the created element / update the appropriate list element
-	$('#data-userInputs li:nth-child('+index+')').attr('id', 'data-userInputs-'+userInputElt.id);
-	$('#data-userInputs li:nth-child('+index+')').text(userInputElt.name);
-	$('#data-userInputs li:nth-child('+index+')').click(function(){
-		loadUserInput(index-1, userInputElt);
-	});
-}
-
-// called from specific modal
-function injectRefValueData(index, refValueElt){
-	// Insert data at given position if there are already in
-	if(index == -1){
-		index = referenceValues.push(refValueElt);
+	if($(selector+' li').length < index){
+		var elementHtml = '<li class="list-group-item"></li>';
+		$(selector).append(elementHtml);
+		//Wait a bit to ensure jQuery has finished to insert html
+		setTimeout(updateInnerHtmlData(), jQueryTiming);		
 	}
 	else{
-		referenceValues[index] = refValueElt;
-		index++;
+		updateInnerHtmlData();
 	}
-
-	// Update html
-	// Create list element if needed
-	if($('#data-referenceValues li').length < index){
-		var refValueHtml = '<li class="list-group-item"></li>';
-		$('#data-referenceValues').append(refValueHtml);
-	}
-
-	$('#data-referenceValues li:nth-child('+index+')').attr('id', 'data-referenceValues-'+refValueElt.id);
-	$('#data-referenceValues li:nth-child('+index+')').text(refValueElt.name);
-	$('#data-referenceValues li:nth-child('+index+')').click(function(){
-		loadRefValue(index-1, refValueElt);
-	});
 }
-
-
-
-// called from specific modal
-function injectResultData(index, resultElt){
-		// Insert data at given position if there are already in
-	if(index == -1){
-		index = results.push(resultElt);
-	}
-	else{
-		results[index] = resultElt;
-		index++;
-	}
-
-	// Update html
-	// Create list element if needed
-	if($('#data-results li').length < index){
-		var resultHtml = '<li class="list-group-item"></li>';
-		$('#data-results').append(resultHtml);	
-	}
-	
-	// Update html
-	$('#data-results li:nth-child('+index+')').attr('id', 'data-results-'+resultElt.id);
-	$('#data-results li:nth-child('+index+')').text(resultElt.name);
-	$('#data-results li:nth-child('+index+')').click(function(){
-		loadResult(index-1, resultElt);
-	});
-}
-
-
-
-
-// called from specific modal
-function injectQuestionData(index, questionElt){
-		// Insert data at given position if there are already in
-	if(index == -1){
-		index = questions.push(questionElt);
-	}
-	else{
-		questions[index] = questionElt;
-		index++;
-	}
-	
-	// Update html
-	// Create list element if needed
-	if($('#data-questions li').length < index){
-		var questionHtml = '<li class="list-group-item"></li>';
-		$('#data-questions').append(questionHtml);
-	}	
-	
-	// Update html
-	$('#data-questions li:nth-child('+index+')').attr('id', 'data-questions-'+questionElt.id);
-	$('#data-questions li:nth-child('+index+')').text(questionElt.name);
-	$('#data-questions li:nth-child('+index+')').click(function(){
-		loadQuestion(index-1, questionElt);
-	});
-}
-
-
-
-// Called from specific modal
-function injectBlockData(index, blockElt){
-	// Insert data at given position if there are already in
-	if(index == -1){
-		index = blocks.push(blockElt);
-	}
-	else{
-		// Rewrite 
-		blocks[index] = blockElt;
-		index++;
-	}
-
-	// Update html
-	// Create list element if needed
-	if($('#data-blocks li').length < index){
-		var blockHtml = '<li class="list-group-item"></li>';
-		$('#data-blocks').append(blockHtml);	
-	}
-	
-	// Update html
-	$('#data-blocks li:nth-child('+index+')').attr('id', 'data-blocks-'+blockElt.id);
-	$('#data-blocks li:nth-child('+index+')').text(blockElt.name);
-	$('#data-blocks li:nth-child('+index+')').click(function(){
-		loadBlock(index-1, blockElt);
-	});
-}
-
 
 
 function saveData(dataTable, data, dataId, foreignKeyId, callback){

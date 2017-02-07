@@ -320,7 +320,8 @@ function dumpQuestion(){
 	// Save it into db
 	saveData('Question', question, currentQuestionId, selectedWork.id, function(success){
 		if(success){
-			injectQuestionData(currentQuestionIndex, question);	
+			injectData('question', currentQuestionIndex, question, loadQuestion);	
+			// injectQuestionData(currentQuestionIndex, question);	
 			$.notify('Element saved in database', 'success');
 			dismissQuestionModal();				
 		}

@@ -122,7 +122,8 @@ function dumpBlock(){
 	// Save block into DB
 	saveData('Block', block, currentBlockId, selectedWork.id, function(success){
 		if(success){
-			injectBlockData(currentBlockIndex, block);	
+			injectData('block', currentBlockIndex, block, loadBlock);	
+			// injectBlockData(currentBlockIndex, block);	
 			$.notify('Element saved in database', 'success');
 			dismissBlockModal();				
 		}

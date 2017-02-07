@@ -75,7 +75,7 @@ function dumpUserInput(){
 	// Save it into db
 	saveData('SharedUserInput', input, currentInputId, selectedCountry.id, function(success){
 		if(success){
-			injectUserInputData(currentInputIndex, input);	
+			injectData('userInput', currentInputIndex, input, loadUserInput);
 			$.notify('Element saved in database', 'success');
 			dismissUserInputModal();				
 		}
