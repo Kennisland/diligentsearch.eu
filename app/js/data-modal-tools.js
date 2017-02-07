@@ -1,4 +1,6 @@
-
+/*
+	Data injection from modal
+*/
 function injectData(elementType, index, element, modalCallback){
 	var dataModel = undefined;
 	if(elementType == 'userInput'){
@@ -53,7 +55,9 @@ function updateHtmlData(elementType, index, element, modalCallback){
 	}
 }
 
-
+/*
+	Database interaction wrapper
+*/
 function saveData(dataTable, data, dataId, foreignKeyId, callback){
 	if(!dataId){
 		saveElt(dataTable, data, foreignKeyId, callback);
@@ -62,6 +66,33 @@ function saveData(dataTable, data, dataId, foreignKeyId, callback){
 		updateElt(dataTable, data, callback);
 	}
 }
+
+function deleteData(dataTable, dataId, modalCallback){
+	if(dataId !== undefined){
+		removeElt(dataTable, dataId, function(success){
+			if(success){
+				// Format if necessary the dataTable name 
+				if(dataTable == 'SharedUserInput'){
+					dataTable = 'userInput';
+				}
+				else if(dataTable == 'SharedRefValue'){
+					dataTable = 'referenceValue';
+				}
+				else{
+					dataTable = dataTable.charAt(0).toLowerCase() + dataTable.slice(1);
+				}
+
+				// Generate the html selector
+				var selector = '#data-'+dataTable+'s-'+dataId;
+				$(selector).remove();
+				modalCallback();	
+			}else{
+				$('.modal-header').notify('Cannot remove element', 'error');
+			}			
+		});
+	}
+}
+
 
 // Macro to Retrieve specific section of html code based on common id pattern : id-section-#index
 function retrieveSection(tag, sectionId){

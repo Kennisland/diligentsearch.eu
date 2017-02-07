@@ -109,15 +109,5 @@ function ReferenceElt(){
 }
 
 function deleteRefValueElt(){
-	if(currentReferenceId !== undefined){
-		removeElt('SharedRefValue', currentReferenceId, function(success){
-			if(success){
-				$('#data-referenceValues-'+currentReferenceId).remove();
-				$.notify('Element deleted from database', 'success');
-				dismissRefValueModal();
-			}else{
-				$('.modal-header').notify("Cannot remove element", 'error');
-			}
-		});	
-	}
+	deleteData('SharedRefValue', currentReferenceId, dismissRefValueModal);
 }

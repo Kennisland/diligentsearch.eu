@@ -234,15 +234,5 @@ function configQuestionComplete(i){
 }
 
 function deleteBlockElt(){
-	if(currentBlockId !== undefined){
-		removeElt('Block', currentBlockId, function(success){
-			if(success){
-				$('#data-blocks-'+currentBlockId).remove();
-				$.notify('Element deleted from database', 'success');
-				dismissBlockModal();
-			}else{
-				$('.modal-header').notify('Cannot remove element', 'error');
-			}
-		});	
-	}
+	deleteData('Block', currentBlockId, dismissBlockModal);
 }

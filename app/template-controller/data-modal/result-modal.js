@@ -96,15 +96,5 @@ function ResultElt(){
 };
 
 function deleteResultElt(){
-	if(currentResultId !== undefined){
-		removeElt('Result', currentResultId, function(success){
-			if(success){
-				$('#data-results-'+currentResultId).remove();
-				$.notify('Element deleted from database', 'success');
-				dismissResultModal();
-			}else{
-				$('.modal-header').notify("Cannot remove element", 'error');
-			}
-		});		
-	}
+	deleteData('Result', currentResultId, dismissResultModal);
 }

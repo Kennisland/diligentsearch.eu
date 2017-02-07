@@ -545,15 +545,5 @@ function delAnswer(){
 
 
 function deleteQuestionElt(){
-	if(currentQuestionId !== undefined){
-		removeElt('Question', currentQuestionId, function(success){
-			if(success){
-				$('#data-questions-'+currentQuestionId).remove();
-				$.notify('Element deleted from database', 'success');
-				dismissQuestionModal();				
-			}else{
-				$('.modal-header').notify('Cannot remove element', 'error');
-			}
-		})
-	}
+	deleteData('Question', currentQuestionId, dismissQuestionModal);
 }

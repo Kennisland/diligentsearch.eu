@@ -109,15 +109,5 @@ function InputElt(){
 };
 
 function deleteUserInputsElt(){
-	if(currentInputId !== undefined){
-		removeElt('SharedUserInput', currentInputId, function(success){
-			if(success){
-				$('#data-userInputs-'+currentInputId).remove();
-				$.notify('Element deleted from database', 'success');
-				dismissUserInputModal();
-			}else{
-				$('.modal-header').notify("Cannot remove element", 'error');
-			}
-		});		
-	}
+	deleteData('SharedUserInput', currentInputId, dismissUserInputModal);
 }
