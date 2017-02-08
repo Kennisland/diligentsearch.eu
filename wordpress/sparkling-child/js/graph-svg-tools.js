@@ -64,6 +64,6 @@ function bindToNodeConfigModal(){
 }
 
 function resetZoom(){
-	var xCenterOffset = (svg.attr("width") - graphic.graph().width) / 2;
+	var xCenterOffset = (svgGroup.attr("width") - graphic.graph().width) / 2;
 	svgGroup.attr("transform", "translate(" + xCenterOffset + ")" + "scale("+initialScale+")" );
 }
