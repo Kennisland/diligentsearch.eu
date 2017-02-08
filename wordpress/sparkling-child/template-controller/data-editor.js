@@ -57,15 +57,9 @@ html_dataModelEditor = `
 `;
 
 
-countries = [];
 selectedCountry = '';
-works = [];
 selectedWork = '';
-userInputs = [];
-referenceValues = [];
-results = [];
-questions = [];
-blocks = [];
+
 
 
 
@@ -76,14 +70,10 @@ function injectDataModelEditor(){
 
 
 function getCountry(){
-	// Reset country data
+	// Reset country data & work
 	countries = [];
 	selectedCountry = '';
-
-	// Reset and hide unecessary divs
 	resetWorkModel();
-	$('#select-work').hide();
-	$('#display-data-model').hide();
 
 	// Ajax call to get data from server and display them as list
 	$.when(ajaxGetCountries()).then(
@@ -92,7 +82,7 @@ function getCountry(){
 			injectCountryData();
 		}, 
 		function(error){
-			$('#select-country').notify("Service unavailable", "error", {position: 'top-left'});
+			$('#select-country').notify("Service unavailable", {position:'top-right', className:'error'});
 	});
 	$('#select-country').show();
 }
@@ -113,7 +103,7 @@ function getWork(countryId){
 	}
 
 	if(!selectedCountry){
-		$('#select-country').notify("Country selection error", "error", {position: 'top-left'});
+		$('#select-country').notify("Country selection error", {position:'top-right', className:'error'});
 	}
 	else{
 		// Ajax call to get works from server for this country
@@ -121,11 +111,11 @@ function getWork(countryId){
 			function(resultWorks, resultUserInputs, resultRefValues){
 				works = resultWorks[0];
 				userInputs = resultUserInputs[0];
-				refValues = resultRefValues[0];
+				referenceValues = resultRefValues[0];
 				injectWorkData();					
 			},
 			function(error){
-				$('#select-work').notify("Error in type of work and global data retrieval", "error", {position: 'top-left'});
+				$('#select-work').notify("Error in type of work and global data retrieval", {position:'top-right', className:'error'});
 		});	
 	}
 	$('#select-work').show();
@@ -151,7 +141,7 @@ function getData(workIdx){
 			getDecisionTree();
 		},
 		function(error){
-			$('#display-data-model').notify("Error in specific data retrieval", "error", {position:'top-left'});
+			$('#display-data-model').notify("Error in specific data retrieval", {position:'top-right', className:'error'});
 	});
 	$('#display-data-model').show();
 }
@@ -171,6 +161,10 @@ function resetWorkModel(){
 
 	// Reset implicitely work dependant part
 	resetDataModel();
+
+	// Hide unecessary divs
+	$('#select-work').hide();
+	$('#display-data-model').hide();
 }
 
 function resetDataModel(){
@@ -214,28 +208,23 @@ function injectWorkData(){
 }
 
 
-function injectDataBasePrimaryModel(){
+function injectDataBasePrimaryModel(){	
 	userInputs.forEach(function(elt, idx){
-		injectUserInputData(idx, JSON.parse(elt.json));
+		injectData('userInput', idx, JSON.parse(elt.json), loadUserInput);
 	});
-	refValues.forEach(function(elt, idx){
-		injectRefValueData(idx, JSON.parse(elt.json));
+	referenceValues.forEach(function(elt, idx){
+		injectData('referenceValue', idx, JSON.parse(elt.json), loadRefValue);
 	});
 	questions.forEach(function(elt, idx){
-		injectQuestionData(idx, JSON.parse(elt.json));
+		injectData('question', idx, JSON.parse(elt.json), loadQuestion);
 	});
 	results.forEach(function(elt, idx){
-		injectResultData(idx, JSON.parse(elt.json));
+		injectData('result', idx, JSON.parse(elt.json), loadResult);
 	});
 	blocks.forEach(function(elt, idx){
-		injectBlockData(idx, JSON.parse(elt.json));
+		injectData('block', idx, JSON.parse(elt.json), loadBlock);
 	});
 }
-
-
-/*
-	Modal interactions
-*/
 
 function add(elementType){
 	switch(elementType){
@@ -261,166 +250,4 @@ function add(elementType){
 			$('#add-blockModal').modal('show');
 			break;
 	}
-}
-
-
-
-// called from specific modal
-function injectUserInputData(index, userInputElt){
-
-	if(index == -1){
-		// Insert data in array and update index
-		index = userInputs.push(userInputElt);
-	}
-	else{
-		// Update the data array and increment index (0 based array)
-		userInputs[index] = userInputElt;
-		index++;
-	}
-
-	// Create list element if needed
-	if($('#data-userInputs li').length < index){
-		var userInputHtml = '<li class="list-group-item"></li>';
-		$('#data-userInputs').append(userInputHtml);
-	}
-
-	// Fill in the created element / update the appropriate list element
-	$('#data-userInputs li:nth-child('+index+')').attr('id', 'data-userInputs-'+userInputElt.id);
-	$('#data-userInputs li:nth-child('+index+')').text(userInputElt.name);
-	$('#data-userInputs li:nth-child('+index+')').click(function(){
-		loadUserInput(index-1, userInputElt);
-	});
-}
-
-// called from specific modal
-function injectRefValueData(index, refValueElt){
-	// Insert data at given position if there are already in
-	if(index == -1){
-		index = referenceValues.push(refValueElt);
-	}
-	else{
-		referenceValues[index] = refValueElt;
-		index++;
-	}
-
-	// Update html
-	// Create list element if needed
-	if($('#data-referenceValues li').length < index){
-		var refValueHtml = '<li class="list-group-item"></li>';
-		$('#data-referenceValues').append(refValueHtml);
-	}
-
-	$('#data-referenceValues li:nth-child('+index+')').attr('id', 'data-referenceValues-'+refValueElt.id);
-	$('#data-referenceValues li:nth-child('+index+')').text(refValueElt.name);
-	$('#data-referenceValues li:nth-child('+index+')').click(function(){
-		loadRefValue(index-1, refValueElt);
-	});
-}
-
-
-
-// called from specific modal
-function injectResultData(index, resultElt){
-		// Insert data at given position if there are already in
-	if(index == -1){
-		index = results.push(resultElt);
-	}
-	else{
-		results[index] = resultElt;
-		index++;
-	}
-
-	// Update html
-	// Create list element if needed
-	if($('#data-results li').length < index){
-		var resultHtml = '<li class="list-group-item"></li>';
-		$('#data-results').append(resultHtml);	
-	}
-	
-	// Update html
-	$('#data-results li:nth-child('+index+')').attr('id', 'data-results-'+resultElt.id);
-	$('#data-results li:nth-child('+index+')').text(resultElt.name);
-	$('#data-results li:nth-child('+index+')').click(function(){
-		loadResult(index-1, resultElt);
-	});
-}
-
-
-
-
-// called from specific modal
-function injectQuestionData(index, questionElt){
-		// Insert data at given position if there are already in
-	if(index == -1){
-		index = questions.push(questionElt);
-	}
-	else{
-		questions[index] = questionElt;
-		index++;
-	}
-	
-	// Update html
-	// Create list element if needed
-	if($('#data-questions li').length < index){
-		var questionHtml = '<li class="list-group-item"></li>';
-		$('#data-questions').append(questionHtml);
-	}	
-	
-	// Update html
-	$('#data-questions li:nth-child('+index+')').attr('id', 'data-questions-'+questionElt.id);
-	$('#data-questions li:nth-child('+index+')').text(questionElt.name);
-	$('#data-questions li:nth-child('+index+')').click(function(){
-		loadQuestion(index-1, questionElt);
-	});
-}
-
-
-
-// Called from specific modal
-function injectBlockData(index, blockElt){
-	// Insert data at given position if there are already in
-	if(index == -1){
-		index = blocks.push(blockElt);
-	}
-	else{
-		// Rewrite 
-		blocks[index] = blockElt;
-		index++;
-	}
-
-	// Update html
-	// Create list element if needed
-	if($('#data-blocks li').length < index){
-		var blockHtml = '<li class="list-group-item"></li>';
-		$('#data-blocks').append(blockHtml);	
-	}
-	
-	// Update html
-	$('#data-blocks li:nth-child('+index+')').attr('id', 'data-blocks-'+blockElt.id);
-	$('#data-blocks li:nth-child('+index+')').text(blockElt.name);
-	$('#data-blocks li:nth-child('+index+')').click(function(){
-		loadBlock(index-1, blockElt);
-	});
-}
-
-
-
-function saveData(dataTable, data, dataId, foreignKeyId, callback){
-	if(!dataId){
-		saveElt(dataTable, data, foreignKeyId, callback);
-	}else{
-		data.id = dataId
-		updateElt(dataTable, data, callback);
-	}
-}
-
-// Macro to Retrieve specific section of html code based on common id pattern : id-section-#index
-function retrieveSection(tag, sectionId){
-	var s = [],
-		selector = tag+'[id^="'+sectionId+'"]';
-
-	$(selector).each(function(idx){
-		s.push($('#'+sectionId+idx)[0]);
-	});
-	return s;
 }

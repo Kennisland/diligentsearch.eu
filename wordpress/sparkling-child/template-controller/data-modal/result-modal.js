@@ -56,7 +56,7 @@ function dumpResult(){
 		error_log += "Reference content is not set\n";
 	}
 	if(error_log != ""){
-		$('.modal-header').notify(error_log, 'error');
+		$('.modal-header').notify(error_log, {position:'top-right', className:'error'});
 		return;
 	}
 
@@ -66,12 +66,12 @@ function dumpResult(){
 	// Save it into db
 	saveData('Result', res, currentResultId, selectedWork.id, function(success){
 		if(success){
-			injectResultData(currentResultIndex, result);	
+			injectData('result', currentResultIndex, res, loadResult);
 			$('#main').notify('Element saved in database', {position:'top-right', className:'success'});
 			dismissResultModal();				
 		}
 		else{
-			$('.modal-header').notify("Failed to save element within database", 'error');
+			$('.modal-header').notify("Failed to save element within database", {position:'top-right', className:'error'});
 		}
 	});
 };
@@ -95,15 +95,5 @@ function ResultElt(){
 };
 
 function deleteResultElt(){
-	if(currentResultId !== undefined){
-		removeElt('Result', currentResultId, function(success){
-			if(success){
-				$('#data-results-'+currentResultId).remove();
-				$('#main').notify('Element deleted from database', {position:'top-right', className:'success'});
-				dismissResultModal();
-			}else{
-				$('.modal-header').notify("Cannot remove element", 'error');
-			}
-		});		
-	}
+	deleteData('Result', currentResultId, dismissResultModal);
 }

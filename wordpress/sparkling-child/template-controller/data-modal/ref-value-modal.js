@@ -63,7 +63,7 @@ function dumpRefValue(){
 		error_log += "Reference value is not set\n";
 	}
 	if(error_log != ""){
-		$('.modal-header').notify(error_log, 'error');
+		$('.modal-header').notify(error_log, {position:'top-right', className:'error'});
 		return;
 	}
 
@@ -72,12 +72,12 @@ function dumpRefValue(){
 	// Save it into db
 	saveData('SharedRefValue', ref, currentReferenceId, selectedCountry.id, function(success){
 		if(success){
-			injectRefValueData(currentReferenceIndex, ref);	
+			injectData('referenceValue', currentReferenceIndex, ref, loadRefValue);
 			$('#main').notify('Element saved in database', 'success')
 			dismissRefValueModal();				
 		}
 		else{
-			$('.modal-header').notify("Failed to save element within database", 'error');
+			$('.modal-header').notify("Failed to save element within database", {position:'top-right', className:'error'});
 		}		
 	});
 };
@@ -108,15 +108,5 @@ function ReferenceElt(){
 }
 
 function deleteRefValueElt(){
-	if(currentReferenceId !== undefined){
-		removeElt('SharedRefValue', currentReferenceId, function(success){
-			if(success){
-				$('#data-referenceValues-'+currentReferenceId).remove();
-				$('#main').notify('Element deleted from database', {position:'top-right', className:'success'});
-				dismissRefValueModal();
-			}else{
-				$('.modal-header').notify("Cannot remove element", 'error');
-			}
-		});	
-	}
+	deleteData('SharedRefValue', currentReferenceId, dismissRefValueModal);
 }

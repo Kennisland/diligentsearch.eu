@@ -107,7 +107,7 @@ function dumpBlock(){
 	}
 
 	if(error_log != ""){
-		$('.modal-header').notify(error_log, 'error');
+		$('.modal-header').notify(error_log, {position:'top-right', className:'error'});
 		return;
 	}
 
@@ -122,12 +122,12 @@ function dumpBlock(){
 	// Save block into DB
 	saveData('Block', block, currentBlockId, selectedWork.id, function(success){
 		if(success){
-			injectBlockData(currentBlockIndex, block);	
+			injectData('block', currentBlockIndex, block, loadBlock);
 			$('#main').notify('Element saved in database', {position:'top-right', className:'success'});
 			dismissBlockModal();				
 		}
 		else{
-			$('.modal-header').notify('Failed to save element within database', 'error');
+			$('.modal-header').notify('Failed to save element within database', {position:'top-right', className:'error'});
 		}
 	});
 };
@@ -233,15 +233,5 @@ function configQuestionComplete(i){
 }
 
 function deleteBlockElt(){
-	if(currentBlockId !== undefined){
-		removeElt('Block', currentBlockId, function(success){
-			if(success){
-				$('#data-blocks-'+currentBlockId).remove();
-				$('#main').notify('Element deleted from database', {position:'top-right', className:'success'});
-				dismissBlockModal();
-			}else{
-				$('.modal-header').notify('Cannot remove element', 'error');
-			}
-		});	
-	}
+	deleteData('Block', currentBlockId, dismissBlockModal);
 }

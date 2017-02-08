@@ -44,11 +44,11 @@ function dumpWork(){
 	}
 	
 	if(error_log != ""){
-		$('.modal-header').notify(error_log, 'error');
+		$('.modal-header').notify(error_log, {position:'top-right', className:'error'});
 		return;
 	}
 
-	var workElt = new WorkElt();
+	var work = new WorkElt();
 	saveElt('Work', work, work.countryId, function(success){
 		if(success){
 			getWork(work.countryId);
@@ -56,7 +56,7 @@ function dumpWork(){
 			dismissWorkModal();			
 		}
 		else{
-			$('.modal-header').notify("Failed to save the new type of work within database", 'error');
+			$('.modal-header').notify("Failed to save the new type of work within database", {position:'top-right', className:'error'});
 		}
 	});
 }

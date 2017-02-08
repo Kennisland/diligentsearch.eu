@@ -73,21 +73,6 @@ html_formRenderer =`
 	</div>
 `;
 
-languages = [];
-countries = [];
-works = [];
-userInputs = [];
-refValues = [];
-questions = [];
-blocks = [];
-results = [];
-decisionTree = [];
-dumpedForm = {
-	webHook: undefined,
-	json: ''
-};
-
-
 function injectFormRenderer(){
 	getLanguages();
 	$('#form-renderer').html(html_formRenderer);
@@ -117,7 +102,7 @@ function getLanguages(){
 			});
 		},
 		function(error){
-			$('#form-renderer').notify("Error in languages retrieval", "error", {position : 'top-left'});
+			$('#form-renderer').notify("Error in languages retrieval", {position:'top-right', className:'error'});
 		});
 }
 
@@ -135,7 +120,7 @@ function getCountryForm(){
 			injectCountriesIntoForm();
 		}, 
 		function(error){
-			$('#form-renderer').notify("Error in countries retrieval", "error", {position : 'top-left'});
+			$('#form-renderer').notify("Error in countries retrieval", {position:'top-right', className:'error'});
 	});
 }
 
@@ -151,7 +136,7 @@ function getWorkForm(countryId){
 			injectWorksIntoForm();
 		},
 		function(error){
-			$('#form-renderer').notify("Error in type of work retrieval", "error", {position : 'top-left'});
+			$('#form-renderer').notify("Error in type of work retrieval", {position:'top-right', className:'error'});
 	});
 }
 
@@ -159,10 +144,10 @@ function getSharedValue(countryId){
 	$.when(ajaxGetElt('SharedUserInput', countryId), ajaxGetElt('SharedRefValue', countryId)).then(
 		function(resultUserInputs, resultRefValues){
 			userInputs = resultUserInputs[0].map(function(elt){ return JSON.parse(elt.json); 	});;
-			refValues = resultRefValues[0].map(function(elt){ 	return JSON.parse(elt.json); 	});;
+			referenceValues = resultRefValues[0].map(function(elt){ 	return JSON.parse(elt.json); 	});;
 		},
 		function(error){
-			$('#form-renderer').notify("Error in global data retrieval", "error", {position : 'top-left'});
+			$('#form-renderer').notify("Error in global data retrieval", {position:'top-right', className:'error'});
 	});	
 }
 
@@ -178,7 +163,7 @@ function getDataForm(workId){
 			loadElement();
 		},
 		function(error){
-			$('#form-renderer').notify("Error in specific data retrieval", "error", {position : 'top-left'});
+			$('#form-renderer').notify("Error in specific data retrieval", {position:'top-right', className:'error'});
 	});
 }
 

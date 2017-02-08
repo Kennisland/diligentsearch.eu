@@ -281,7 +281,7 @@ function getBlockElementHtml(decisionTreeId, block, blockIndex){
 function getBlockQuestionElementHtml(questions, innerBlockId){
 	var content = '';
 	questions.map(function(dataId){		
-		var eltToDisplay = getGraphicNodeElt('question', dataId),
+		var eltToDisplay = getDataElt('question', dataId),
 			eltHtml = '',
 			innerQuestionId = innerBlockId+'-'+dataId;
 		if(eltToDisplay.type != 'numeric'){

@@ -67,7 +67,7 @@ function dumpUserInput(){
 	}
 
 	if(error_log != ""){
-		$('.modal-header').notify(error_log, 'error');
+		$('.modal-header').notify(error_log, {position:'top-right', className:'error'});
 		return;
 	}
 
@@ -75,12 +75,12 @@ function dumpUserInput(){
 	// Save it into db
 	saveData('SharedUserInput', input, currentInputId, selectedCountry.id, function(success){
 		if(success){
-			injectUserInputData(currentInputIndex, input);	
+			injectData('userInput', currentInputIndex, input, loadUserInput);
 			$('#main').notify('Element saved in database', {position:'top-right', className:'success'});
 			dismissUserInputModal();				
 		}
 		else{
-			$('.modal-header').notify("Failed to save element within database", 'error');
+			$('.modal-header').notify("Failed to save element within database", {position:'top-right', className:'error'});
 		}	
 	});
 }
@@ -109,15 +109,5 @@ function InputElt(){
 };
 
 function deleteUserInputsElt(){
-	if(currentInputId !== undefined){
-		removeElt('SharedUserInput', currentInputId, function(success){
-			if(success){
-				$('#data-userInputs-'+currentInputId).remove();
-				$('#main').notify('Element deleted from database', {position:'top-right', className:'success'});
-				dismissUserInputModal();
-			}else{
-				$('.modal-header').notify("Cannot remove element", 'error');
-			}
-		});		
-	}
+	deleteData('SharedUserInput', currentInputId, dismissUserInputModal);
 }
