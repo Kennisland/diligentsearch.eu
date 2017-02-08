@@ -5,6 +5,7 @@ Diligent search Configuration
 ## Apache configuration
 
 In order to make the project work locally, a specific Apache configuration is needed
+*You can find a copy of the apache configuration used to develop the project. Go to 001-diligentsearch.conf and update it according to your environment.*
 
 ### Linux and Apache2
 
@@ -44,13 +45,15 @@ Enable the Header configuration
 	
 	a2enmod headers
 
+Enable the rewrite engine, to access pretty URL
+
+	a2enmod rewrite
+
 Enable this new apache2 configuration with the following commands
 
 	a2ensite 001-diligentsearch.conf
 
 	service apache2 reload
-
-
 
 
 Set the serverName used as a valid IP address
@@ -59,6 +62,8 @@ Set the serverName used as a valid IP address
 	127.0.0.1	diligentsearch.local
 
 The index.html file located in /home/user/diligentsearch-website will be available at the diligentsearch.local URL
+
+
 
 
 
@@ -119,16 +124,18 @@ Refer to this if there are problems:
 
 	http://askubuntu.com/questions/763336/cannot-enter-phpmyadmin-as-root-mysql-5-7
 
-Database migration: 
-	
+Create a database, and use the given schema, available in the root folder of the project.
 
-
+	mysql -u root -p <database_name> < diligentsearch-schema.sql
+	mysql -u root -p <database_name> < triggers.sql
 
 
 
 ## Server configuration
 
-Important, the apache2 configuration explained before has to match with content of the db-access.js file (especially server port on which server will be listening)
+Important, the apache2 configuration explained before has to match with content of the server.js file.
+*especially server port on which server will be listening*
+
 Besides, the Header configuration is crucial to enable ajax calls from the client to the server
 
 The server is written with nodeJs. First, download dependecies by fetching packages specified in the package.json file:
@@ -136,16 +143,15 @@ The server is written with nodeJs. First, download dependecies by fetching packa
 	// Go to app/js/server/
 	npm install
 
-Database access configuration available in the file 'db-access.js':
+Database access configuration available in the file 'db-config.js':
 
-	Change host, user and password if needed
+	Change host, user and password if needed to match your database configuration
 	
-
 To test if database connection is correctly set, run the following command:
 
 	//Go to app/js/server
-	node server.js
-
+	node server.j
+sds.
 	//And vist the page diligentsearch.local/api
 	//It should display the welcome message
 
@@ -158,7 +164,7 @@ The precompiled sources can be found here :
 
 	http://wkhtmltopdf.org/downloads.html
 
-Grab the sources, extract it somewhere, and add the executable to the path of your system
+Grab the sources, extract them somewhere, and add the executable to the path of your system
 
 Under Ubuntu / Debian, you can do the following :
 
@@ -169,4 +175,4 @@ Reset shell session to enable changes
 
 If the installation and the binding correct, wkhtmltopdf is available as a command line.
 
-Thus wkhtmltopdf is available throw node js server.
+Thus wkhtmltopdf is required by the server to generate pdf reports.
