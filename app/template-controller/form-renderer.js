@@ -73,21 +73,6 @@ html_formRenderer =`
 	</div>
 `;
 
-languages = [];
-countries = [];
-works = [];
-userInputs = [];
-refValues = [];
-questions = [];
-blocks = [];
-results = [];
-decisionTree = [];
-dumpedForm = {
-	webHook: undefined,
-	json: ''
-};
-
-
 function injectFormRenderer(){
 	getLanguages();
 	$('#form-renderer').html(html_formRenderer);
@@ -159,7 +144,7 @@ function getSharedValue(countryId){
 	$.when(ajaxGetElt('SharedUserInput', countryId), ajaxGetElt('SharedRefValue', countryId)).then(
 		function(resultUserInputs, resultRefValues){
 			userInputs = resultUserInputs[0].map(function(elt){ return JSON.parse(elt.json); 	});;
-			refValues = resultRefValues[0].map(function(elt){ 	return JSON.parse(elt.json); 	});;
+			referenceValues = resultRefValues[0].map(function(elt){ 	return JSON.parse(elt.json); 	});;
 		},
 		function(error){
 			$('#form-renderer').notify("Error in global data retrieval", "error", {position : 'top-left'});

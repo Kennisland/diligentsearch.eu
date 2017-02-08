@@ -57,15 +57,9 @@ html_dataModelEditor = `
 `;
 
 
-countries = [];
 selectedCountry = '';
-works = [];
 selectedWork = '';
-userInputs = [];
-referenceValues = [];
-results = [];
-questions = [];
-blocks = [];
+
 
 
 
@@ -76,14 +70,10 @@ function injectDataModelEditor(){
 
 
 function getCountry(){
-	// Reset country data
+	// Reset country data & work
 	countries = [];
 	selectedCountry = '';
-
-	// Reset and hide unecessary divs
 	resetWorkModel();
-	$('#select-work').hide();
-	$('#display-data-model').hide();
 
 	// Ajax call to get data from server and display them as list
 	$.when(ajaxGetCountries()).then(
@@ -121,7 +111,7 @@ function getWork(countryId){
 			function(resultWorks, resultUserInputs, resultRefValues){
 				works = resultWorks[0];
 				userInputs = resultUserInputs[0];
-				refValues = resultRefValues[0];
+				referenceValues = resultRefValues[0];
 				injectWorkData();					
 			},
 			function(error){
@@ -171,6 +161,10 @@ function resetWorkModel(){
 
 	// Reset implicitely work dependant part
 	resetDataModel();
+
+	// Hide unecessary divs
+	$('#select-work').hide();
+	$('#display-data-model').hide();
 }
 
 function resetDataModel(){
@@ -218,7 +212,7 @@ function injectDataBasePrimaryModel(){
 	userInputs.forEach(function(elt, idx){
 		injectData('userInput', idx, JSON.parse(elt.json), loadUserInput);
 	});
-	refValues.forEach(function(elt, idx){
+	referenceValues.forEach(function(elt, idx){
 		injectData('referenceValue', idx, JSON.parse(elt.json), loadRefValue);
 	});
 	questions.forEach(function(elt, idx){

@@ -73,7 +73,6 @@ function dumpRefValue(){
 	saveData('SharedRefValue', ref, currentReferenceId, selectedCountry.id, function(success){
 		if(success){
 			injectData('referenceValue', currentReferenceIndex, ref, loadRefValue);
-			// injectRefValueData(currentReferenceIndex, ref);	
 			$.notify('Element saved in database', 'success')
 			dismissRefValueModal();				
 		}

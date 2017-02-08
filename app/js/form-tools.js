@@ -128,23 +128,14 @@ function loadSearch(){
 	}, 250);
 }
 
-function logData(){	
-	console.log("userInputs ", userInputs);
-	console.log("refValues ", refValues);
-	console.log("questions ", questions);
-	console.log("blocks ", blocks);
-	console.log("results ", results);
-	console.log("decisionTree", decisionTree);
-}
 
 
 /*
 	HTML injection
 */
-root_node_id = 'lvl_0';
 function loadElement(id){
 	if(!id){
-		id = root_node_id;
+		id = ROOT_NODE_ID;
 	}
 
 	var element = getDecisionTreeElement(id);
@@ -166,7 +157,7 @@ function getDecisionTreeElement(id){
 // Inject HTML and bind events on injected html
 function generateElementHtml(nodeElt){
 	var htmlContent = '',
-		eltToDisplay = getGraphicNodeElt(nodeElt.category, nodeElt.dataId);
+		eltToDisplay = getDataElt(nodeElt.category, nodeElt.dataId);
 	
 	if(nodeElt.category == 'question'){
 		if(eltToDisplay.type != 'numeric'){
@@ -305,26 +296,6 @@ function hideInputsElement(selector, inputIdx, inputsLength){
 /* 
 	Numerical question stuff
 */
-
-function getUserInput(userInputId){
-	for (var i = 0; i < userInputs.length; i++) {
-		if(userInputs[i].id == userInputId){
-			return userInputs[i];
-		}
-	}
-	return null;
-}
-
-function getReference(refValueId){
-	for (var i = 0; i < refValues.length; i++) {
-		if(refValues[i].id == refValueId){
-			return refValues[i];
-		}
-	}
-	return null;
-}
-
-
 function getLastToCompute(inputs){
 	var lastToCompute = -1;
 	for(var i=0; i<inputs.length; i++){
@@ -333,16 +304,6 @@ function getLastToCompute(inputs){
 		}
 	}
 	return lastToCompute;
-}
-
-// Append here the constant values
-function replaceReference(value){
-	switch(value){
-		case 'now':
-			return new Date().getFullYear();
-		default:
-			return value;
-	}
 }
 
 function extractExpression(expression){
@@ -418,7 +379,7 @@ function getQuestionFromHtmlId(id, element){
 		var s = id.split('-');
 		dataId = s[s.length-1];
 	}
-	return getGraphicNodeElt('question', dataId);
+	return getDataElt('question', dataId);
 }
 
 function extractQuestionHtmlAnswer(id, question){

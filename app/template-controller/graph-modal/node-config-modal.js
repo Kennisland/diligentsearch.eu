@@ -76,7 +76,7 @@ function loadGraphicNode(index, graphicNodeElt){
 	configDataSelection(graphicNodeElt.category);
 
 	// Db effect : retrieve data element based on its db id
-	var dataElt = getGraphicNodeElt(graphicNodeElt.category, graphicNodeElt.dataId);
+	var dataElt = getDataElt(graphicNodeElt.category, graphicNodeElt.dataId);
 	if(!dataElt){
 		console.log('DataElt not found in graphicNodeElt.category array');
 	}
@@ -114,16 +114,18 @@ function dumpNode(){
 
 		var hasChanged = (oldCategory != node.category) || (oldDataId != node.dataId) || (oldDataName != node.dataName);
 		if(hasChanged){
-			refreshChildren(node.id);	
+			disconnectChildren(node.id);
 		}
 	}
 
+	// Get back targets based on html inputs field
 	var targets = retrieveSection('input', 'node-data-output-id-');
 	targets.forEach(function(elt, idx){
 		var t = elt.value != "" ? elt.value : 'New node';
 		node.targets[idx] = t;
 	});
 
+	// Update data model
 	injectGraphicNodeData(currentGraphicNodeIndex, node);
 	dismissNodeModal();
 }
@@ -150,32 +152,12 @@ function GraphicNodeElt(){
 // Delete the current node
 function deleteNode(){
 	var nodeId 	 = $('#node-graphic-id').val();
-
-	if(!graphic.inEdges(nodeId)[0] || graphic.predecessors(nodeId).length == 0){
+	if(nodeId == ROOT_NODE_ID){
 		$('.modal-header').notify('You cannot delete the root node.');
-		return;
+		return;		
 	}
 
-	// Save the parent of the node
-	var parentId = graphic.inEdges(nodeId)[0].v;
-
-	// Delete this node
 	deleteGraphicNode(nodeId);
-
-
-	// Regen outputs of the parent
-	$('#node-graphic-id').val(parentId);	
-	var parentIndex = graphic.node(parentId).index,
-		parentNode = getGraphicNode(parentId);
-
-	parentNode.targets.map(function(t, idx){
-		if(t == ""){
-			parentNode.targets[idx] = 'New node';
-		}
-	});
-	injectGraphicNodeData(parentIndex, parentNode);
-
-	// Close modal
 	dismissNodeModal();
 }
 
@@ -291,7 +273,7 @@ function loadGraphicNodeTarget(graphicNodeElt){
 		
 		var targetNode = getGraphicNode(targets[i]);		
 		if(targetNode){
-			var targetNodeElt = getGraphicNodeElt(targetNode.category, targetNode.dataId);
+			var targetNodeElt = getDataElt(targetNode.category, targetNode.dataId);
 			if(targetNodeElt){
 				$('#node-data-output-target-'+i).val(targetNodeElt.name);
 			}
@@ -397,19 +379,15 @@ function getPotentialTargets(){
 		}
 	}
 
-
-	var targets = [];
-
-	// Push neutral element
-	targets.push({dataName:"New node", id:""});
-
+	// Finally construct the list of available targets
+	var targets = [];	
+	targets.push({dataName:"New node", id:""}); // Push neutral element
 	for (var i = 0; i < targetsId.length; i++) {
 		var node = getGraphicNode(targetsId[i]);
 		if(node){
 			targets.push(node);			
 		}
 	}
-
 
 	return targets;
 }

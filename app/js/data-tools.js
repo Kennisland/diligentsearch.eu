@@ -1,5 +1,150 @@
 /*
-	Data injection from modal
+	Data model
+	Specific data constructors are kept within dedicated modal for a better ID visibility
+*/
+
+// Global model
+countries = [];
+works = [];
+userInputs = [];
+referenceValues = [];
+results = [];
+questions = [];
+blocks = [];
+
+// Form dedicated model
+languages = [];
+decisionTree = [];
+dumpedForm = {
+	webHook: undefined,
+	json: ''
+};
+
+// Root id of decision tree
+ROOT_NODE_ID = 'lvl_0';
+
+// Graph editor dedicated model
+graphicNodesDatabaseId = undefined;
+graphicNodes = [];
+
+// Graphical objects
+svg = undefined;
+svgGroup = undefined;
+graphic = undefined;
+zoom = undefined;
+initialScale = 0.7;
+
+
+
+
+/*
+	Data model helper
+*/
+function logData(){	
+	console.log("userInputs ", userInputs);
+	console.log("referenceValues ", referenceValues);
+	console.log("questions ", questions);
+	console.log("blocks ", blocks);
+	console.log("results ", results);
+	console.log("decisionTree", decisionTree);
+}
+
+function getUserInput(userInputId){
+	for (var i = 0; i < userInputs.length; i++) {
+		if(userInputs[i].id == userInputId){
+			return userInputs[i];
+		}
+	}
+	return null;
+}
+
+function getUserInputByName(n){
+	for (var i = 0; i < userInputs.length; i++) {
+		if(userInputs[i].name == n){
+			return userInputs[i];
+		}
+	}
+	return null;
+}
+
+function getReference(refValueId){
+	for (var i = 0; i < referenceValues.length; i++) {
+		if(referenceValues[i].id == refValueId){
+			return referenceValues[i];
+		}
+	}
+	return null;
+}
+
+function getReferenceByName(n){
+	for (var i = 0; i < referenceValues.length; i++) {
+		if(referenceValues[i].name == n){
+			return referenceValues[i];
+		}
+	}
+	return null;
+}
+
+// Append here the constant values
+function replaceReference(value){
+	switch(value){
+		case 'now':
+			return new Date().getFullYear();
+		default:
+			return value;
+	}
+}
+
+
+function getQuestion(questionId){
+	for (var i = 0; i < questions.length; i++) {
+		if(questions[i].id == questionId){
+			return questions[i];
+		}
+	}
+	return null;
+}
+
+
+
+
+function getDataSource(category){
+	if(category == 'question')
+		return questions;
+	if(category == 'block')
+		return blocks;
+	if(category == 'result')
+		return results;
+}
+
+
+function getGraphicNode(nodeId){
+	for (var j = 0; j < graphicNodes.length; j++) {
+		if(graphicNodes[j].id == nodeId){
+			return graphicNodes[j];
+		}
+	}
+	return undefined;
+}
+
+// Returns a specific element based on its db ID
+function getDataElt(dataSource, dataId){
+	var source = getDataSource(dataSource);
+	for (var i = 0; i < source.length; i++) {
+		if( source[i].id == dataId){
+			return source[i];
+		}
+	}
+	return undefined;
+}
+
+
+
+
+
+
+/*
+	Modal data injection
 */
 function injectData(elementType, index, element, modalCallback){
 	var dataModel = undefined;
@@ -98,7 +243,6 @@ function deleteData(dataTable, dataId, modalCallback){
 function retrieveSection(tag, sectionId){
 	var s = [],
 		selector = tag+'[id^="'+sectionId+'"]';
-
 	$(selector).each(function(idx){
 		s.push($('#'+sectionId+idx)[0]);
 	});

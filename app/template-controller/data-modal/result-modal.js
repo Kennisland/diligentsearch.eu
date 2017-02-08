@@ -67,7 +67,6 @@ function dumpResult(){
 	saveData('Result', res, currentResultId, selectedWork.id, function(success){
 		if(success){
 			injectData('result', currentResultIndex, res, loadResult);
-			// injectResultData(currentResultIndex, result);	
 			$.notify('Element saved in database', 'success');
 			dismissResultModal();				
 		}

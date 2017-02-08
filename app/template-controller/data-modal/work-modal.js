@@ -48,7 +48,7 @@ function dumpWork(){
 		return;
 	}
 
-	var workElt = new WorkElt();
+	var work = new WorkElt();
 	saveElt('Work', work, work.countryId, function(success){
 		if(success){
 			getWork(work.countryId);
