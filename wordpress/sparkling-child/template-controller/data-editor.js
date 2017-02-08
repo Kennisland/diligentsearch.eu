@@ -22,35 +22,35 @@ html_dataModelEditor = `
 		<label>User inputs:</label>
 		<ul id="data-userInputs" class="list-group">		
 		</ul>
-		<button class="btn btn-default" onclick="add('userInput')" style="text-align:right">Add</button>
+		<button class="btn btn-default" onclick="add('userInput')">Add</button>
 	</div>
 
 	<div>
 		<label>References values:</label>
 		<ul id="data-referenceValues" class="list-group">
 		</ul>
-		<button class="btn btn-default" onclick="add('referenceValue')" style="text-align:right">Add</button>
+		<button class="btn btn-default" onclick="add('referenceValue')">Add</button>
 	</div>
 
 	<div>
 		<label>Results to display:</label>
 		<ul id="data-results" class="list-group">
 		</ul>
-		<button class="btn btn-default" onclick="add('result')" style="text-align:right">Add</button>
+		<button class="btn btn-default" onclick="add('result')">Add</button>
 	</div>
 
 	<div>
 		<label>Questions already prepared:</label>
 		<ul id="data-questions" class="list-group">
 		</ul>
-		<button class="btn btn-default" onclick="add('question')" style="text-align:right">Add</button>
+		<button class="btn btn-default" onclick="add('question')">Add</button>
 	</div>
 
 	<div>
 		<label>Available blocks of questions:</label>
 		<ul id="data-blocks" class="list-group">
 		</ul>
-		<button class="btn btn-default" onclick="add('block')" style="text-align:right">Add</button>
+		<button class="btn btn-default" onclick="add('block')">Add</button>
 	</div>
 </div>
 

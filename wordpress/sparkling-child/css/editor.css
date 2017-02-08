@@ -37,6 +37,26 @@ div.right-panel{
 }
 
 
+#display-data-model{	
+	max-height: 650px;
+	overflow: auto;
+	padding-right: 15px;
+}
+
+#display-data-model > div{
+	margin-bottom: 50px;
+}
+
+#display-data-model > div > ul{
+	margin-bottom: 5px;
+}
+
+#display-data-model > div > button{
+	float: right;
+}
+
+
+
 .ui-autocomplete{
 	position: relative;
 	z-index: 2000;
