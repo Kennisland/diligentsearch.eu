@@ -109,7 +109,13 @@ div.form-renderer {
 	float: right;
 }*/
 
+/*Result display*/
 .form-result {
 	min-width:85%;
 	max-width:85%;
+	margin-right: 10px;
+	font-size: 20px;
+	font-weight: 500;
+	color:#46723E;
+	font-family: 'Roboto Slab', serif;
 }

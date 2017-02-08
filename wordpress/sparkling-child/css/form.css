@@ -57,6 +57,10 @@ div.form-renderer {
 	margin-left: 10px;
 }
 
+.form-question-input > select {
+	margin-left: 10px;
+}
+
 .form-question-numeric > div > label{
 	margin-right: 10px;
 	font-size: 15px;
@@ -125,4 +129,9 @@ div.form-renderer {
 .form-result {
 	min-width:85%;
 	max-width:85%;
+	margin-right: 10px;
+	font-size: 20px;
+	font-weight: 500;
+	color:#46723E;
+	font-family: 'Roboto Slab', serif;
 }
