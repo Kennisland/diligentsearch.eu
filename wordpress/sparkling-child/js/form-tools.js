@@ -10,13 +10,13 @@ function getSearch(){
 	// Get the web hook provided by user
 	var hook = $('#search-hook').val();
 	if(hook == ""){
-		$('#search-hook').notify("Research ID required", {position:'top-right', className:'warning'});
+		$('#search-hook').notify("Research ID required", {position:'bottom-left', className:'warning'});
 		return;
 	}
 	
 	var version = $('#search-version').val();
 	if(version && version != parseInt(version, 10)){
-		$('#search-version').notify("Version not a number", {position:'top-right', className:'warning'});
+		$('#search-version').notify("Version not a number", {position:'bottom-left', className:'warning'});
 		return;	
 	}
 
@@ -25,7 +25,7 @@ function getSearch(){
 	$.when(ajaxGetForm(hook, version)).then(
 		function(success){
 			if(success.length == 0){
-				$('#search-hook').notify("No form found for this ID or version", {position:'top-right', className:'error'});
+				$('#search-hook').notify("No form found for this ID or version", {position:'bottom-left', className:'error'});
 				return;
 			}
 			else{
