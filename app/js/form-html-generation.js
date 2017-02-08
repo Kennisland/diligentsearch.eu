@@ -69,6 +69,9 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 	More information handler
 */
 function moreInfo(information){
+	information = information.replace(/(http:\/\/|wwww.)(.*\.)(.*)/g, function(match, p1, p2, p3){
+		return ['<a href="'+p1+p2+p3+'" target="_blank">'+p1+p2+p3+'</a>'];
+	});
 	$('#infoBox-content').html(information);
 	$('#infoBox').show();
 }

@@ -69,10 +69,12 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 	More information handler
 */
 function moreInfo(information){
+	information = information.replace(/(http:\/\/|wwww.)(.*\.)(.*)/g, function(match, p1, p2, p3){
+		return ['<a href="'+p1+p2+p3+'" target="_blank">'+p1+p2+p3+'</a>'];
+	});
 	$('#infoBox-content').html(information);
 	$('#infoBox').show();
 }
-
 function hideInfo(){
 	$('#infoBox-content').html('');
 	$('#infoBox').hide();
@@ -197,7 +199,7 @@ function setUpWarningModal(element){
 			// * wwww.blablablablablabla.somewhere
 			if(element.val().match(/(http:\/\/|wwww.)(.*).(.*)/g)){
 				$('#form-warning-modal-open-link').on('click', function(){
-					window.open(element.val());
+					window.open(element.val()); //Default open new window
 				});
 				$('#form-warning-modal-is-link').show();
 			}
