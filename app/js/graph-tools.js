@@ -23,10 +23,17 @@ function createGraphicNode(id){
 // Ensure there is no orphan nodes drawn
 function  cleanUpGraph(){
 	graphic.nodes().forEach(function(id){
-		if(id != ROOT_NODE_ID && graphic.children(id).length == 0){
-			if(graphic.predecessors(id).length == 0){
-				console.log('\tno preds  --> removing ', id);
-				recursiveDelete(id, 0);
+
+		// Ensure the id is still inside the loop, because it could have been deleted in a previous iteration
+		if(graphic.node(id)){
+			var isNotRoot = id != ROOT_NODE_ID,
+				isNotParent = graphic.children(id).length == 0;
+
+			if(isNotRoot && graphic.children(id).length == 0){
+				if(graphic.predecessors(id).length == 0){
+					console.log('\tno preds  --> removing ', id);
+					recursiveDelete(id, 0);
+				}
 			}
 		}
 	});
