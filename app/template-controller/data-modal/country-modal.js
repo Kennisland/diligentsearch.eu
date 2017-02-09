@@ -63,7 +63,7 @@ function saveCountry(country){
 	function cb(success){
 		if(success){
 			getCountry();
-			$('#data-editor').notify('Country inseretd with success in database', {position:'top-left', className:'success'});
+			$('#data-editor').notify('Country inserted with success in database', {position:'top-left', className:'success'});
 			dismissCountryModal();				
 		}
 		else{
