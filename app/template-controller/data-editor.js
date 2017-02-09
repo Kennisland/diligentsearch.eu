@@ -22,35 +22,35 @@ html_dataModelEditor = `
 		<label>User inputs:</label>
 		<ul id="data-userInputs" class="list-group">		
 		</ul>
-		<button class="btn btn-default" onclick="add('userInput')">Add</button>
+		<button class="btn btn-default" onclick="add('userInput')">Add a user input</button>
 	</div>
 
 	<div>
 		<label>References values:</label>
 		<ul id="data-referenceValues" class="list-group">
 		</ul>
-		<button class="btn btn-default" onclick="add('referenceValue')">Add</button>
+		<button class="btn btn-default" onclick="add('referenceValue')">Add a reference value</button>
 	</div>
 
 	<div>
 		<label>Results to display:</label>
 		<ul id="data-results" class="list-group">
 		</ul>
-		<button class="btn btn-default" onclick="add('result')">Add</button>
+		<button class="btn btn-default" onclick="add('result')">Add a result</button>
 	</div>
 
 	<div>
 		<label>Questions already prepared:</label>
 		<ul id="data-questions" class="list-group">
 		</ul>
-		<button class="btn btn-default" onclick="add('question')">Add</button>
+		<button class="btn btn-default" onclick="add('question')">Add a question</button>
 	</div>
 
 	<div>
 		<label>Available blocks of questions:</label>
 		<ul id="data-blocks" class="list-group">
 		</ul>
-		<button class="btn btn-default" onclick="add('block')">Add</button>
+		<button class="btn btn-default" onclick="add('block')">Add a block</button>
 	</div>
 </div>
 
@@ -181,7 +181,7 @@ function injectCountryData(){
 		countriesHtml += '<li class="list-group-item" onclick="getWork('+countries[i].id+')">'+countries[i].name+'</li>';
 	}
 	countriesHtml += '</ul>';
-	countriesHtml += '<button class="btn btn-default" onclick="add(\'country\')" style="text-align:right">Add</button>';
+	countriesHtml += '<button class="btn btn-default" onclick="add(\'country\')" style="text-align:right">Add a country</button>';
 	$('#select-country').html(countriesHtml);
 
 	selectedCountry = '';
@@ -198,7 +198,7 @@ function injectWorkData(){
 		worksHtml += '<li class="list-group-item" onclick="getData('+i+')">'+works[i].name+'</li>';
 	}
 	worksHtml += '</ul>';
-	worksHtml += '<button class="btn btn-default" onclick="add(\'work\')" style="text-align:right">Add</button>';
+	worksHtml += '<button class="btn btn-default" onclick="add(\'work\')" style="text-align:right">Add a type of work</button>';
 	$('#select-work').html(worksHtml);
 
 	$('#breadcrumb li:nth-child(1) a').text(selectedCountry.name).attr('onclick', 'getCountry()');
