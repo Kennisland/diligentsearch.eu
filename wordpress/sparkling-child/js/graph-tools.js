@@ -61,7 +61,7 @@ function injectGraphicNodeData(index, graphicNodeElt){
 
 // Update graphic, take care of block case, generate outputs
 function setUpGraphicNode(graphicNodeElt){
-	formatNodeLabel(graphicNodeElt);
+	formatNodeLabel(graphicNodeElt.id, graphicNodeElt.dataName);
 	styleGraphicNode(graphicNodeElt.category, graphicNodeElt.id);
 
 	// Delete all outEdges of this node if they exist to better recreate them
@@ -157,6 +157,7 @@ function setNewGraphicBlock(blockNodeId, blockNodeDataId){
 				graphic.setEdge(blockNodeId, questionBlockId, {
 					style: "fill: none; stroke-dasharray:5,5;"
 				});
+				formatNodeLabel(questionBlockId, q.name);
 				styleGraphicNode('questionBlock', questionBlockId);	
 				break;
 			}
@@ -184,11 +185,11 @@ function styleGraphicNode(category, nodeId){
 }
 
 // Replace '_' by newLine HTML tags
-function formatNodeLabel(graphicNodeElt){
+function formatNodeLabel(nodeId, dataName){
 	var labelText = '<div style="text-align: center; width: 150px; padding: 5px">';
-	labelText += graphicNodeElt.dataName.replace(/(_|\s+)/g, '<br>');
+	labelText += dataName.replace(/(_|\s+)/g, '<br>');
 	labelText += '</div>';
-	graphic.node(graphicNodeElt.id).label = labelText;
+	graphic.node(nodeId).label = labelText;
 }
 
 
