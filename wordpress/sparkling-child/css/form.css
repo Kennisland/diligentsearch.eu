@@ -29,20 +29,6 @@ div.form-renderer {
 	margin:5%;
 }
 
-.form-infobox {
-	z-index:99;
-	display:none;
-	position: absolute;
-	left: 65%;
-	width: 30%;
-	height: 300px;
-	background-color:white;
-	padding:10px;
-	border: 1px;
-	border-style:solid;
-	border-color:#34a301;
-}
-
 /*Generic question display*/
 .form-question-check {
 	margin-left: 10px;

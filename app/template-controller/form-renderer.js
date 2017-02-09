@@ -30,10 +30,6 @@ html_formRenderer =`
 			</select>
 		</div>
 
-		<div id="infoBox" class="form-infobox">
-			<p id="infoBox-content"></p>
-			<p><a onclick="hideInfo();">Close</a></p>
-		</div>
 
 		<div id="work-data-selected" style="display:none">			
 		</div>
@@ -61,6 +57,24 @@ html_formRenderer =`
 						<button id="form-warning-modal-redirect" type="button" class="btn btn-success pull-left" style="display:none">Redirect</button>
 						<button id="form-warning-modal-cancel" type="button" class="btn btn-default">Cancel</button>
 						<button id="form-warning-modal-proceed" type="button" class="btn btn-primary">Confirm changing value</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="form-infoModal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal-title">Information</h3>
+					</div>
+
+					<div class="modal-body">
+						<p id="form-infoModal-content"></p>
+					</div>
+
+					<div class="modal-footer">
+						<button id="form-infoModal-close" type="button" class="btn btn-default" onclick="hideInfo();">Close</button>
 					</div>
 				</div>
 			</div>

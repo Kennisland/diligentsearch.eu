@@ -1,3 +1,5 @@
+REGEX_URL = /(http:\/\/|wwww.)([^ ]*\.)([^ ]*)/g;
+
 /*
 	Question html
 */
@@ -69,17 +71,19 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 	More information handler
 */
 function moreInfo(information){
-	information = information.replace(/(http:\/\/|wwww.)(.*\.)(.*)/g, function(match, p1, p2, p3){
+	// Convert new line to br tags and replace url by a tags
+	information = information.replace(/\n/g, ' <br> ');
+	information = information.replace(REGEX_URL, function(match, p1, p2, p3){
 		return ['<a href="'+p1+p2+p3+'" target="_blank">'+p1+p2+p3+'</a>'];
 	});
 
-	$('#infoBox-content').html(information);
-	$('#infoBox').show();
+	$('#form-infoModal-content').html(information);
+	$('#form-infoModal').modal('show');
 }
 
 function hideInfo(){
-	$('#infoBox-content').html('');
-	$('#infoBox').hide();
+	$('#form-infoModal-content').html('');
+	$('#form-infoModal').modal('hide');
 }
 
 
@@ -199,7 +203,7 @@ function setUpWarningModal(element){
 			// Check if element value is 
 			// * http://blablablablablabla.somewhere
 			// * wwww.blablablablablabla.somewhere
-			if(element.val().match(/(http:\/\/|wwww.)(.*).(.*)/g)){
+			if(element.val().match(REGEX_URL)){
 				$('#form-warning-modal-is-link').show();			
 				$('#form-warning-modal-redirect').on('click', function(){
 					window.open(element.val());
