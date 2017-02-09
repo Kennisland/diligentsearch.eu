@@ -232,6 +232,7 @@ function add(elementType){
 			$('#add-countryModal').modal('show');
 			break;
 		case 'work':
+			$('#work-foreignKey').val(selectedCountry.name);
 			$('#add-workModal').modal('show');
 			break;
 		case 'userInput':
