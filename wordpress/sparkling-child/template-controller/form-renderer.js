@@ -46,21 +46,21 @@ html_formRenderer =`
 					</div>
 
 					<div class="modal-body">
-						<div id="form-warning-modal-is-link" style="display:none">
-							<p>
-								URL detected within this field. Do you want to open it ?
-								<a id="form-warning-modal-open-link">Redirect to the URL</a>
-							</p>
-						</div>
 						<p>
 							Changing a field can result in losing information.
 							Do you want to proceed anyway ?
 						</p>
+						<div id="form-warning-modal-is-link" style="display:none">
+							<p>
+								URL detected within this field. You can open it by clicking the redirect button.
+							</p>
+						</div>
 					</div>
 
 					<div class="modal-footer">
+						<button id="form-warning-modal-redirect" type="button" class="btn btn-success pull-left" style="display:none">Redirect</button>
 						<button id="form-warning-modal-cancel" type="button" class="btn btn-default">Cancel</button>
-						<button id="form-warning-modal-proceed" type="button" class="btn btn-primary">Continue</button>
+						<button id="form-warning-modal-proceed" type="button" class="btn btn-primary">Confirm changing value</button>
 					</div>
 				</div>
 			</div>
@@ -102,7 +102,7 @@ function getLanguages(){
 			});
 		},
 		function(error){
-			$('#form-renderer').notify("Error in languages retrieval", {position:'top-right', className:'error'});
+			$('#form-renderer').notify("Error in languages retrieval", "error", {position : 'top-left'});
 		});
 }
 
@@ -120,7 +120,7 @@ function getCountryForm(){
 			injectCountriesIntoForm();
 		}, 
 		function(error){
-			$('#form-renderer').notify("Error in countries retrieval", {position:'top-right', className:'error'});
+			$('#form-renderer').notify("Error in countries retrieval", "error", {position : 'top-left'});
 	});
 }
 
@@ -136,7 +136,7 @@ function getWorkForm(countryId){
 			injectWorksIntoForm();
 		},
 		function(error){
-			$('#form-renderer').notify("Error in type of work retrieval", {position:'top-right', className:'error'});
+			$('#form-renderer').notify("Error in type of work retrieval", "error", {position : 'top-left'});
 	});
 }
 
@@ -147,7 +147,7 @@ function getSharedValue(countryId){
 			referenceValues = resultRefValues[0].map(function(elt){ 	return JSON.parse(elt.json); 	});;
 		},
 		function(error){
-			$('#form-renderer').notify("Error in global data retrieval", {position:'top-right', className:'error'});
+			$('#form-renderer').notify("Error in global data retrieval", "error", {position : 'top-left'});
 	});	
 }
 
@@ -163,7 +163,7 @@ function getDataForm(workId){
 			loadElement();
 		},
 		function(error){
-			$('#form-renderer').notify("Error in specific data retrieval", {position:'top-right', className:'error'});
+			$('#form-renderer').notify("Error in specific data retrieval", "error", {position : 'top-left'});
 	});
 }
 

@@ -72,6 +72,7 @@ function moreInfo(information){
 	information = information.replace(/(http:\/\/|wwww.)(.*\.)(.*)/g, function(match, p1, p2, p3){
 		return ['<a href="'+p1+p2+p3+'" target="_blank">'+p1+p2+p3+'</a>'];
 	});
+
 	$('#infoBox-content').html(information);
 	$('#infoBox').show();
 }
@@ -199,11 +200,13 @@ function setUpWarningModal(element){
 			// * http://blablablablablabla.somewhere
 			// * wwww.blablablablablabla.somewhere
 			if(element.val().match(/(http:\/\/|wwww.)(.*).(.*)/g)){
-				$('#form-warning-modal-open-link').on('click', function(){
+				$('#form-warning-modal-is-link').show();			
+				$('#form-warning-modal-redirect').on('click', function(){
 					window.open(element.val());
 				});
-				$('#form-warning-modal-is-link').show();
+				$('#form-warning-modal-redirect').show();
 			}
+		
 
 
 			// Configure modal buttons to perform click, or to just do nothing on the current element
