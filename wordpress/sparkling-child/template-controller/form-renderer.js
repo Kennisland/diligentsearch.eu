@@ -1,14 +1,8 @@
 html_formRenderer =`
 	<h2 id="search-report-ref">Search-report not saved yet</h2>
 
-	<label>
-		Language : 
-		<select id="choose-lg">
-			<option value="">Default</option>
-		</select>
-	</label>
 
-	<div id="language-selected" class="form-group" style="display:none">
+	<div class="form-group">	
 		<label for="choose-country">
 			Select the jurisdiction you want to determine an orphan work in:
 		</label>
@@ -18,7 +12,21 @@ html_formRenderer =`
 		</select>
 	</div>
 
-	<div id="country-data-selected" style="display:none">
+
+
+
+	<div id="country-data-selected" class="form-group" style="display:none">
+		<label>
+			Language : 
+		</label>
+		<br>
+		<select id="choose-lg">
+			<option value="">Default</option>
+		</select>
+	</div>	
+
+
+	<div id="language-selected" style="display:none">
 
 		<div class="form-group">
 			<label for="choose-work">
@@ -88,39 +96,13 @@ html_formRenderer =`
 `;
 
 function injectFormRenderer(){
-	getLanguages();
+	getCountryForm();
 	$('#form-renderer').html(html_formRenderer);
 }
 
 /*
 	Get data model
 */
-function getLanguages(){
-	languages = [];
-	$.when(ajaxGetLanguages()).then(
-		function(success){
-			if(success.lg){
-				languages = success.lg;
-			}
-
-			if(languages.length == 0){
-				languages.push('Default');
-			}
-
-			// Inject it into select tag
-			injectLanguageIntoForm();
-			$('#choose-lg').on('change', function(){
-				ajaxSetTranslation($(this).val());
-				getCountryForm();
-				$('#language-selected').show();
-			});
-		},
-		function(error){
-			$('#form-renderer').notify("Error in languages retrieval", {position:'bottom-left', className:'error'});
-		});
-}
-
-
 function getCountryForm(){
 	// Reset countries data
 	countries = [];
@@ -137,6 +119,36 @@ function getCountryForm(){
 			$('#form-renderer').notify("Error in countries retrieval", {position:'bottom-left', className:'error'});
 	});
 }
+
+function getLanguages(){
+	languages = [];
+	$.when(ajaxGetLanguages()).then(
+		function(success){
+			if(success.lg){
+				languages = success.lg;
+			}
+			if(languages.length == 0){
+				languages.push('Default');
+			}
+
+			console.log("languages received ", languages);
+
+			// Inject it into select tag
+			injectLanguageIntoForm();
+			$('#choose-lg').on('change', function(){
+				ajaxSetTranslation($(this).val());
+				var countryId = $('#choose-country option:selected').val()
+				getWorkForm(countryId);
+				getSharedValue(countryId);
+				$('#language-selected').show();	
+			});
+		},
+		function(error){
+			$('#form-renderer').notify("Error in languages retrieval", {position:'bottom-left', className:'error'});
+		});
+}
+
+
 
 function getWorkForm(countryId){
 	// Reset works data
@@ -181,6 +193,9 @@ function getDataForm(workId){
 	});
 }
 
+
+
+
 /*
 	HTML injection and JS bindings
 */
@@ -202,10 +217,10 @@ function injectCountriesIntoForm(){
 		selectContent += '<option value="'+countryId+'">'+countryName+'</option>';
 	}
 	$('#choose-country').html(selectContent);
-	bindTypeOfWork();
+	bindLanguage();
 }
 
-function bindTypeOfWork(){	
+function bindLanguage(){
 	$('#choose-country').on('change', function(){
 		ajaxSetCountry($('#choose-country option:selected').text().toLowerCase());
 		var countryId = $(this).val();
@@ -213,12 +228,27 @@ function bindTypeOfWork(){
 			$('#country-data-selected').hide();			
 		}
 		else{
-			getWorkForm(countryId);
-			getSharedValue(countryId);
+			getLanguages();
 			$('#country-data-selected').show();	
 		}
 	});	
 }
+
+
+// function bindTypeOfWork(){	
+// 	$('#choose-country').on('change', function(){
+// 		ajaxSetCountry($('#choose-country option:selected').text().toLowerCase());
+// 		var countryId = $(this).val();
+// 		if(countryId == ""){
+// 			$('#country-data-selected').hide();			
+// 		}
+// 		else{
+// 			getWorkForm(countryId);
+// 			getSharedValue(countryId);
+// 			$('#country-data-selected').show();	
+// 		}
+// 	});	
+// }
 
 
 function injectWorksIntoForm(){

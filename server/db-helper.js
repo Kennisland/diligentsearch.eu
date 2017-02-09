@@ -262,16 +262,16 @@ const fs 	= require('fs');
 const path 	= require('path');
 
 var getTranslations = function(req, res){
-	var i18n = path.resolve(__dirname, './i18n/'),
+	var jurisdictionFile = path.resolve(__dirname, './i18n/'+req.query.jurisdiction+'.json')
 		translations = [];
 
-	// Read files within folder and push their names
-	var files = fs.readdirSync(i18n);
-	files.forEach(file => {
-		if(file != "template.json"){
-			translations.push(file.replace('.json', ''));				
-		}
-	});
+	if(fs.existsSync(jurisdictionFile)) {
+		var obj = JSON.parse(fs.readFileSync(jurisdictionFile, 'utf8'));
+		translations = Object.keys(obj);
+	}
+	else{
+		translations.push('Default');
+	}
 	res.json({"lg": translations});
 }
 
@@ -289,8 +289,6 @@ function translate(sqlTable, rows, lg){
 	var country = lg.useCountry,
 		translation = lg.useTranslation;
 
-	console.log(country, translation);
-
 	var lgFile = path.resolve(__dirname, './i18n/'+country+'.json');
 	if(!fs.existsSync(lgFile)) {
 		return;
@@ -299,23 +297,8 @@ function translate(sqlTable, rows, lg){
 		var obj = JSON.parse(fs.readFileSync(lgFile, 'utf8')),
 			modified = false;
 
-		if(!obj[translation]){
-			obj[translation] = {
-				"Country":{},
-				"Work": {},
-				"SharedUserInput": {},
-				"SharedRefValue": {},
-				"Result":{},
-				"Question": {},
-				"Block":{}
-			};
-			modified = true;
-		}
-
 		// Points to the actual table, within the desired translation
 		var	sqlTranslation = obj[translation][sqlTable];
-
-		console.log("sqlTranslation", sqlTranslation);
 		rows.forEach(function(row){	
 
 			if(sqlTable == 'Country' || sqlTable == 'Work'){

@@ -10,7 +10,7 @@ function ajaxGetLanguages(){
 	return $.ajax({
 		type:"GET",
 		url:apiAccessUrl,
-		data: {translationRequired: true},
+		data: {translationRequired: true, jurisdiction: translation.useCountry},
 		error: function(err){
 			console.log("Error ajaxGetLanguages :", err);
 		}
@@ -38,6 +38,7 @@ function ajaxSetTranslation(t){
 		translation.useTranslation = t;
 	}
 }
+
 
 
 

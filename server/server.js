@@ -69,9 +69,6 @@ app.post(pdfRoute, function(req, res){
 });
 
 
-
-
-
 /*
 	Launch server
 */
