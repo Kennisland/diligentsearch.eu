@@ -389,9 +389,9 @@ function saveDecisionTree(){
 	// Callback function
 	function cb(success){
 		if(success)
-			$('#main').notify('Decision process correctly saved in database', {position:'top-right', className:'success'});
+			$('#graph-editor').notify('Decision process correctly saved in database', {position:'top-right', className:'success'});
 		else
-			$('#main').notify('Error in decision process saving', {position:'top-right', className:'error'});
+			$('#graph-editor').notify('Error in decision process saving', {position:'top-right', className:'error'});
 	}
 }
 
@@ -413,7 +413,7 @@ function getDecisionTree(){
 			customRender();
 		},
 		function(error){
-			$('#main').notify('Fail to retrieve decision process', {position:'top-right', className:'error'});
+			$('#graph-editor').notify('Fail to retrieve decision process', {position:'top-right', className:'error'});
 		}
 	);
 }

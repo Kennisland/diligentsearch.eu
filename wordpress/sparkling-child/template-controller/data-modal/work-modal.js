@@ -44,7 +44,7 @@ function dumpWork(){
 	}
 	
 	if(error_log != ""){
-		$('.modal-header').notify(error_log, {position:'top-right', className:'error'});
+		$('.modal-header').notify(error_log, {position:'bottom-left', className:'error'});
 		return;
 	}
 
@@ -52,11 +52,11 @@ function dumpWork(){
 	saveElt('Work', work, work.countryId, function(success){
 		if(success){
 			getWork(work.countryId);
-			$('#main').notify('New work inserted into the database', {position:'top-right', className:'success'});
+			$('#data-editor').notify('New work inserted into the database', {position:'top-left', className:'success'});
 			dismissWorkModal();			
 		}
 		else{
-			$('.modal-header').notify("Failed to save the new type of work within database", {position:'top-right', className:'error'});
+			$('.modal-header').notify("Failed to save the new type of work within database", {position:'bottom-left', className:'error'});
 		}
 	});
 }

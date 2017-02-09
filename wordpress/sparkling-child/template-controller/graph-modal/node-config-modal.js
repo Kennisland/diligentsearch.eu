@@ -99,7 +99,7 @@ function dumpNode(){
 	}
 
 	if(error_log != ""){
-		$('.modal-header').notify(error_log, {position:'top-right', className:'error'});
+		$('.modal-header').notify(error_log, {position:'bottom-left', className:'error'});
 		return;
 	}
 
@@ -153,7 +153,7 @@ function GraphicNodeElt(){
 function deleteNode(){
 	var nodeId 	 = $('#node-graphic-id').val();
 	if(nodeId == ROOT_NODE_ID){
-		$('.modal-header').notify('You cannot delete the root node.');
+		$('.modal-header').notify('You cannot delete the root node.', {position:'bottom-left', className:'error'});
 		return;		
 	}
 

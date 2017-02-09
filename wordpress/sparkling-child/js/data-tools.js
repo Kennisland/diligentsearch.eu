@@ -232,7 +232,7 @@ function deleteData(dataTable, dataId, modalCallback){
 				$(selector).remove();
 				modalCallback();	
 			}else{
-				$('.modal-header').notify('Cannot remove element', {position:'top-right', className:'error'});
+				$('.modal-header').notify('Cannot remove element', {position:'bottom-left', className:'error'});
 			}			
 		});
 	}

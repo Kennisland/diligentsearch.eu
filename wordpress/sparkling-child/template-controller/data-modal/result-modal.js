@@ -56,7 +56,7 @@ function dumpResult(){
 		error_log += "Reference content is not set\n";
 	}
 	if(error_log != ""){
-		$('.modal-header').notify(error_log, {position:'top-right', className:'error'});
+		$('.modal-header').notify(error_log, {position:'bottom-left', className:'error'});
 		return;
 	}
 
@@ -67,11 +67,11 @@ function dumpResult(){
 	saveData('Result', res, currentResultId, selectedWork.id, function(success){
 		if(success){
 			injectData('result', currentResultIndex, res, loadResult);
-			$('#main').notify('Element saved in database', {position:'top-right', className:'success'});
+			$('#data-editor').notify('Element saved in database', {position:'top-left', className:'success'});
 			dismissResultModal();				
 		}
 		else{
-			$('.modal-header').notify("Failed to save element within database", {position:'top-right', className:'error'});
+			$('.modal-header').notify("Failed to save element within database", {position:'bottom-left', className:'error'});
 		}
 	});
 };

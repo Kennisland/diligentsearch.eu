@@ -64,8 +64,8 @@ selectedWork = '';
 
 
 function injectDataModelEditor(){
-	getCountry();
 	$('#data-editor').html(html_dataModelEditor);
+	getCountry();
 }
 
 
@@ -82,7 +82,7 @@ function getCountry(){
 			injectCountryData();
 		}, 
 		function(error){
-			$('#select-country').notify("Service unavailable", {position:'top-right', className:'error'});
+			$('#data-editor').notify("Service unavailable", {position:'top-left', className:'error'});
 	});
 	$('#select-country').show();
 }
@@ -103,7 +103,7 @@ function getWork(countryId){
 	}
 
 	if(!selectedCountry){
-		$('#select-country').notify("Country selection error", {position:'top-right', className:'error'});
+		$('#data-editor').notify("Country selection error", {position:'top-left', className:'error'});
 	}
 	else{
 		// Ajax call to get works from server for this country
@@ -115,7 +115,7 @@ function getWork(countryId){
 				injectWorkData();					
 			},
 			function(error){
-				$('#select-work').notify("Error in type of work and global data retrieval", {position:'top-right', className:'error'});
+				$('#data-editor').notify("Error in type of work and global data retrieval", {position:'top-left', className:'error'});
 		});	
 	}
 	$('#select-work').show();
@@ -141,9 +141,8 @@ function getData(workIdx){
 			getDecisionTree();
 		},
 		function(error){
-			$('#display-data-model').notify("Error in specific data retrieval", {position:'top-right', className:'error'});
+			$('#data-editor').notify("Error in specific data retrieval", {position:'top-left', className:'error'});
 	});
-	$('#display-data-model').show();
 }
 
 
@@ -224,6 +223,7 @@ function injectDataBasePrimaryModel(){
 	blocks.forEach(function(elt, idx){
 		injectData('block', idx, JSON.parse(elt.json), loadBlock);
 	});
+	$('#display-data-model').show();
 }
 
 function add(elementType){

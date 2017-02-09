@@ -19,6 +19,7 @@ div.main-panel{
 }
 div.left-panel{
 	width:30%;
+	min-width:30%;
 	padding-left: 40px;
 	padding-right: 10px;
 	float: none;
@@ -27,6 +28,7 @@ div.left-panel{
 }
 div.right-panel{
 	width:70%;
+	min-width:70%;
 	padding-left: 10px;
 	padding-right: 40px;
 	float: none;
@@ -70,6 +72,7 @@ div.right-panel{
 svg.svg-css {
 	min-height: 700px;
 	max-width:100%;
+	min-width: 100%;
 	position: relative;
 }
 

@@ -67,7 +67,7 @@ function dumpUserInput(){
 	}
 
 	if(error_log != ""){
-		$('.modal-header').notify(error_log, {position:'top-right', className:'error'});
+		$('.modal-header').notify(error_log, {position:'bottom-left', className:'error'});
 		return;
 	}
 
@@ -76,11 +76,11 @@ function dumpUserInput(){
 	saveData('SharedUserInput', input, currentInputId, selectedCountry.id, function(success){
 		if(success){
 			injectData('userInput', currentInputIndex, input, loadUserInput);
-			$('#main').notify('Element saved in database', {position:'top-right', className:'success'});
+			$('#data-editor').notify('Element saved in database', {position:'top-left', className:'success'});
 			dismissUserInputModal();				
 		}
 		else{
-			$('.modal-header').notify("Failed to save element within database", {position:'top-right', className:'error'});
+			$('.modal-header').notify("Failed to save element within database", {position:'bottom-left', className:'error'});
 		}	
 	});
 }

@@ -65,7 +65,7 @@ function getSearch(){
 							}, 100);
 						},
 						function(error){
-							$('#choose-country').notify("Country associated to research not found", {position:'top-right', className:'error'});
+							$('#choose-country').notify("Country associated to research not found", {position:'bottom-left', className:'error'});
 						});
 
 				}, 100);
@@ -74,7 +74,7 @@ function getSearch(){
 			}
 		},
 		function(error){
-			$('#search-hook').notify("Error detected in form retrieval", {position:'top-right', className:'error'});
+			$('#search-hook').notify("Error detected in form retrieval", {position:'bottom-left', className:'error'});
 		});
 }
 
@@ -437,11 +437,11 @@ function saveForm(){
 	if(!dumpedForm.webHook){
 		function cb(status){
 			if(status){
-				$('#main').notify('Report injected in database', {position:'top-right', className:'success'});
+				$('#form-renderer').notify('Report injected in database', {position:'top-left', className:'success'});
 				updateSearchReportId();
 			}
 			else{
-				$('#main').notify('Failed to save report in database', {position:'top-right', className:'error'});
+				$('#form-renderer').notify('Failed to save report in database', {position:'top-left', className:'error'});
 			}
 		}
 		ajaxPutForm(dumpedForm, workId, cb);
@@ -449,10 +449,10 @@ function saveForm(){
 	else{
 		$.when(ajaxUpdateForm(dumpedForm, workId)).then(
 			function(success){
-				$('#main').notify('Report correctly updated', {position:'top-right', className:'success'});
+				$('#form-renderer').notify('Report correctly updated', {position:'top-left', className:'success'});
 			}, 
 			function(error){
-				$('#main').notify('Failed to update report', {position:'top-right', className:'error'});
+				$('#form-renderer').notify('Failed to update report', {position:'top-left', className:'error'});
 			});
 	}
 }
