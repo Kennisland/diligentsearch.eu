@@ -63,7 +63,7 @@ function dumpRefValue(){
 		error_log += "Reference value is not set\n";
 	}
 	if(error_log != ""){
-		$('.modal-header').notify(error_log, 'error');
+		$('.modal-header').notify(error_log, {position:'bottom-left', className:'error'});
 		return;
 	}
 
@@ -77,7 +77,7 @@ function dumpRefValue(){
 			dismissRefValueModal();				
 		}
 		else{
-			$('.modal-header').notify("Failed to save element within database", 'error');
+			$('.modal-header').notify("Failed to save element within database", {position:'bottom-left', className:'error'});
 		}		
 	});
 };

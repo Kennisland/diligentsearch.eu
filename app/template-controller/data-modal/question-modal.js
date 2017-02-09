@@ -282,7 +282,7 @@ function dumpQuestion(){
 	}
 
 	if(error_log != ""){
-		$('.modal-header').notify(error_log, 'error');
+		$('.modal-header').notify(error_log, {position:'bottom-left', className:'error'});
 		return;
 	}
 
@@ -290,11 +290,11 @@ function dumpQuestion(){
 	saveData('Question', question, currentQuestionId, selectedWork.id, function(success){
 		if(success){
 			injectData('question', currentQuestionIndex, question, loadQuestion);
-			$.notify('Element saved in database', 'success');
+			$('#data-editor').notify('Element saved in database', {position:'top-left', className:'success'});
 			dismissQuestionModal();				
 		}
 		else{
-			$('.modal-header').notify('Failed to save element within database', 'error');
+			$('.modal-header').notify('Failed to save element within database', {position:'bottom-left', className:'error'});
 		}
 	});
 };

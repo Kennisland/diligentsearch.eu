@@ -116,7 +116,7 @@ function getLanguages(){
 			});
 		},
 		function(error){
-			$('#form-renderer').notify("Error in languages retrieval", "error", {position : 'top-left'});
+			$('#form-renderer').notify("Error in languages retrieval", {position:'bottom-left', className:'error'});
 		});
 }
 
@@ -134,7 +134,7 @@ function getCountryForm(){
 			injectCountriesIntoForm();
 		}, 
 		function(error){
-			$('#form-renderer').notify("Error in countries retrieval", "error", {position : 'top-left'});
+			$('#form-renderer').notify("Error in countries retrieval", {position:'bottom-left', className:'error'});
 	});
 }
 
@@ -150,7 +150,7 @@ function getWorkForm(countryId){
 			injectWorksIntoForm();
 		},
 		function(error){
-			$('#form-renderer').notify("Error in type of work retrieval", "error", {position : 'top-left'});
+			$('#form-renderer').notify("Error in type of work retrieval", {position:'bottom-left', className:'error'});
 	});
 }
 
@@ -161,7 +161,7 @@ function getSharedValue(countryId){
 			referenceValues = resultRefValues[0].map(function(elt){ 	return JSON.parse(elt.json); 	});;
 		},
 		function(error){
-			$('#form-renderer').notify("Error in global data retrieval", "error", {position : 'top-left'});
+			$('#form-renderer').notify("Error in global data retrieval", {position:'bottom-left', className:'error'});
 	});	
 }
 
@@ -177,7 +177,7 @@ function getDataForm(workId){
 			loadElement();
 		},
 		function(error){
-			$('#form-renderer').notify("Error in specific data retrieval", "error", {position : 'top-left'});
+			$('#form-renderer').notify("Error in specific data retrieval", {position:'bottom-left', className:'error'});
 	});
 }
 

@@ -46,7 +46,7 @@ function dumpCountry(){
 	}
 
 	if(error_log != ""){
-		$('.modal-header').notify(error_log, 'error');
+		$('.modal-header').notify(error_log, {position:'bottom-left', className:'error'});
 		return;
 	}
 
@@ -63,11 +63,11 @@ function saveCountry(country){
 	function cb(success){
 		if(success){
 			getCountry();
-			$.notify('Country inseretd with success in database', 'success');
+			$('#data-editor').notify('Country inseretd with success in database', {position:'top-left', className:'success'});
 			dismissCountryModal();				
 		}
 		else{
-			$('.modal-header').notify('Failed to save country within database', 'error');
+			$('.modal-header').notify('Failed to save country within database', {position:'bottom-left', className:'error'});
 		}
 	};
 

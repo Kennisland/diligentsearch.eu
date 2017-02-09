@@ -10,13 +10,13 @@ function getSearch(){
 	// Get the web hook provided by user
 	var hook = $('#search-hook').val();
 	if(hook == ""){
-		$('#search-hook').notify("Research ID required", "warning");
+		$('#search-hook').notify("Research ID required", {position:'bottom-left', className:'warning'});
 		return;
 	}
 	
 	var version = $('#search-version').val();
 	if(version && version != parseInt(version, 10)){
-		$('#search-version').notify("Version not a number", "warning");
+		$('#search-version').notify("Version not a number", {position:'bottom-left', className:'warning'});
 		return;	
 	}
 
@@ -25,7 +25,7 @@ function getSearch(){
 	$.when(ajaxGetForm(hook, version)).then(
 		function(success){
 			if(success.length == 0){
-				$('#search-hook').notify("No form found for this ID or version", "error");
+				$('#search-hook').notify("No form found for this ID or version", {position:'bottom-left', className:'error'});
 				return;
 			}
 			else{
@@ -65,7 +65,7 @@ function getSearch(){
 							}, 100);
 						},
 						function(error){
-							$('#choose-country').notify("Country associated to research not found", "error");
+							$('#choose-country').notify("Country associated to research not found", {position:'bottom-left', className:'error'});
 						});
 
 				}, 100);
@@ -74,7 +74,7 @@ function getSearch(){
 			}
 		},
 		function(error){
-			$('#search-hook').notify("Error detected in form retrieval", "error");
+			$('#search-hook').notify("Error detected in form retrieval", {position:'bottom-left', className:'error'});
 		});
 }
 
@@ -437,11 +437,11 @@ function saveForm(){
 	if(!dumpedForm.webHook){
 		function cb(status){
 			if(status){
-				$.notify('Report injected in database', "success");
+				$('#form-renderer').notify('Report injected in database', {position:'top-left', className:'success'});
 				updateSearchReportId();
 			}
 			else{
-				$.notify('Failed to save report in database', "error");
+				$('#form-renderer').notify('Failed to save report in database', {position:'top-left', className:'error'});
 			}
 		}
 		ajaxPutForm(dumpedForm, workId, cb);
@@ -449,10 +449,10 @@ function saveForm(){
 	else{
 		$.when(ajaxUpdateForm(dumpedForm, workId)).then(
 			function(success){
-				$.notify('Report correctly updated', "success");
+				$('#form-renderer').notify('Report correctly updated', {position:'top-left', className:'success'});
 			}, 
 			function(error){
-				$.notify('Failed to update report', "error");
+				$('#form-renderer').notify('Failed to update report', {position:'top-left', className:'error'});
 			});
 	}
 }
