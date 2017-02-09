@@ -126,8 +126,12 @@ Refer to this if there are problems:
 
 Create a database, and use the given schema, available in the root folder of the project.
 
-	mysql -u root -p <database_name> < diligentsearch-schema.sql
-	mysql -u root -p <database_name> < triggers.sql
+	// within mysql shell
+	create datatabase diligent_search;
+
+	// Outside of mysql shell
+	mysql -u root -p diligent_search < diligentsearch-schema.sql
+
 
 
 
