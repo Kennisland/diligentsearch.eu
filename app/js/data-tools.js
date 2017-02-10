@@ -49,6 +49,12 @@ function logData(){
 	console.log("decisionTree", decisionTree);
 }
 
+
+/**
+ * Retrieve a user input data
+ * @param {number} userInputId - javascript id of the data to retrieve
+ * @returns {object} element of userInputs array or null if not found
+ */
 function getUserInput(userInputId){
 	for (var i = 0; i < userInputs.length; i++) {
 		if(userInputs[i].id == userInputId){
@@ -58,6 +64,11 @@ function getUserInput(userInputId){
 	return null;
 }
 
+/**
+ * Retrieve a user input data by its name
+ * @param {string} n - javascript name of the data to retrieve
+ * @returns {object} element of userInputs array or null if not found
+ */
 function getUserInputByName(n){
 	for (var i = 0; i < userInputs.length; i++) {
 		if(userInputs[i].name == n){
@@ -67,6 +78,11 @@ function getUserInputByName(n){
 	return null;
 }
 
+/**
+ * Retrieve a reference data 
+ * @param {number} refValueId - javascript id of the data to retrieve
+ * @returns {object} element of referenceValues array or null if not found
+ */
 function getReference(refValueId){
 	for (var i = 0; i < referenceValues.length; i++) {
 		if(referenceValues[i].id == refValueId){
@@ -76,6 +92,11 @@ function getReference(refValueId){
 	return null;
 }
 
+/**
+ * Retrieve a reference data by its name
+ * @param {string} n - javascript name of the data to retrieve
+ * @returns {object} element of referenceValues array or null if not found
+ */
 function getReferenceByName(n){
 	for (var i = 0; i < referenceValues.length; i++) {
 		if(referenceValues[i].name == n){
@@ -85,7 +106,11 @@ function getReferenceByName(n){
 	return null;
 }
 
-// Append here the constant values
+/**
+ * Replace specific references values by javascript dedicated functions (ie. "now" --> Dat().getFullYear())
+ * @param {string} value - reference value to change
+ * @returns {object} corresponding function or the value if not found
+ */
 function replaceReference(value){
 	switch(value){
 		case 'now':
@@ -95,7 +120,11 @@ function replaceReference(value){
 	}
 }
 
-
+/**
+ * Retrieve a question data
+ * @param {number} questionId - javascript id of the data to retrieve
+ * @returns {object} element of questions array or null if not found
+ */
 function getQuestion(questionId){
 	for (var i = 0; i < questions.length; i++) {
 		if(questions[i].id == questionId){
@@ -105,9 +134,11 @@ function getQuestion(questionId){
 	return null;
 }
 
-
-
-
+/**
+ * Convert a category to the corresponding array of data
+ * @param {string} category - name of the array of data to retrieve
+ * @returns {object} the array of data asked if it exists
+ */
 function getDataSource(category){
 	if(category == 'question')
 		return questions;
@@ -117,7 +148,11 @@ function getDataSource(category){
 		return results;
 }
 
-
+/**
+ * Retrieve a graphicNodes data
+ * @param {number} nodeId - javascript id of the data to retrieve
+ * @returns {object}  element of graphicNodes array or undefined if not found
+ */
 function getGraphicNode(nodeId){
 	for (var j = 0; j < graphicNodes.length; j++) {
 		if(graphicNodes[j].id == nodeId){
@@ -127,7 +162,12 @@ function getGraphicNode(nodeId){
 	return undefined;
 }
 
-// Returns a specific element based on its db ID
+/**
+ * Retrieve a specific data by giving the corresponding name of the array of data and the id
+ * @param {string} dataSource - name of the array of data to retrieve
+ * @param {number} dataId - javascript id of the data to retrieve
+ * @returns {object}  element of the requested array of data or undefined if not found
+ */
 function getDataElt(dataSource, dataId){
 	var source = getDataSource(dataSource);
 	for (var i = 0; i < source.length; i++) {
@@ -146,6 +186,13 @@ function getDataElt(dataSource, dataId){
 /*
 	Modal data injection
 */
+/**
+ * Inject the data provided by data edition modals, into dedicated array of data and HTML
+ * @param {string} elementType - type of the data to inject
+ * @param {number} index - javascript id of the data to retrieve, or -1 if it's a new one
+ * @param {object} element - data to inject
+ * @param {callback} modalCallback - modal specific callback
+ */
 function injectData(elementType, index, element, modalCallback){
 	var dataModel = undefined;
 	if(elementType == 'userInput'){
@@ -176,6 +223,13 @@ function injectData(elementType, index, element, modalCallback){
 	}
 }
 
+/**
+ * Update the HTML with the provided data
+ * @param {string} elementType - type of the data to inject
+ * @param {number} index - html index of the data to inject
+ * @param {object} element - data to inject
+ * @param {callback} modalCallback - modal specific callback to trigger on click
+ */
 function updateHtmlData(elementType, index, element, modalCallback){
 	var selector = '#data-'+elementType+'s',
 		jQueryTiming = 150;
@@ -203,6 +257,15 @@ function updateHtmlData(elementType, index, element, modalCallback){
 /*
 	Database interaction wrapper
 */
+
+/**
+ * Save or update the data into the database
+ * @param {string} dataTable - SQL table name
+ * @param {object} data - data object to save
+ * @param {number} dataId - database id of the data to inject, or undefined if it's a new one
+ * @param {number} foreignKeyId - foreignkey id to use for SQL injection
+ * @param {callback} callback - specific callback to use after save or update
+ */
 function saveData(dataTable, data, dataId, foreignKeyId, callback){
 	if(!dataId){
 		saveElt(dataTable, data, foreignKeyId, callback);
@@ -212,6 +275,12 @@ function saveData(dataTable, data, dataId, foreignKeyId, callback){
 	}
 }
 
+/**
+ * Delete the data from the database
+ * @param {string} dataTable - SQL table name
+ * @param {number} dataId - database id of the data to remove
+ * @param {callback} callback - specific callback to use after remove
+ */
 function deleteData(dataTable, dataId, modalCallback){
 	if(dataId !== undefined){
 		removeElt(dataTable, dataId, function(success){
@@ -239,7 +308,12 @@ function deleteData(dataTable, dataId, modalCallback){
 }
 
 
-// Macro to Retrieve specific section of html code based on common id pattern : id-section-#index
+/**
+ * Macro to Retrieve specific section of html code based on a HTML id starting pattern (ie. <div id='start-with-' [0, 1, 2, 3, 4, etc..])
+ * @param {string} tag - HTML tag name to look for
+ * @param {string} sectionId - starting pattern of the HTML section to retrieve
+ * @returns {object} array of html elements if found or empty array.
+ */
 function retrieveSection(tag, sectionId){
 	var s = [],
 		selector = tag+'[id^="'+sectionId+'"]';

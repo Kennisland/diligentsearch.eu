@@ -3,6 +3,13 @@ REGEX_URL = /(http:\/\/|wwww.)([^ ]*\.)([^ ]*)/g;
 /*
 	Question html
 */
+
+/**
+ * Get the corresponding HTML content of a basic question element
+ * @param {number} decisionTreeId - Id of the decision tree element, used as main div id
+ * @param {object} question - Object to format to html
+ * @returns {string} html content
+ */
 function getQuestionElementHtml(decisionTreeId, question){	
 	var content = '<div id="'+decisionTreeId+'" class="form-group form-question-input">';
 
@@ -39,6 +46,12 @@ function getQuestionElementHtml(decisionTreeId, question){
 	return content;
 }
 
+/**
+ * Get the corresponding HTML content of a numerical question element
+ * @param {number} decisionTreeId - Id of the decision tree element, used as main div id
+ * @param {object} question - Object to format to html
+ * @returns {string} html content for a numerical question
+ */
 function getNumericQuestionElementHtml(decisionTreeId, question){
 	var content = '<div id="'+decisionTreeId+'" class="form-group form-question-numeric">';
 
@@ -70,6 +83,13 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 /*
 	More information handler
 */
+
+/**
+ * Open up the more information pop-up displayling the extra information of a question. If there are URLs inside the information provided, they are formatted to html link tags.
+ * @param {string} information - information to display within the modal
+ * @param {object} question - Object to format to html
+ * @returns {string} html content for a numerical question
+ */
 function moreInfo(information){
 	// Convert new line to br tags and replace url by a tags
 	information = information.replace(/\n/g, ' <br> ');
@@ -81,6 +101,9 @@ function moreInfo(information){
 	$('#form-infoModal').modal('show');
 }
 
+/**
+ * Close the more information pop-up
+ */
 function hideInfo(){
 	$('#form-infoModal-content').html('');
 	$('#form-infoModal').modal('hide');
@@ -90,6 +113,13 @@ function hideInfo(){
 /*
 	Question events
 */
+
+/**
+ * Configure the change event of a text question.
+ * @param {string} htmlId - id of the element within html page
+ * @param {objects} outputs - array of possible outputs of this question
+ * @param {objects} targets - array of possible targets of this question
+ */
 function questionTextEvent(htmlId, outputs, targets){
 	var selector = htmlId+' input';
 	$('#'+selector).on('change', function(){
@@ -105,6 +135,12 @@ function questionTextEvent(htmlId, outputs, targets){
 	setUpWarningModal($('#'+selector));
 }
 
+/**
+ * Configure the change event of a checkbox question.
+ * @param {string} htmlId - id of the element within html page
+ * @param {objects} outputs - array of possible outputs of this question
+ * @param {objects} targets - array of possible targets of this question
+ */
 function questionCheckEvent(htmlId, outputs, targets){
 	var selector = htmlId+' input';
 	$('#'+selector).on('change', function(){
@@ -125,7 +161,12 @@ function questionCheckEvent(htmlId, outputs, targets){
 	setUpWarningModal($('#'+selector));
 }
 
-
+/**
+ * Configure the change event of a list question.
+ * @param {string} htmlId - id of the element within html page
+ * @param {objects} outputs - array of possible outputs of this question
+ * @param {objects} targets - array of possible targets of this question
+ */
 function questionListEvent(htmlId, outputs, targets){
 	var selector = htmlId+' select';
 
@@ -152,6 +193,13 @@ function questionListEvent(htmlId, outputs, targets){
 	});
 }
 
+/**
+ * Configure the change event of a specific user input within a numerical question.
+ * @param {string} htmlId - id of the element within html page
+ * @param {number} htmlIndex - index of the user HTML input to manage
+ * @param {objects} inputs - array of possible inputs of this numerical question
+ * @param {number} inputIdx - index of the user input within the data model to use
+ */
 function questionNumericEvent(htmlId, htmlIndex, inputs, inputIdx){
 	var selector = htmlId+' div';
 	$('#'+selector+' input').eq(htmlIndex).on('change', function(){
@@ -168,6 +216,15 @@ function questionNumericEvent(htmlId, htmlIndex, inputs, inputIdx){
 	setUpWarningModal($('#'+selector+' input').eq(htmlIndex));
 }
 
+/**
+ * Configure the change event of the last user input within a numerical question, which leads to the computation.
+ * @param {string} htmlId - id of the element within html page
+ * @param {number} htmlIndex - index of the user HTML input to manage
+ * @param {objects} inputs - array of possible inputs of this numerical question
+ * @param {number} inputIdx - index of the user input within the data model to use
+ * @param {object} numConfig - numerical configuration of the numerical question
+ * @param {object} targets - list of possible targets
+ */
 function questionNumericDecisionEvent(htmlId, htmlIndex, inputs, inputIdx, numConfig, targets){	
 	var selector = htmlId+' div';
 	$('#'+selector+' input').eq(htmlIndex).on('change', function(){
@@ -185,6 +242,12 @@ function questionNumericDecisionEvent(htmlId, htmlIndex, inputs, inputIdx, numCo
 	setUpWarningModal($('#'+selector+' input').eq(htmlIndex));
 }
 
+/**
+ * Remove a specific user input within a numerical question and reset the value within the data model
+ * @param {string} htmlId - id of the element within html page
+ * @param {objects} inputs - array of possible inputs of this numerical question
+ * @param {number} i - index of the user input to reset within the data model
+ */
 function questionNumericRemoveEvent(htmlId, inputs, i){
 	$('#'+htmlId).on('remove', function(){
 		inputs[i].value = undefined;
@@ -195,6 +258,11 @@ function questionNumericRemoveEvent(htmlId, inputs, i){
 /*
 	Warning modal handler
 */
+
+/**
+ * Configure a warning modal for html input tags to warn a user who wants to change a field value
+ * @param {objects} element - element the user has clicked on
+ */
 function setUpWarningModal(element){
 	element.on('click', function(event){
 		if(element.val() != "" ){
@@ -238,6 +306,10 @@ function setUpWarningModal(element){
 	});
 }
 
+/**
+ * Configure a warning modal for html select tags to warn a user who wants to change a field value
+ * @param {objects} element - element the user has clicked on
+ */
 function setUpListWarningModal(element){
 	element.blur();
 
@@ -268,6 +340,13 @@ function setUpListWarningModal(element){
 /*
 	Block HTML / onCLick stuff
 */
+/**
+ * Get the corresponding HTML content of a block of questions
+ * @param {number} decisionTreeId - Id of the decision tree element, used as main div id
+ * @param {object} block - Object to format to html
+ * @param {number} blockIndex - Index of the current block, used to differenciate multiple same blocks
+ * @return {string} content - html content
+ */
 function getBlockElementHtml(decisionTreeId, block, blockIndex){
 	var content = '<div id="'+decisionTreeId+'" class="form-group form-block-header">';
 		content += '<label>'+block.introduction+'</label>';
@@ -288,6 +367,12 @@ function getBlockElementHtml(decisionTreeId, block, blockIndex){
 	return content;
 }
 
+/**
+ * Get the corresponding HTML content of questions contained within a block
+ * @param {object} questions - list of question to retrieve the content
+ * @param {number} innerBlockId - id of the parent block, used for id generation of inner questions
+ * @return {string} content - html content
+ */
 function getBlockQuestionElementHtml(questions, innerBlockId){
 	var content = '';
 	questions.map(function(dataId){		
@@ -326,6 +411,10 @@ function getBlockQuestionElementHtml(questions, innerBlockId){
 	return content;
 }
 
+/**
+ * Configure the change event for questions within a block
+ * @param {number} blockId - id of the block
+ */
 function bindBlockQuestionsToValue(blockId){
 	// Handle input (text & chockbox)
 	$('#'+blockId+' input').on('change', function(){
@@ -358,7 +447,12 @@ function bindBlockQuestionsToValue(blockId){
 	});
 }
 
-// Work only on direct a child of the block
+/**
+ * Configure the button to get an additional same block
+ * @param {number} blockId - id of the block to dupplicate
+ * @param {object} questions - list of questiosn to dupplicate
+ * @param {number} index - index of the future dupplicated block
+ */
 function bindAddBlock(blockId, questions, index){
 	// Half global function for this variable
 	blockIdx = index;
@@ -367,18 +461,24 @@ function bindAddBlock(blockId, questions, index){
 	});
 }
 
-function addBlock(questions, nodeId, index){
-	var innerBlockId 	= nodeId+'-'+index;
+/**
+ * Configure the fonctionnality to add a block
+ * @param {object} questions - list of questiosn to dupplicate
+ * @param {number} blockId - id of the html main block
+ * @param {number} blockIdx - index of the block to add
+ */
+function addBlock(questions, blockId, blockIdx){
+	var innerBlockId 	= blockId+'-'+blockIdx;
 		htmlContent = '<div class="form-block">';		
 		htmlContent += getBlockQuestionElementHtml(questions, innerBlockId);
 		htmlContent += '</div>';
 
-	var selector = nodeId+' div.form-block',
-		selectorIdx = index-1;
+	var selector = blockId+' div.form-block',
+		selectorIdx = blockIdx-1;
 
 	$('#'+selector).eq(selectorIdx).after(htmlContent);
-	bindBlockQuestionsToValue(nodeId);
-	bindAddBlock(questions, nodeId, index+1);
+	bindBlockQuestionsToValue(blockId);
+	bindAddBlock(questions, blockId, blockIdx+1);
 }
 
 
@@ -390,6 +490,13 @@ function addBlock(questions, nodeId, index){
 /*
 	Result 
 */
+
+/**
+ * Get the corresponding HTML content of result
+ * @param {number} decisionTreeId - id of the result in the decision tree
+ * @param {object} result - object to format to html
+ * @return {string} content - html content
+ */
 function getResultElementHtml(decisionTreeId, result){
 	var content = '<div id="'+decisionTreeId+'" class="form-group">';
 	content += '<p class="form-result">Result:<br>'+result.content+'</p>';

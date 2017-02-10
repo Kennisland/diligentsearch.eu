@@ -6,7 +6,11 @@
 		graphic model cleaning
 	
 */
-// Create a new node with the given ID
+
+/**
+ * Create a new node with the given ID
+ * @param {string} id - id of the node to create
+ */
 function createGraphicNode(id){
 	graphic.setNode(id, {
 		labelType: 'html',
@@ -20,7 +24,9 @@ function createGraphicNode(id){
 	});
 }
 
-// Ensure there is no orphan nodes drawn
+/**
+ * Remove orphan graphical nodes from the displayed graph
+ */
 function  cleanUpGraph(){
 	graphic.nodes().forEach(function(id){
 
@@ -40,7 +46,12 @@ function  cleanUpGraph(){
 }
 
 
-// Externally called by node-config-modal.js
+
+/**
+ * Inject the data within the graphicNode data model and configure its display within the graph
+ * @param {number} index - index used for insertion within javascript data model, equals -1 if new one
+ * @param {object} graphicNodeElt - element to inject within graphicNodes array
+ */
 function injectGraphicNodeData(index, graphicNodeElt){
 	if(index != -1){
 		graphicNodes[index] = graphicNodeElt;
@@ -59,7 +70,10 @@ function injectGraphicNodeData(index, graphicNodeElt){
 	customRender();
 }
 
-// Update graphic, take care of block case, generate outputs
+/**
+ * Configure the graphical aspect of a node
+ * @param {object} graphicNodeElt - element to use for the configuration
+ */
 function setUpGraphicNode(graphicNodeElt){
 	formatNodeLabel(graphicNodeElt.id, graphicNodeElt.dataName);
 	styleGraphicNode(graphicNodeElt.category, graphicNodeElt.id);
@@ -96,7 +110,12 @@ function setUpGraphicNode(graphicNodeElt){
 	}
 }
 
-// Create a child node of parentNodeId
+
+/**
+ * Create a child empty node
+ * @param {string} parentNodeId - Graphical id of the parent node
+ * @return {string} childId - Graphical id of the child node
+ */
 function createChildNode(parentNodeId){
 	// Extract id components
 	var raw = parentNodeId.split('_'),
@@ -121,6 +140,11 @@ function createChildNode(parentNodeId){
 
 
 // Create a node, representing a block element
+/**
+ * Create a node, representing a block element
+ * @param {string} blockNodeId - Graphical id of the parent block node
+ * @param {number} blockNodeDataId - id of the block element within the javascript data model
+ */
 function setNewGraphicBlock(blockNodeId, blockNodeDataId){
 
 	// Register a parent node, which will help graphical identification of the block
@@ -174,7 +198,11 @@ function setNewGraphicBlock(blockNodeId, blockNodeDataId){
 
 */
 
-// Customize graphical nodes aspect
+/**
+ * Configure the style of the graphical node
+ * @param {string} category - array of data of the data represented within the graphical node to display
+ * @param {string} nodeId - Graphical id of the node to configure
+ */
 function styleGraphicNode(category, nodeId){
 	if(category == "result"){
 		graphic.node(nodeId).style += 'stroke-width: 4;';
@@ -184,7 +212,12 @@ function styleGraphicNode(category, nodeId){
 	}
 }
 
-// Replace '_' by newLine HTML tags
+
+/**
+ * Replace '_' by HTML newLine tags : <br>
+ * @param {string} category - array of data of the data represented within the graphical node to display
+ * @param {string} dataName - original short name of the element represented within the graphical node to display
+ */
 function formatNodeLabel(nodeId, dataName){
 	var labelText = '<div style="text-align: center; width: 150px; padding: 5px">';
 	labelText += dataName.replace(/(_|\s+)/g, '<br>');
@@ -199,18 +232,35 @@ function formatNodeLabel(nodeId, dataName){
 
 */
 
-// Points to an existing node and remove the edge Number i and the node if no predecessors
+/**
+ * Create an edge labelized between two nodes
+ * @param {string} originId - Graphical id of the parent node
+ * @param {string} targetId - Graphical id of the target node
+ * @param {string} edgeLabel - label of the edge
+ */
 function targetGraphicNode(originId, targetId, edgeLabel){
 	graphic.setEdge(originId, targetId, {label:edgeLabel});
 }
 
-// Inject a graphicelement at a given position
+
+/**
+ * Inject a graphicelement at a given position
+ * @param {number} index - Index to insert the element
+ * @param {object} graphicNodeElt - GraphicNode element to inject
+ */
 function reinjectDeletedGraphicNode(index, graphicNodeElt){
 	graphicNodes.splice(index, 0, graphicNodeElt);
 }
 
 
-// Get parents recursively, to get all ascendance
+
+/**
+ * Get parents recursively, to get all ascendance
+ * @param {string} nodeId - graphical node id to delete
+ * @param {object} nodeList - List of nodes that are parents
+ * @param {number} depth - Depth of recursive call, defaults to 0
+ * @return {object} nodeList - list of parents
+ */
 function recursiveParents(nodeId, nodeList, depth){
 	// Push current element
 	nodeList.push(nodeId);
@@ -230,7 +280,11 @@ function recursiveParents(nodeId, nodeList, depth){
 }
 
 
-// Disconnect a node from its children
+
+/**
+ * Disconnect a node from its children
+ * @param {string} nodeId - graphical node id of the parent node
+ */
 function disconnectChildren(nodeId){	
 	
 	// Retrieve parents id and their labels connecting the node we want to refresh
@@ -262,7 +316,12 @@ function disconnectChildren(nodeId){
 	});
 }
 
-// Returns the label used on the edge linking parentId to nodeId
+
+/**
+ * Returns the label used on the edge linking two nodes
+ * @param {string} parentId - graphical node id of the parent node
+ * @param {string} nodeId - graphical node id of the current node
+ */
 function getInEdgeLabel(parentId, nodeId){
 	var	parentNode = getGraphicNode(parentId);
 	if(parentNode){
@@ -294,12 +353,20 @@ function getInEdgeLabel(parentId, nodeId){
 
 */
 
-// Remove the node and its children if they have no other parents
+/**
+ * Remove recursively a node
+ * @param {string} nodeId - graphical node id to remove
+ */
 function deleteGraphicNode(nodeId){
 	recursiveDelete(nodeId, 0);
 	customRender();
 }
 
+/**
+ * Remove the node and its children if they have no other parents
+ * @param {string} nodeId - graphical node id to remove
+ * @param {number} depth - Depth of recursive call, defaults to 0
+ */
 function recursiveDelete(nodeId, depth){
 	// Child node, with at least 2 parents : don't delete it
 	if(depth != 0 && graphic.predecessors(nodeId).length > 1){
@@ -324,7 +391,11 @@ function recursiveDelete(nodeId, depth){
 }
 
 
-// For all predecessors, remove the question which points to the node identified by nodeId
+
+/**
+ * Remove the edges pointing to a specific node
+ * @param {string} nodeId - graphical node id pointed by edges
+ */
 function resetParentTargets(nodeId){
 	graphic.predecessors(nodeId).map(function(parentId){
 		// Look for this parent in the model and its targets
@@ -338,7 +409,11 @@ function resetParentTargets(nodeId){
 	});
 }
 
-// Remove the elt from the data model, and from the decision tree
+
+/**
+ * Remove a graphical element from the data model, and from the graphical display
+ * @param {string} nodeId - graphical node id to remove
+ */
 function removeGraphicNodeElt(nodeId){
 	var nodeIndex = graphic.node(nodeId).index;
 	if(nodeIndex !== undefined){
@@ -369,6 +444,11 @@ function removeGraphicNodeElt(nodeId){
 	Database interaction
 	
 */
+
+
+/**
+ * Save the decision tree constructed within the database
+ */
 function saveDecisionTree(){
 	// Get the data, but remove dataName, has it can change easily
 	var toSave = graphicNodes;
@@ -395,8 +475,10 @@ function saveDecisionTree(){
 	}
 }
 
-// Load DecisionTree from database
-// Called from data-editor, as it requires the entire basic data model
+
+/**
+ * Load the decision tree of a specific type of work from the database and display it
+ */
 function getDecisionTree(){
 	$.when(ajaxGetElt('DecisionTree', selectedWork.id)).then(
 		function(decisionTree){
@@ -418,7 +500,12 @@ function getDecisionTree(){
 	);
 }
 
-// Load element from the database json format
+
+/**
+ * Load the graphical display of a decision tree element
+ * @param {object} node - GraphicNode element to display
+ * @param {number} idx - Index of the graphicNode element for click bindings
+ */
 function loadGraphicalNodeData(node, idx){
 	createGraphicNode(node.id);
 	node.targets.forEach(function(targetId){

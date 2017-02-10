@@ -1,11 +1,19 @@
 /*
 	New / Loading stuff
 */
+
+/**
+ * Initiate a new diligent search
+ */
 function newSearch(){
 	$('#form-menu').hide();
 	injectFormRenderer();
 }
 
+
+/**
+ * Retrieve a previous research, by giving its reference and optionnaly its version. Load dyamically hmtl content.
+ */
 function getSearch(){
 	// Get the web hook provided by user
 	var hook = $('#search-hook').val();
@@ -78,8 +86,9 @@ function getSearch(){
 		});
 }
 
-// Load the form data setp by step into the html
-// The loadElement function is silently triggered after insertion of each value
+/**
+ * Load the form data step by step, and triggering 'change' event after each insertion, to get further input via the loadElement function
+ */
 function loadSearch(){
 
 	setTimeout(function(){
@@ -133,6 +142,10 @@ function loadSearch(){
 /*
 	HTML injection
 */
+/**
+ * Load a decision tree element into the HTML page
+ * @param {number} [id=ROOT_NODE_ID] - id of the decision tree element to display
+ */
 function loadElement(id){
 	if(!id){
 		id = ROOT_NODE_ID;
@@ -144,6 +157,10 @@ function loadElement(id){
 	}
 }
 
+/**
+ * Retrieve a decisionTree element
+ * @param {number} id - id of the decision tree element to retrieve
+ */
 function getDecisionTreeElement(id){
 	for (var i = 0; i < decisionTree.length; i++) {
 		if(decisionTree[i].id == id){
@@ -154,7 +171,10 @@ function getDecisionTreeElement(id){
 }
 
 
-// Inject HTML and bind events on injected html
+/**
+ * Inject corresponding HTML and bind events for a specific decision tree element
+ * @param {object} nodeElt - decision tree element to display
+ */
 function generateElementHtml(nodeElt){
 	var htmlContent = '',
 		eltToDisplay = getDataElt(nodeElt.category, nodeElt.dataId);
@@ -189,7 +209,11 @@ function generateElementHtml(nodeElt){
 	HTML Jquery event / remove / hide / show
 */
 
-// Specific question binding according to question type
+/**
+ * Generic question binding according to question type
+ * @param {object} nodeElt - decision tree element to display
+ * @param {object} eltToDisplay - data model element corresponding to the decision tree element
+ */
 function bindQuestionToTarget(nodeElt, eltToDisplay){
 	var targets	= nodeElt.targets,
 		type 	= eltToDisplay.type,
@@ -211,6 +235,13 @@ function bindQuestionToTarget(nodeElt, eltToDisplay){
 }
 
 //Numeric question binding, allowing direct computation if possible
+
+/**
+ * Numeric question binding, allowing direct computation if possible
+ * @param {object} nodeElt - decision tree element to display
+ * @param {object} eltToDisplay - data model element corresponding to the decision tree element
+ * @param {object} targets - array of targets to use for the given nodeElt
+ */
 function bindNumericQuestionToTarget(nodeElt, eltToDisplay, targets){
 	var numConfig 	= eltToDisplay.numerical,
 		inputs 		= extractExpression(numConfig.expression).inputs,
@@ -244,7 +275,11 @@ function bindNumericQuestionToTarget(nodeElt, eltToDisplay, targets){
 	}
 }
 
-// Handle the following element when 'change' Jquery event is triggered in html
+/**
+ * Handle the following question element when 'change' Jquery event is triggered in html
+ * @param {number} toFollow - id of the decision tree element to load
+ * @param {object} targets - array of targets to remove if they are displayed
+ */
 function handleFollowers(toFollow, targets){
 	removeTargetsElement(targets);	
 	if(toFollow){
@@ -252,7 +287,11 @@ function handleFollowers(toFollow, targets){
 	}
 }
 
-// Recursively remove given targets
+
+/**
+ * Recursively remove given list of decision tree elements if they are displayed in HTML
+ * @param {object} targets - array of targets to remove 
+ */
 function removeTargetsElement(targets){
 	targets.map(function(id){		
 		// Launch recursion on targets of the given analyzed target
@@ -266,7 +305,12 @@ function removeTargetsElement(targets){
 	});
 }
 
-// Get targets of the given node
+
+/**
+ * Retrieve targets of a given decision tree element
+ * @param {number} nodeId - javascript id of the decisionTree element
+ * @param {object} list of targets if element is found, empty list otherwise
+ */
 function getTargets(nodeId){
 	for (var i = 0; i < decisionTree.length; i++) {
 		if(decisionTree[i].id == nodeId){
@@ -276,13 +320,23 @@ function getTargets(nodeId){
 	return [];
 }
 
-// Display following user input element
+
+/**
+ * Display following user input element for a numerical question
+ * @param {string} selector - jQuery selector of the numerical element ot display
+ * @param {number} inputIdx - index of the current displayed element, to compute the next one
+ */
 function showNextInputElement(selector, inputIdx){
 	var next = inputIdx + 1;
 	$('#'+selector).eq(next).show();
 }
 
-// Hide following user inputs
+/**
+ * Hide following user input element for a numerical question
+ * @param {string} selector - jQuery selector of the numerical element ot display
+ * @param {number} inputIdx - index of the current displayed element
+ * @param {number} inputsLength - number of elements possibly visible, and must be hidden
+ */
 function hideInputsElement(selector, inputIdx, inputsLength){
 	var next = inputIdx + 1;
 	while(next < inputsLength){
@@ -296,6 +350,11 @@ function hideInputsElement(selector, inputIdx, inputsLength){
 /* 
 	Numerical question stuff
 */
+/**
+ * Get the index of the  last element to compute for a specific numerical question
+ * @param {object} inputs - array of inputs required by a numerical question
+ * @return {number} lastToCompute - index of last element, -1 if not found
+ */
 function getLastToCompute(inputs){
 	var lastToCompute = -1;
 	for(var i=0; i<inputs.length; i++){
@@ -306,6 +365,11 @@ function getLastToCompute(inputs){
 	return lastToCompute;
 }
 
+/**
+ * Extract the expression that needs to be computed for a numerical question
+ * @param {string} expression - numerical expression to compute
+ * @return {object} inputs and references used within the expression are sorted
+ */
 function extractExpression(expression){
 	var usedInputs = [],
 		usedReferences = [];
@@ -320,6 +384,12 @@ function extractExpression(expression){
 	return {inputs:usedInputs, references:usedReferences};
 }
 
+/**
+ * Extract and evaluate the expression corresponding to a numerical question
+ * @param {object} inputs - array of inputs required by the numerical question
+ * @param {object} numConfig - numerical configuration of question
+ * @return {boolean} result of the computation, either true or false
+ */
 function evalExpression(inputs, numConfig){
 	var	ref = getReference(numConfig.refId),
 		condition  = numConfig.condition,
@@ -350,6 +420,11 @@ function evalExpression(inputs, numConfig){
 	return eval(exp);
 }
 
+/**
+ * Convert a numerical result boolean to target index 
+ * @param {boolean} result - result of a numerical computation
+ * @return {number} 0 if true, 1 therwise
+ */
 function evalResultToTargetIdx(result){
 	var targetIdx = result ? 0 : 1;
 	return targetIdx
@@ -361,7 +436,10 @@ function evalResultToTargetIdx(result){
 	Form dumping 
 */
 
-// Retrieve all id starting by 'lvl_'
+/**
+ * Retrieve all id starting by 'lvl_'
+ * @return {object} list of corresponding id
+ */
 function getHtmlId(){
 	var elementsId = [];
 	$('#work-data-selected').find('[id^="lvl_"]').map(function(elt){
@@ -370,6 +448,12 @@ function getHtmlId(){
 	return elementsId;
 }
 
+
+/**
+ * Retrieve a question by giving the retrieved html id
+ * @param {string} id - html id to parse for retrieving the data element id
+ * @param {object} element - decision tree element
+ */
 function getQuestionFromHtmlId(id, element){
 	var dataId = undefined;
 	if(element){
@@ -382,6 +466,11 @@ function getQuestionFromHtmlId(id, element){
 	return getDataElt('question', dataId);
 }
 
+/**
+ * Retrieve the answer given by a user for a given question
+ * @param {string} id - html id
+ * @param {object} question - data question
+ */
 function extractQuestionHtmlAnswer(id, question){
 	var value;
 	if(question.type == 'text' || question.type == 'check'){
@@ -399,7 +488,9 @@ function extractQuestionHtmlAnswer(id, question){
 	return value;
 }
 
-// For each id, get interest child element (input/select/p), and get value
+/**
+ * Dump the html form to get the corresponding data
+ */
 function dumpHtmlForm(){
 	var language = $('#choose-lg').val(),
 		formData = [];
@@ -425,11 +516,21 @@ function dumpHtmlForm(){
 	return {'lg':language, 'formData':formData};
 }
 
+
+/**
+ * Create a new form entry for save purpose
+ * @constructor()
+ * @param {string} htmlId
+ * @param {string} value
+ */
 function FormEntry(htmlId, value){
 	this.htmlId = htmlId;
 	this.value 	= value;
 }
 
+/**
+ * Dump the form and save it into the databases
+ */
 function saveForm(){
 	var workId = $('#choose-work').val();
 	dumpedForm.json = dumpHtmlForm();
@@ -463,6 +564,11 @@ function saveForm(){
 /*
 	PDF stuff
 */
+
+/**
+ * Bind the html manipulation to enable a correct pdf generation
+ * @param {object} element - element on which an jQuery event has been triggered
+ */
 function bindHtmlForPdf(element){
 	// Bind value
 	element.attr("value", element.val());
@@ -479,6 +585,10 @@ function bindHtmlForPdf(element){
 	}
 }
 
+/**
+ * Get a random key of 8 alphanumerical characters
+ * @param {string} text - random key
+ */
 function getRandomKey(){
 	var text = "";
 	var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -487,7 +597,9 @@ function getRandomKey(){
 	return text;
 }
 
-
+/**
+ * Print a pdf version of the html data
+ */
 function printPDF(){
 	var htmlContent = $('#work-data-selected').html();
 	ajaxPrintPdf(htmlContent, getRandomKey());
