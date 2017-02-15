@@ -12,6 +12,8 @@ It also implies that you have an apache configuration running up.
 If you encounter some trouble with the apache configuration, please refer to the readme inside the app folder.
 You can also look at the provided apache configuration file 002wordpress.conf and adapt it to your environment.
 
+*Especially the proxy pass address should match the address of the nodeJs server !*
+
 
 
 ## Configuration

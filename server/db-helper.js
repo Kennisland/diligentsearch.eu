@@ -40,8 +40,10 @@ function handle_get_request(req, res, connection){
 	var currentTable = req.query.table;
 
 	// Stop condition
-	if(!currentTable)
+	if(!currentTable){
+		res.json({"code" : 200, "status" : 'Missing currentTable argument'});
 		return;
+	}
 
 	// Callbacks
 	function defaultCallback(err, rows){
