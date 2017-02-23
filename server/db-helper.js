@@ -24,10 +24,10 @@ var handle_database = function(req,res) {
 		}
 
 		// nb : both req.query / req.body exist and equal at least {} (empty object)
-		if(req.query){
+		if(req.method == 'GET'){
 			handle_get_request(req, res, connection);
 		}
-		if(req.body){
+		if(req.method == 'POST'){
 			handle_post_request(req, res, connection);
 		}
 	});
@@ -55,6 +55,9 @@ function handle_get_request(req, res, connection){
 			res.json(err);
 		}
 	}
+
+
+	console.log('currentTable : ', currentTable);
 
 	// Define request arguments
 	var q = "",
@@ -140,14 +143,16 @@ function handle_post_request(req, res, connection){
 	var currentTable = req.body.table;
 
 	// Stop condition
-	if(!currentTable)
+	if(!currentTable){
+		res.json({"code" : 200, "status" : 'Missing currentTable argument'});
 		return;
+	}
 
 	// Callback
 	function defaultCallback(err, rows){
 		connection.release();
 		if(!err){			
-			console.log(currentTable, rows);
+			console.log('default', currentTable, rows);
 			res.json(rows);
 		}else{
 			res.json(err);
@@ -197,7 +202,7 @@ function handle_post_request(req, res, connection){
 			params.push(req.body.json);
 			cb = function(err, rows){
 				connection.release();
-				console.log(err, rows);
+				console.log('custom', err, rows);
 				if(!err){
 					rows.webHook = webHook;
 					res.json(rows);
@@ -238,10 +243,12 @@ function handle_post_request(req, res, connection){
 	}
 
 	if(error != ""){
+		console.log('ERROR detected');
 		res.json({"code" : 400, "error" : error});	
 		return;
 	}
 
+	console.log('allright');
 	connection.query(q, params, cb);
 }
 
