@@ -237,7 +237,7 @@ function updateHtmlData(elementType, index, element, modalCallback){
 	function updateInnerHtmlData(){
 		$(selector+' li:nth-child('+index+')').attr('id', 'data-'+elementType+'s-'+element.id);
 		$(selector+' li:nth-child('+index+')').text(element.name);
-		$(selector+' li:nth-child('+index+')').click(function(){
+		$(selector+' li:nth-child('+index+')').off().on('click', function(){
 			modalCallback(index-1, element);
 		});
 	}
