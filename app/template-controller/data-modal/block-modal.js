@@ -200,9 +200,10 @@ function configQuestionComplete(i){
 		minLength: 0,
 		autocomplete: true,
 		source: function(request, response){
+			var search = request.term;
 			response($.map(questions, function(value, key){
-				return {
-					label: value.name
+				if(value.name.substr(0, search.length) == search){
+					return { label: value.name	}
 				}
 			}));
 		},
