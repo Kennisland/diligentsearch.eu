@@ -37,10 +37,13 @@ html_question = `
 				</div>
 
 				<div id="question-output-block" class="form-group">
-					<label>Default outputs : </label>
+					<label style="float:left">Default outputs : </label>
+					<div id="question-output-management" style="float:right" >				
+						<button id="addAnswer" type="button">+</button>
+						<button id="delAnswer" type="button">-</button>
+					</div>
 
-					<div style="overflow:auto;">
-						<div style="float:left; width:70%; margin-left:3%">
+					<div style="overflow:auto; width:100%; margin-left:3%">
 							<table class"table table-responsive table-bordered table-stripped" style="width:100%">
 								<thead>
 									<th style="width:10%; text-align:center">#</th>
@@ -49,11 +52,6 @@ html_question = `
 								<tbody id="question-output">
 								</tbody>
 							</table>
-						</div>
-						<div id="question-output-management" style="float:right" >				
-							<button id="addAnswer" type="button">+</button>
-							<button id="delAnswer" type="button">-</button>
-						</div>
 					</div>
 				</div>
 

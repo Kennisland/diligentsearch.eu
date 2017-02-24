@@ -21,25 +21,24 @@ html_block = `
 				</div>
 
 				<div id="block-questions" class="form-group">
-					<label>Questions contained within this block : </label>
+					<label style="float-left">Questions contained within this block : </label>
+					<div id="block-questions-management" style="float:right" >				
+						<button id="addQuestion" type="button">+</button>
+						<button id="delLastQuestion" type="button">-</button>
+					</div>
+					
 
-					<div style="overflow:auto;">
-						<div style="float:left; width:70%; margin-left:3%">
-							<table class"table table-responsive table-bordered table-stripped" style="width:100%">
-								<thead>
-									<th style="width:10%;	min-width:10%;	max-width:10%; text-align:center">#</th>
-									<th style="width:25%;	min-width:25%;	max-width:25%; text-align:center">Type</th>
-									<th style="width:60%;	min-width:60%;	max-width:60%; text-align:center">Question</th>
-									<th style="width:5%;	min-width:5%;	max-width:5%;  text-align:center"></th>
-								</thead>
-								<tbody id="block-questions-selection">
-								</tbody>
-							</table>
-						</div>
-						<div id="block-questions-management" style="float:right" >				
-							<button id="addQuestion" type="button">+</button>
-							<button id="delLastQuestion" type="button">-</button>
-						</div>
+					<div style="overflow:auto; width:100%; margin-left:3%">
+						<table class"table table-responsive table-bordered table-stripped" style="width:100%">
+							<thead>
+								<th style="width:10%;	min-width:10%;	max-width:10%; text-align:center">#</th>
+								<th style="width:25%;	min-width:25%;	max-width:25%; text-align:center">Type</th>
+								<th style="width:60%;	min-width:60%;	max-width:60%; text-align:center">Question</th>
+								<th style="width:5%;	min-width:5%;	max-width:5%;  text-align:center"></th>
+							</thead>
+							<tbody id="block-questions-selection">
+							</tbody>
+						</table>
 					</div>
 				</div>
 
@@ -74,14 +73,12 @@ function loadBlock(index, blockElt){
 	$('#block-introduction').val(blockElt.introduction);
 
 	for (var i = 0; i < blockElt.questions.length; i++) {
-
-		console.log("Block : adding question");
-
 		// There is always a 'default' question, so avoid to add one on the first iteration
 		if(i != 0){
 			addQuestion();			
 		}
 		var idx = blockElt.questions[i];
+
 		for (var j = 0; j < questions.length; j++) {
 			if(idx == questions[j].id){
 				var q = questions[j];
@@ -92,7 +89,6 @@ function loadBlock(index, blockElt){
 			}
 		}
 	}
-
 	$('#add-blockModal').modal('show');
 }
 
@@ -115,7 +111,10 @@ function dumpBlock(){
 		nbQuestions = $('#block-questions-selection > tr').length;
 
 	for (var i = 0; i < nbQuestions; i++) {
-		block.questions.push($('#block-questions-selection-id-'+i).val());
+		var questionId = $('#block-questions-selection-id-'+i).val();		
+		if(questionId != ''){
+			block.questions.push(questionId);			
+		}
 	}
 
 
@@ -204,9 +203,10 @@ function configQuestionComplete(i){
 		minLength: 0,
 		autocomplete: true,
 		source: function(request, response){
+			var search = request.term;
 			response($.map(questions, function(value, key){
-				return {
-					label: value.name
+				if(value.name.substr(0, search.length) == search){
+					return { label: value.name	}
 				}
 			}));
 		},

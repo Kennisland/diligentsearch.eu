@@ -6,6 +6,12 @@ pdfPrintingUrl 	= apiAccessUrl+'/print';
 /*
 	Translation stuff
 */
+
+
+/**
+ * Retrieve languages available for a given jurisdiction
+ * @returns {json} Response of server, either success or error
+ */
 function ajaxGetLanguages(){
 	return $.ajax({
 		type:"GET",
@@ -21,6 +27,11 @@ translation = {
 	useCountry : undefined,
 	useTranslation : undefined
 };
+
+/**
+ * Set the file country to use for translation
+ * @param {string} c - country file name without '.json' extension
+ */
 function ajaxSetCountry(c){
 	if( c == ""){
 		translation.useCountry = undefined;
@@ -30,6 +41,10 @@ function ajaxSetCountry(c){
 	}
 }
 
+/**
+ * Set the translation to use in a given file country
+ * @param {string} t - Translation to use within the country file used for translation
+ */
 function ajaxSetTranslation(t){
 	if(t == ""){
 		translation.useTranslation = undefined;
@@ -44,24 +59,67 @@ function ajaxSetTranslation(t){
 
 
 
+
+
+
+
+
+
+
 /*
 	Helper functions
 */
+
+/**
+ * Check if given SQL table is 'Country' or 'Work'
+ * @params {string] table - SQL Table name}
+ * @return {boolean}
+ */
 function isCountryOrWork(table){
 	return table == 'Country' || table == 'Work';
 }
 
+/**
+ * Check if given SQL table is a "primary" table : 'SharedUserInput', 'SharedRefValue', 'Question', 'Block' or 'Result'
+ * @params {string] table - SQL Table name}
+ * @return {boolean}
+ */
 function isPrimaryData(table){
 	return table == 'SharedUserInput' || table == 'SharedRefValue' || table == 'Question' || table == 'Block' || table == 'Result';
 }
 
+/**
+ * Check if given SQL table is 'DecisionTree'
+ * @params {string] table - SQL Table name}
+ * @return {boolean}
+ */
 function isDecisionTree(table){
 	return table == 'DecisionTree';
 }
 
+/**
+ * Check if given SQL table is 'Form'
+ * @params {string] table - SQL Table name}
+ * @return {boolean}
+ */
 function isForm(table){
 	return table == 'Form';
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -69,7 +127,10 @@ function isForm(table){
 	Specific getter
 */
 
-
+/**
+ * Retrieve countries list
+ * @return {json} response of server, either success or error
+ */
 function ajaxGetCountries(){
 	return $.ajax({
 		type:"GET",
@@ -81,6 +142,11 @@ function ajaxGetCountries(){
 	});
 }
 
+/**
+ * Retrieve works list for a given country
+ * @param {number} countryId - country id for SQL research
+ * @return {json} response of server, either success or error
+ */
 function ajaxGetWorks(countryId){
 	return $.ajax({
 		type:"GET",
@@ -92,6 +158,11 @@ function ajaxGetWorks(countryId){
 	});
 }
 
+/**
+ * Retrieve specific work by giving its id
+ * @param {number} workId - work id for SQL research
+ * @return {json} response of server, either success or error
+ */
 function ajaxGetWorkById(workId){
 	return $.ajax({
 		type:"GET",
@@ -105,9 +176,29 @@ function ajaxGetWorkById(workId){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 	Form ajax handler
 */
+
+/**
+ * Retrieve specific form by giving its reference and its version
+ * @param {string} webHook - reference of the form
+ * @param {number} version version of the form
+ * @return {json} response of server, either success or error
+ */
 function ajaxGetForm(webHook, version){
 	return $.ajax({
 		type:"GET",
@@ -119,8 +210,14 @@ function ajaxGetForm(webHook, version){
 	});
 }
 
+/**
+ * Insert a form within the database
+ * @param {object} form - form object to insert
+ * @param {number} foreignKey - form SQL foreign key : work id
+ * @param {callback} callback - function to execute on success or error
+ */
 function ajaxPutForm(form, foreignKey, callback){
-	console.log("injecting form", dbAccessUrl);
+	console.log("injecting form", dbAccessUrl, form);
 	$.when(ajaxInsertElt('Form', form.json, foreignKey)).then(
 		function(result){
 			form.webHook = result.webHook;
@@ -132,9 +229,14 @@ function ajaxPutForm(form, foreignKey, callback){
 	);
 }
 
-
+/**
+ * Update a form within the database
+ * @param {object} form - form object to update
+ * @param {number} foreignKey - form SQL foreign key : work id
+ * @return {json} response of server, either success or error
+ */
 function ajaxUpdateForm(form, foreignKey){
-	console.log("Updating form", dbAccessUrl);
+	console.log("Updating form", dbAccessUrl, form);
 	return $.ajax({
 		type: 'POST', 
 		url: dbAccessUrl,
@@ -143,7 +245,7 @@ function ajaxUpdateForm(form, foreignKey){
 			foreignKeyId: foreignKey,
 			update: true,
 			webHook: form.webHook,
-			json:JSON.stringify(form.json)
+			value:JSON.stringify(form.json)
 		},
 		error: function(error){
 			console.log("ERROR ajaxUpdateForm : element ", eltId, " not removed from ", table, " - ", error.status);
@@ -154,6 +256,13 @@ function ajaxUpdateForm(form, foreignKey){
 /*
 	PDF printing handler
 */
+
+/**
+ * Send html data to the server for a pdf generation
+ * @params {string} htmlContent - html content to print
+ * @params {string} key - future name of the pdf to download
+ * @returns {json} response of server, either success or error
+ */
 function ajaxPrintPdf(htmlContent, key){
 	$.ajax({
 		type:"POST",
@@ -179,9 +288,25 @@ function ajaxPrintPdf(htmlContent, key){
 
 
 
+
+
+
+
+
+
+
+
+
 /*
 	Generic element manipulation handler
 */
+
+/**
+ * Get a database generic element
+ * @params {string} table - SQL table name
+ * @params {number} foreignKey - SQL foreign key to use for the given SQL table
+ * @returns {json} response of server, either success or error
+ */
 function ajaxGetElt(table, foreignKey){
 	if( isDecisionTree(table) || isPrimaryData(table)){
 		return $.ajax({
@@ -203,6 +328,13 @@ function ajaxGetElt(table, foreignKey){
 	}
 }
 
+/**
+ * Wrapper to save a database generic element
+ * @params {string} table - SQL table name
+ * @params {object} elt - element to save into database
+ * @params {number} foreignKey - SQL foreign key to use for the given SQL table
+ * @params {callback} callback - function to execute on success or error
+ */
 function saveElt(table, elt, foreignKey, callback){
 	if( isDecisionTree(table) ){
 		$.when(ajaxInsertElt(table, elt, foreignKey)).then(
@@ -243,6 +375,13 @@ function saveElt(table, elt, foreignKey, callback){
 	}
 }
 
+
+/**
+ * Wrapper to update a database generic element
+ * @params {string} table - SQL table name
+ * @params {object} elt - element to save into database
+ * @params {callback} callback - function to execute on success or error
+ */
 function updateElt(table, elt, callback){
 	if( isForm(table) ){
 		$.when(ajaxUpdateForm(elt)).then(
@@ -280,6 +419,12 @@ function updateElt(table, elt, callback){
 	}
 }
 
+/**
+ * Wrapper to remove a database generic element
+ * @params {string} table - SQL table name
+ * @params {number} eltId - element SQL id
+ * @params {callback} callback - function to execute on success or error
+ */
 function removeElt(table, eltId, callback){
 	if( isPrimaryData(table) ){
 			$.when(ajaxRemoveElt(table, eltId)).then(
@@ -298,9 +443,27 @@ function removeElt(table, eltId, callback){
 
 
 
+
+
+
+
+
+
+
+
+
+
 /*
 	Ajax calls for generic elements
 */
+
+/**
+ * Insert a database generic element
+ * @params {string} table - SQL table name
+ * @params {object} elt - element to save into database
+ * @params {number} foreignKeyId - SQL foreign key to use for the given SQL table
+ * @returns {json} response of server, either success or error
+ */
 function ajaxInsertElt(table, elt, foreignKeyId){
 	return $.ajax({
 		type: "POST",
@@ -309,7 +472,7 @@ function ajaxInsertElt(table, elt, foreignKeyId){
 			table: table,
 			foreignKeyId: foreignKeyId,
 			insert: true,
-			json: JSON.stringify(elt)
+			value: JSON.stringify(elt)
 		},
 		error: function(error){
 			console.log("ERROR ajaxInsertElt : element ", elt, " not inserted from ", table, " - ", error.status);
@@ -317,6 +480,13 @@ function ajaxInsertElt(table, elt, foreignKeyId){
 	});
 }
 
+/**
+ * Update a database generic element
+ * @params {string} table - SQL table name
+ * @params {number} eltId - element SQL id
+ * @params {string} eltJson - new content of the SQL object
+ * @returns {json} response of server, either success or error
+ */
 function ajaxUpdateElt(table, eltId, eltJson){
 	return $.ajax({
 		type: 'POST', 
@@ -325,7 +495,7 @@ function ajaxUpdateElt(table, eltId, eltJson){
 			table: table,
 			update: true,
 			id: eltId,
-			json: JSON.stringify(eltJson)
+			value: JSON.stringify(eltJson)
 		},
 		error: function(error){
 			console.log("ERROR ajaxUpdateElt : element ", eltId, " not removed from ", table, " - ", error.status);
@@ -333,6 +503,12 @@ function ajaxUpdateElt(table, eltId, eltJson){
 	});
 }
 
+/**
+ * Remove a database generic element
+ * @params {string} table - SQL table name
+ * @params {number} eltId - element SQL id
+ * @returns {json} response of server, either success or error
+ */
 function ajaxRemoveElt(table, eltId){
 	return $.ajax({
 		type: 'POST', 
