@@ -482,8 +482,8 @@ function saveDecisionTree(){
 function getDecisionTree(){
 	$.when(ajaxGetElt('DecisionTree', selectedWork.id)).then(
 		function(decisionTree){
-			if(decisionTree && decisionTree[0] && decisionTree[0].json && decisionTree[0].id){
-				graphicNodes = JSON.parse(decisionTree[0].json);
+			if(decisionTree && decisionTree[0] && decisionTree[0].value && decisionTree[0].id){
+				graphicNodes = JSON.parse(decisionTree[0].value);
 				graphicNodesDatabaseId = decisionTree[0].id;
 				graphicNodes.forEach(function(node, idx){
 					loadGraphicalNodeData(node, idx);

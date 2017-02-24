@@ -111,7 +111,10 @@ function dumpBlock(){
 		nbQuestions = $('#block-questions-selection > tr').length;
 
 	for (var i = 0; i < nbQuestions; i++) {
-		block.questions.push($('#block-questions-selection-id-'+i).val());
+		var questionId = $('#block-questions-selection-id-'+i).val();		
+		if(questionId != ''){
+			block.questions.push(questionId);			
+		}
 	}
 
 

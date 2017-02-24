@@ -131,8 +131,6 @@ function getLanguages(){
 				languages.push('Default');
 			}
 
-			console.log("languages received ", languages);
-
 			// Inject it into select tag
 			injectLanguageIntoForm();
 			$('#choose-lg').on('change', function(){
@@ -169,8 +167,8 @@ function getWorkForm(countryId){
 function getSharedValue(countryId){
 	$.when(ajaxGetElt('SharedUserInput', countryId), ajaxGetElt('SharedRefValue', countryId)).then(
 		function(resultUserInputs, resultRefValues){
-			userInputs = resultUserInputs[0].map(function(elt){ return JSON.parse(elt.json); 	});;
-			referenceValues = resultRefValues[0].map(function(elt){ 	return JSON.parse(elt.json); 	});;
+			userInputs = resultUserInputs[0].map(function(elt){ return JSON.parse(elt.value); 	});;
+			referenceValues = resultRefValues[0].map(function(elt){ 	return JSON.parse(elt.value); 	});;
 		},
 		function(error){
 			$('#form-renderer').notify("Error in global data retrieval", {position:'bottom-left', className:'error'});
@@ -180,10 +178,10 @@ function getSharedValue(countryId){
 function getDataForm(workId){	
 	$.when(ajaxGetElt('Question', workId), ajaxGetElt('Block', workId), ajaxGetElt('Result', workId), ajaxGetElt('DecisionTree', workId)).then(
 		function(resultQuestions, resultBlocks, resultResults, resultDecisionTree){
-			questions 	= resultQuestions[0].map(function(elt){ return JSON.parse(elt.json); 	});
-			blocks 		= resultBlocks[0].map(function(elt){ 	return JSON.parse(elt.json); 	});
-			results 	= resultResults[0].map(function(elt){ 	return JSON.parse(elt.json); 	});
-			decisionTree = JSON.parse(resultDecisionTree[0][0].json);
+			questions 	= resultQuestions[0].map(function(elt){ return JSON.parse(elt.value); 	});
+			blocks 		= resultBlocks[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
+			results 	= resultResults[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
+			decisionTree = JSON.parse(resultDecisionTree[0][0].value);
 			logData();
 			// Now we have data, we do something --> load first element
 			loadElement();

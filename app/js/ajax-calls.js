@@ -217,7 +217,7 @@ function ajaxGetForm(webHook, version){
  * @param {callback} callback - function to execute on success or error
  */
 function ajaxPutForm(form, foreignKey, callback){
-	console.log("injecting form", dbAccessUrl);
+	console.log("injecting form", dbAccessUrl, form);
 	$.when(ajaxInsertElt('Form', form.json, foreignKey)).then(
 		function(result){
 			form.webHook = result.webHook;
@@ -236,7 +236,7 @@ function ajaxPutForm(form, foreignKey, callback){
  * @return {json} response of server, either success or error
  */
 function ajaxUpdateForm(form, foreignKey){
-	console.log("Updating form", dbAccessUrl);
+	console.log("Updating form", dbAccessUrl, form);
 	return $.ajax({
 		type: 'POST', 
 		url: dbAccessUrl,
@@ -245,7 +245,7 @@ function ajaxUpdateForm(form, foreignKey){
 			foreignKeyId: foreignKey,
 			update: true,
 			webHook: form.webHook,
-			json:JSON.stringify(form.json)
+			value:JSON.stringify(form.json)
 		},
 		error: function(error){
 			console.log("ERROR ajaxUpdateForm : element ", eltId, " not removed from ", table, " - ", error.status);
@@ -472,7 +472,7 @@ function ajaxInsertElt(table, elt, foreignKeyId){
 			table: table,
 			foreignKeyId: foreignKeyId,
 			insert: true,
-			json: JSON.stringify(elt)
+			value: JSON.stringify(elt)
 		},
 		error: function(error){
 			console.log("ERROR ajaxInsertElt : element ", elt, " not inserted from ", table, " - ", error.status);
@@ -495,7 +495,7 @@ function ajaxUpdateElt(table, eltId, eltJson){
 			table: table,
 			update: true,
 			id: eltId,
-			json: JSON.stringify(eltJson)
+			value: JSON.stringify(eltJson)
 		},
 		error: function(error){
 			console.log("ERROR ajaxUpdateElt : element ", eltId, " not removed from ", table, " - ", error.status);

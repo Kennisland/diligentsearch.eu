@@ -56,9 +56,6 @@ function handle_get_request(req, res, connection){
 		}
 	}
 
-
-	console.log('currentTable : ', currentTable);
-
 	// Define request arguments
 	var q = "",
 		params = [],
@@ -167,7 +164,7 @@ function handle_post_request(req, res, connection){
 
 	if(currentTable == 'Country'){
 		if(req.body.insert){
-			var countryObj = JSON.parse(req.body.json);
+			var countryObj = JSON.parse(req.body.value);
 			q = "insert into Country (code, name) values ( ?, ?)";
 			params.push(countryObj.code);
 			params.push(countryObj.name);
@@ -178,7 +175,7 @@ function handle_post_request(req, res, connection){
 	}
 	else if(currentTable == 'Work'){
 		if(req.body.insert){
-			var workObj = JSON.parse(req.body.json);
+			var workObj = JSON.parse(req.body.value);
 			q = "insert into Work (countryId, name) values ( ?, ?)";
 			params.push(workObj.countryId);
 			params.push(workObj.name);
@@ -196,10 +193,10 @@ function handle_post_request(req, res, connection){
 				webHook = genWebHook();
 			}
 
-			q = "insert into Form (workId, hook, json) values (? , ?, ?)";
+			q = "insert into Form (workId, hook, value) values (? , ?, ?)";
 			params.push(req.body.foreignKeyId);
 			params.push(webHook);
-			params.push(req.body.json);
+			params.push(req.body.value);
 			cb = function(err, rows){
 				connection.release();
 				console.log('custom', err, rows);
@@ -227,13 +224,13 @@ function handle_post_request(req, res, connection){
 
 				// Insert case or Update case
 				if(req.body.insert){
-					q = "insert into "+currentTable+" ("+foreignKeyAttrName+",json) values ( ?, ?)";
+					q = "insert into "+currentTable+" ("+foreignKeyAttrName+",value) values ( ?, ?)";
 					params.push(req.body.foreignKeyId);
-					params.push(req.body.json);
+					params.push(req.body.value);
 				}
 				else if(req.body.update){
-					q = "update "+currentTable+" set json = ? where id = ?";
-					params.push(req.body.json);
+					q = "update "+currentTable+" set value = ? where id = ?";
+					params.push(req.body.value);
 					params.push(req.body.id);
 				}
 				else{
@@ -325,7 +322,7 @@ function translate(sqlTable, rows, lg){
 			}
 			else{
 				// Get sub Json object
-				var subJson = JSON.parse(row.json);
+				var subJson = JSON.parse(row.value);
 
 				// Operate modification on subJson
 				if(sqlTable == 'SharedUserInput'){

@@ -28,7 +28,6 @@ function getSearch(){
 		return;	
 	}
 
-
 	// Retrieve the form
 	$.when(ajaxGetForm(hook, version)).then(
 		function(success){
@@ -42,24 +41,24 @@ function getSearch(){
 				injectFormRenderer();
 
 				var workId 	= success[0].workId
-					json = JSON.parse(success[0].json);
+					json = JSON.parse(success[0].value);
 
 				// Update local object
 				dumpedForm.webHook = hook;
 				dumpedForm.json = json.formData;
-				setTimeout(function(){
-					updateSearchReportId();
-					$('#choose-lg').val(json.lg).trigger('change');
-								
 
-					// Retrieve the countryId with the workId
-					$.when(ajaxGetWorkById(workId)).then(
-						function(success){
-							var workName = success[0].name;
-							var countryId = success[0].countryId;
-							$('#choose-country').val(countryId).trigger('change');
+				updateSearchReportId();
 
-							// Wait for choose-work to be filled in
+				// Get jurisdiction
+				$.when(ajaxGetWorkById(workId)).then(
+					function(success){
+						var workName = success[0].name;
+						var countryId = success[0].countryId;
+						$('#choose-country').val(countryId).trigger('change');
+
+						setTimeout(function(){
+							$('#choose-lg').val(json.lg).trigger('change');
+
 							setTimeout(function(){
 								if($('#choose-work').html != ""){
 									$('#choose-work').val(workId).trigger('change');
@@ -71,19 +70,16 @@ function getSearch(){
 									}
 								}
 							}, 100);
-						},
-						function(error){
-							$('#choose-country').notify("Country associated to research not found", {position:'bottom-left', className:'error'});
-						});
-
-				}, 100);
-
-
+						}, 100);							
+					},
+					function(error){
+						$('#choose-country').notify("Country associated to research not found", {position:'bottom-left', className:'error'});
+				});
 			}
 		},
 		function(error){
 			$('#search-hook').notify("Error detected in form retrieval", {position:'bottom-left', className:'error'});
-		});
+	});
 }
 
 /**

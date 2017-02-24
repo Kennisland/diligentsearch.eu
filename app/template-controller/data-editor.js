@@ -53,7 +53,6 @@ html_dataModelEditor = `
 		<button class="btn btn-default" onclick="add('block')">Add a block</button>
 	</div>
 </div>
-
 `;
 
 
@@ -110,8 +109,8 @@ function getWork(countryId){
 		$.when(ajaxGetWorks(selectedCountry.id), ajaxGetElt('SharedUserInput', selectedCountry.id), ajaxGetElt('SharedRefValue', selectedCountry.id)).then(
 			function(resultWorks, resultUserInputs, resultRefValues){
 				works = resultWorks[0];
-				userInputs = resultUserInputs[0];
-				referenceValues = resultRefValues[0];
+				forceDataId(resultUserInputs[0], userInputs);
+				forceDataId(resultRefValues[0], referenceValues);				
 				injectWorkData();					
 			},
 			function(error){
@@ -130,9 +129,9 @@ function getData(workIdx){
 	// Ajax call to get data for a specific work
 	$.when(ajaxGetElt('Question', selectedWork.id), ajaxGetElt('Block', selectedWork.id), ajaxGetElt('Result', selectedWork.id)).then(
 		function(resultQuestions, resultBlocks, resultResults){
-			questions = resultQuestions[0];
-			blocks = resultBlocks[0];
-			results = resultResults[0];
+			forceDataId(resultQuestions[0], questions);
+			forceDataId(resultBlocks[0], blocks);
+			forceDataId(resultResults[0], results);
 
 			// Retrieve index of country
 			$('#breadcrumb li:nth-child(2) a').text(selectedWork.name).attr('onclick', 'getWork('+selectedCountry.id+')');	
@@ -209,19 +208,19 @@ function injectWorkData(){
 
 function injectDataBasePrimaryModel(){	
 	userInputs.forEach(function(elt, idx){
-		injectData('userInput', idx, JSON.parse(elt.json), loadUserInput);
+		injectData('userInput', idx, elt, loadUserInput);
 	});
 	referenceValues.forEach(function(elt, idx){
-		injectData('referenceValue', idx, JSON.parse(elt.json), loadRefValue);
+		injectData('referenceValue', idx, elt, loadRefValue);
 	});
 	questions.forEach(function(elt, idx){
-		injectData('question', idx, JSON.parse(elt.json), loadQuestion);
+		injectData('question', idx, elt, loadQuestion);
 	});
 	results.forEach(function(elt, idx){
-		injectData('result', idx, JSON.parse(elt.json), loadResult);
+		injectData('result', idx, elt, loadResult);
 	});
 	blocks.forEach(function(elt, idx){
-		injectData('block', idx, JSON.parse(elt.json), loadBlock);
+		injectData('block', idx, elt, loadBlock);
 	});
 	$('#display-data-model').show();
 }

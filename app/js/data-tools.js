@@ -276,6 +276,24 @@ function saveData(dataTable, data, dataId, foreignKeyId, callback){
 }
 
 /**
+ * Ensure the value field within the db is correctly updated with the associated ID of the DB
+ */
+function forceDataId(srcArr, destArr){	
+	$.map(srcArr, function(elt){
+		var tmp = JSON.parse(elt.value);
+		if(!tmp.id){
+			tmp.id = elt.id;
+		}
+		destArr.push(tmp);
+	});
+}
+
+
+
+
+
+
+/**
  * Delete the data from the database
  * @param {string} dataTable - SQL table name
  * @param {number} dataId - database id of the data to remove

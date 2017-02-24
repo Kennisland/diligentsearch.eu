@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 09, 2017 at 11:48 AM
+-- Generation Time: Feb 24, 2017 at 10:24 AM
 -- Server version: 5.7.17-0ubuntu0.16.04.1
 -- PHP Version: 7.0.13-0ubuntu0.16.04.1
 
@@ -19,6 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `diligent_search`
 --
+CREATE DATABASE IF NOT EXISTS `diligent_search` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+USE `diligent_search`;
 
 -- --------------------------------------------------------
 
@@ -29,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `Block` (
   `id` int(4) NOT NULL,
   `workId` int(3) NOT NULL,
-  `json` text NOT NULL
+  `value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -53,7 +55,7 @@ CREATE TABLE `Country` (
 CREATE TABLE `DecisionTree` (
   `id` int(3) NOT NULL,
   `workId` int(3) NOT NULL,
-  `json` text NOT NULL
+  `value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -67,7 +69,7 @@ CREATE TABLE `Form` (
   `workId` int(3) NOT NULL,
   `hook` text NOT NULL,
   `version` int(3) NOT NULL DEFAULT '0',
-  `json` text NOT NULL
+  `value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -95,7 +97,7 @@ DELIMITER ;
 CREATE TABLE `Question` (
   `id` int(4) NOT NULL,
   `workId` int(3) NOT NULL,
-  `json` text NOT NULL
+  `value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -107,7 +109,7 @@ CREATE TABLE `Question` (
 CREATE TABLE `Result` (
   `id` int(4) NOT NULL,
   `workId` int(3) NOT NULL,
-  `json` text NOT NULL
+  `value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -119,7 +121,7 @@ CREATE TABLE `Result` (
 CREATE TABLE `SharedRefValue` (
   `id` int(3) NOT NULL,
   `countryId` int(2) NOT NULL,
-  `json` text NOT NULL
+  `value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -131,7 +133,7 @@ CREATE TABLE `SharedRefValue` (
 CREATE TABLE `SharedUserInput` (
   `id` int(3) NOT NULL,
   `countryId` int(2) NOT NULL,
-  `json` text NOT NULL
+  `value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -168,7 +170,7 @@ ALTER TABLE `Country`
 --
 ALTER TABLE `DecisionTree`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_work_id_decisionTree` (`workId`);
+  ADD KEY `DecisionTreeWorkConstraint` (`workId`);
 
 --
 -- Indexes for table `Form`
@@ -220,47 +222,47 @@ ALTER TABLE `Work`
 -- AUTO_INCREMENT for table `Block`
 --
 ALTER TABLE `Block`
-  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT for table `Country`
 --
 ALTER TABLE `Country`
-  MODIFY `id` int(2) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `DecisionTree`
 --
 ALTER TABLE `DecisionTree`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT for table `Form`
 --
 ALTER TABLE `Form`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 --
 -- AUTO_INCREMENT for table `Question`
 --
 ALTER TABLE `Question`
-  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
 --
 -- AUTO_INCREMENT for table `Result`
 --
 ALTER TABLE `Result`
-  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT for table `SharedRefValue`
 --
 ALTER TABLE `SharedRefValue`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT for table `SharedUserInput`
 --
 ALTER TABLE `SharedUserInput`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 --
 -- AUTO_INCREMENT for table `Work`
 --
 ALTER TABLE `Work`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- Constraints for dumped tables
 --
@@ -269,49 +271,49 @@ ALTER TABLE `Work`
 -- Constraints for table `Block`
 --
 ALTER TABLE `Block`
-  ADD CONSTRAINT `fk_work_id` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `blockWorkId` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`);
 
 --
 -- Constraints for table `DecisionTree`
 --
 ALTER TABLE `DecisionTree`
-  ADD CONSTRAINT `fk_work_id_decisionTree` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `DecisionTreeWorkConstraint` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`);
 
 --
 -- Constraints for table `Form`
 --
 ALTER TABLE `Form`
-  ADD CONSTRAINT `formWorkConstraint` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `formWorkConstraint` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`);
 
 --
 -- Constraints for table `Question`
 --
 ALTER TABLE `Question`
-  ADD CONSTRAINT `QuestionWorkId` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `QuestionWorkId` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`);
 
 --
 -- Constraints for table `Result`
 --
 ALTER TABLE `Result`
-  ADD CONSTRAINT `ResultWorkId` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `ResultWorkId` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`);
 
 --
 -- Constraints for table `SharedRefValue`
 --
 ALTER TABLE `SharedRefValue`
-  ADD CONSTRAINT `RefValuesCountry` FOREIGN KEY (`countryId`) REFERENCES `Country` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `RefValuesCountry` FOREIGN KEY (`countryId`) REFERENCES `Country` (`id`);
 
 --
 -- Constraints for table `SharedUserInput`
 --
 ALTER TABLE `SharedUserInput`
-  ADD CONSTRAINT `UserInputsCountry` FOREIGN KEY (`countryId`) REFERENCES `Country` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `UserInputsCountry` FOREIGN KEY (`countryId`) REFERENCES `Country` (`id`);
 
 --
 -- Constraints for table `Work`
 --
 ALTER TABLE `Work`
-  ADD CONSTRAINT `WorkCountry#` FOREIGN KEY (`countryId`) REFERENCES `Country` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `WorkCountry#` FOREIGN KEY (`countryId`) REFERENCES `Country` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
