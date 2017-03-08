@@ -170,7 +170,14 @@ function questionCheckEvent(htmlId, outputs, targets){
 function questionListEvent(htmlId, outputs, targets){
 	var selector = htmlId+' select';
 
-	$('#'+selector).on('change', function(){
+	var oldValue = '';
+	$('#'+selector).on('change', function(){		
+		// Configure warning modal
+		setUpListWarningModal($(this), oldValue);
+		if(oldValue != '' && $(this).val() != oldValue){
+			$('#form-warningModal').modal('show');
+		}
+		oldValue = $(this).val();
 
 		var toFollow = undefined;
 		for (var i = 0; i < outputs.length; i++) {
@@ -180,16 +187,6 @@ function questionListEvent(htmlId, outputs, targets){
 		}
 		handleFollowers(toFollow, targets);		
 		bindHtmlForPdf($(this));
-	});
-
-	clickNb = 0;
-	$('#'+selector).on('click', function(event){
-		// Display the modal only on second click
-		if(clickNb % 2 == 1){
-			setUpListWarningModal($(this));
-			event.preventDefault();
-		}
-		clickNb++;
 	});
 }
 
@@ -310,7 +307,7 @@ function setUpWarningModal(element){
  * Configure a warning modal for html select tags to warn a user who wants to change a field value
  * @param {objects} element - element the user has clicked on
  */
-function setUpListWarningModal(element){
+function setUpListWarningModal(element, oldValue){
 	element.blur();
 
 	// Focus on modal appearance
@@ -325,12 +322,12 @@ function setUpListWarningModal(element){
 
 	// Cancel configuration
 	$('#form-warning-modal-cancel').off().on('click', function(){
-		element.val("").trigger('change');
+		element.val(oldValue).trigger('change');
 		$('#form-warningModal').modal('hide');
 	});
 
 	// Display finally the modal
-	$('#form-warningModal').modal('show');
+	// $('#form-warningModal').modal('show');
 }
 
 
@@ -432,18 +429,15 @@ function bindBlockQuestionsToValue(blockId){
 
 
 	// Handle select
-	$('#'+blockId+' select').on('change', function(){	
+	var oldValue = '';
+	$('#'+blockId+' select').on('change', function(){
 		bindHtmlForPdf($(this));
-	});
 
-	blockClickNb = 0;
-	$('#'+blockId+' select').on('click', function(event){
-		// Display the modal only on second click
-		if(blockClickNb % 2 == 1){
-			setUpListWarningModal($(this));
-			event.preventDefault();
+		setUpListWarningModal($(this), oldValue);
+		if(oldValue != '' && $(this).val() != oldValue){
+			$('#form-warningModal').modal('show');
 		}
-		blockClickNb++;
+		oldValue = $(this).val();
 	});
 }
 

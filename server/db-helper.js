@@ -291,6 +291,10 @@ function translate(sqlTable, rows, lg){
 		return;
 	}
 
+	if(lg.useTranslation == 'Default'){
+		return;
+	}
+
 	// identify language file wanted by user
 	var country = lg.useCountry,
 		translation = lg.useTranslation;
