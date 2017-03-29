@@ -127,7 +127,7 @@ Refer to this if there are problems:
 Create a database, and use the given schema, available in the root folder of the project.
 
 	// within mysql shell
-	create datatabase diligent_search;
+	create database diligent_search;
 
 	// Outside of mysql shell
 	mysql -u root -p diligent_search < diligentsearch-schema.sql
