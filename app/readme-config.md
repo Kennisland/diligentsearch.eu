@@ -153,9 +153,9 @@ Database access configuration available in the file 'db-config.js':
 	
 To test if database connection is correctly set, run the following command:
 
-	//Go to server
+	//Go to server/
 	node server.js
-sds.
+
 	//And vist the page diligentsearch.local/api
 	//It should display the welcome message
 
