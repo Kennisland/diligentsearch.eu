@@ -144,7 +144,7 @@ Besides, the Header configuration is crucial to enable ajax calls from the clien
 
 The server is written with nodeJs. First, download dependecies by fetching packages specified in the package.json file:
 
-	// Go to app/js/server/
+	// Go to server/
 	npm install
 
 Database access configuration available in the file 'db-config.js':
@@ -153,8 +153,8 @@ Database access configuration available in the file 'db-config.js':
 	
 To test if database connection is correctly set, run the following command:
 
-	//Go to app/js/server
-	node server.j
+	//Go to server
+	node server.js
 sds.
 	//And vist the page diligentsearch.local/api
 	//It should display the welcome message
