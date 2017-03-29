@@ -16,7 +16,7 @@ Activate your Root access if not already done
 
 Get the default configuration pattern and create a new one from it and edit it (for example 001-diligentsearch.conf)
 
-	mv 000-default.conf 001-diligentsearch.conf
+	cp 000-default.conf 001-diligentsearch.conf
 
 Enable serverName 
 	
@@ -127,7 +127,7 @@ Refer to this if there are problems:
 Create a database, and use the given schema, available in the root folder of the project.
 
 	// within mysql shell
-	create datatabase diligent_search;
+	create database diligent_search;
 
 	// Outside of mysql shell
 	mysql -u root -p diligent_search < diligentsearch-schema.sql
