@@ -16,7 +16,7 @@ Activate your Root access if not already done
 
 Get the default configuration pattern and create a new one from it and edit it (for example 001-diligentsearch.conf)
 
-	mv 000-default.conf 001-diligentsearch.conf
+	cp 000-default.conf 001-diligentsearch.conf
 
 Enable serverName 
 	
