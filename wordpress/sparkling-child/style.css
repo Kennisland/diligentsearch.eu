@@ -11,3 +11,174 @@
 
 @import url("css/form.css");
 @import url("css/editor.css");
+
+a {
+  color: #46723E;
+}
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  color: #46723E;
+}
+
+.entry-title a:hover {
+  color: #46723E;
+}
+
+.page-links span {
+  background-color: #46723E;
+}
+
+.page-links a span {
+  color: #46723E;
+}
+
+.page-links a:hover span {
+  background-color: #46723E;
+  border: 1px solid #46723E;
+}
+
+.pagination li a {
+  color: #46723E;
+}
+
+.pagination li:hover a {
+  color: #46723E;
+}
+
+.pagination>.active>a,
+.pagination>.active>span,
+.pagination>.active>a:hover,
+.pagination>.active>span:hover,
+.pagination>.active>a:focus,
+.pagination>.active>span:focus {
+  background-color: #46723E;
+  border-color: #46723E;
+}
+
+#secondary .widget .post-content a {
+  color: #46723E;
+}
+
+.tagcloud a:hover {
+  background-color: #46723E;
+  border-color: #46723E;
+}
+
+.btn-default, .label-default {
+  background-color: #46723E;
+  border-color: #46723E;
+}
+
+.btn-default, .label-default {
+  background-color: #46723E;
+  border-color: #46723E;
+}
+
+button {
+  background-color: #46723E;
+}
+
+button:hover {
+  background-color: #363636;
+}
+
+#infinite-handle span {
+  color: #46723E;
+}
+
+#infinite-handle span:hover {
+  background-color: #46723E;
+}
+
+.post-navigation a {
+  display: block;
+}
+
+.post-navigation a:hover,
+.paging-navigation a:hover {
+  background: #46723E;
+}
+
+.paging-navigation {
+  text-transform: uppercase;
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
+.navbar-default .navbar-nav > .active > a:focus,
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus {
+  color: #46723E;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus,
+.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+.navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+  background-color: #46723E;
+}
+
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu>.active>a,
+  .navbar-default .navbar-nav .open .dropdown-menu>.active>a:focus,
+  .navbar-default .navbar-nav .open .dropdown-menu>.active>a:hover {
+    background-color: #46723E;
+  }
+}
+
+.navbar-default .navbar-nav .current-menu-ancestor a.dropdown-toggle {
+  color: #46723E;
+}
+
+@media (min-width: 979px) {
+  ul.nav li.dropdown:hover > ul.dropdown-menu {
+    display: block;
+  }
+}
+
+.dropdown-menu>.active>a,
+.dropdown-menu>.active>a:hover,
+.dropdown-menu>.active>a:focus {
+  background-color: #46723E;
+  color: #fff;
+}
+
+#image-navigation .nav-previous a:hover,
+#image-navigation .nav-next a:hover{
+  background-color: #46723E;
+  color: #fff;
+}
+
+.scroll-to-top:hover {
+  background: #46723E;
+  opacity: .8;
+}
+
+#menu-social li a[href*="mailto"]:hover {
+  background-color: #46723E !important;
+}
+
+#menu-social li a[href*="mailto"]:hover {
+  background-color: #46723E !important;
+}
+
+.cfa-text{
+  color: #46723E;
+}
+
+.cfa-button {
+  color: #46723E;
+  border-color: #46723E;
+}
+
+.cfa-button a {
+  color: #46723E;
+}
+
+.cfa-button:hover {
+  background-color: #46723E;
+  color: #fff;
+}
