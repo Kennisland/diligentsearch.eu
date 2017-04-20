@@ -125,7 +125,7 @@ function createChildNode(parentNodeId){
 
 	// Get the position, to prevent node erasing
 	var childPosition = 0,
-		nodesList = graphic.nodes();
+		nodesList = graphic.nodes().sort();
 	for (var i = 0; i < nodesList.length; i++) {
 		// Increase child position if position already taken
 		if(nodesList[i].indexOf(base+'_'+childLvl+'_'+childPosition) == 0){
