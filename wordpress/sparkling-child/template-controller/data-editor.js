@@ -109,8 +109,10 @@ function getWork(countryId){
 		$.when(ajaxGetWorks(selectedCountry.id), ajaxGetElt('SharedUserInput', selectedCountry.id), ajaxGetElt('SharedRefValue', selectedCountry.id)).then(
 			function(resultWorks, resultUserInputs, resultRefValues){
 				works = resultWorks[0];
+				userInputs = [];
+				referenceValues = [];
 				forceDataId(resultUserInputs[0], userInputs);
-				forceDataId(resultRefValues[0], referenceValues);				
+				forceDataId(resultRefValues[0], referenceValues);
 				injectWorkData();					
 			},
 			function(error){
@@ -205,8 +207,7 @@ function injectWorkData(){
 	$('#breadcrumb li:last-child').hide();	
 }
 
-
-function injectDataBasePrimaryModel(){	
+function injectDataBasePrimaryModel(){
 	userInputs.forEach(function(elt, idx){
 		injectData('userInput', idx, elt, loadUserInput);
 	});
