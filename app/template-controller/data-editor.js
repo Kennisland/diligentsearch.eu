@@ -109,6 +109,8 @@ function getWork(countryId){
 		$.when(ajaxGetWorks(selectedCountry.id), ajaxGetElt('SharedUserInput', selectedCountry.id), ajaxGetElt('SharedRefValue', selectedCountry.id)).then(
 			function(resultWorks, resultUserInputs, resultRefValues){
 				works = resultWorks[0];
+				userInputs = [];
+				referenceValues = [];
 				forceDataId(resultUserInputs[0], userInputs);
 				forceDataId(resultRefValues[0], referenceValues);				
 				injectWorkData();					

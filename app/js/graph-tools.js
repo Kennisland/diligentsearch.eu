@@ -485,9 +485,13 @@ function getDecisionTree(){
 			if(decisionTree && decisionTree[0] && decisionTree[0].value && decisionTree[0].id){
 				graphicNodes = JSON.parse(decisionTree[0].value);
 				graphicNodesDatabaseId = decisionTree[0].id;
-				graphicNodes.forEach(function(node, idx){
-					loadGraphicalNodeData(node, idx);
-				});
+				if(graphicNodes.length == 0){
+					createGraphicNode(ROOT_NODE_ID);
+				} else {
+					graphicNodes.forEach(function(node, idx){
+						loadGraphicalNodeData(node, idx);
+					});
+				}
 			}
 			else{
 				createGraphicNode(ROOT_NODE_ID);				

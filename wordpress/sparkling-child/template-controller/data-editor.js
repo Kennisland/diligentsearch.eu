@@ -126,7 +126,6 @@ function getData(workIdx){
 	// Reset and hide unecessary divs
 	resetDataModel();
 	$('#select-work').hide();
-
 	selectedWork = works[workIdx];
 	// Ajax call to get data for a specific work
 	$.when(ajaxGetElt('Question', selectedWork.id), ajaxGetElt('Block', selectedWork.id), ajaxGetElt('Result', selectedWork.id)).then(
