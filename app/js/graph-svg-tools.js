@@ -22,13 +22,10 @@ function initSVG(){
  * Wrapper to render data correctly and configure the click on graphical nodes
  */
 function customRender(){
-	// Ensure actual zoom scale is 1 : prevent to make crazy stuff with labels
 	d3.select("g").attr("transform", "scale(" + 1 + ")");
 	var render = new dagreD3.render();
 	render(svgGroup, graphic);
 	configSVG();
-	// resetZoom();
-
 }
 
 
