@@ -199,37 +199,39 @@ function getNewQuestion(){
 }
 
 function configQuestionComplete(i){
-	$('#block-questions-selection-'+i).autocomplete({
-		minLength: 0,
-		autocomplete: true,
-		source: function(request, response){
-			var search = request.term;
-			response($.map(questions, function(value, key){
-				if(value.name.substr(0, search.length) == search){
-					return { label: value.name	}
-				}
-			}));
-		},
-		open: function() { 
-			var parent_width = $('#block-questions-selection-'+i).width();
-			$('.ui-autocomplete').width(2*parent_width);
-		},
-		select: function(event, ui){
-			$(this).val(ui.item.value);
+	if (!$('#block-questions-selection-'+i).hasClass("ui-autocomplete-input")) {
+		$('#block-questions-selection-'+i).autocomplete({
+			minLength: 0,
+			autocomplete: true,
+			source: function(request, response){
+				var search = request.term;
+				response($.map(questions, function(value, key){
+					if(value.name.substr(0, search.length) == search){
+						return { label: value.name	}
+					}
+				}));
+			},
+			open: function() { 
+				var parent_width = $('#block-questions-selection-'+i).width();
+				$('.ui-autocomplete').width(2*parent_width);
+			},
+			select: function(event, ui){
+				$(this).val(ui.item.value);
 
-			var lineSelector = $(this)[0].id.split('-'),
-				last = lineSelector.length - 1,
-				rowIdx = parseInt(lineSelector[last]);
+				var lineSelector = $(this)[0].id.split('-'),
+					last = lineSelector.length - 1,
+					rowIdx = parseInt(lineSelector[last]);
 
-			// Look for the id of this question and insert it in good position
-			for (var i = 0; i < questions.length; i++) {
-				if($(this).val() == questions[i].name){
-					$('#block-questions-selection-type-'+rowIdx).val(questions[i].type);
-					$('#block-questions-selection-id-'+rowIdx).val(questions[i].id);
+				// Look for the id of this question and insert it in good position
+				for (var i = 0; i < questions.length; i++) {
+					if($(this).val() == questions[i].name){
+						$('#block-questions-selection-type-'+rowIdx).val(questions[i].type);
+						$('#block-questions-selection-id-'+rowIdx).val(questions[i].id);
+					}
 				}
 			}
-		}
-	}).bind('focus', function(){ $(this).autocomplete("search"); } );
+		}).bind('focus', function(){ $(this).autocomplete("search"); } );
+	}
 }
 
 function deleteBlockElt(){

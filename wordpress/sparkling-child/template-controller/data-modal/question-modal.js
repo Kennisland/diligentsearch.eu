@@ -351,69 +351,74 @@ function getReferenceId() {
  */
 
 function configAutocomplete(){
-	$('#numeric-reference').autocomplete({
-		minLength: 0,
-		autocomplete: true,
-		source: function(request, response){
-			response($.map(referenceValues, function(value, key){
-				return {
-					label: value.name
+	// Create autocompletes only if they don't exist
+	if (!$('#numeric-reference').hasClass("ui-autocomplete-input")) {
+		$('#numeric-reference').autocomplete({
+			minLength: 0,
+			autocomplete: true,
+			source: function(request, response){
+				response($.map(referenceValues, function(value, key){
+					return {
+						label: value.name
+					}
+				}));
+			},
+			open: function() { 
+				var parent_width = $('#numeric-reference').width();
+				$('.ui-autocomplete').width(parent_width);
+			},
+			select: function(event, ui){
+				$(this).val(ui.item.value);
+				var ref = getReferenceByName($(this).val());
+				if(ref){
+					$('#numeric-reference-id').val(ref.id);
 				}
-			}));
-		},
-		open: function() { 
-			var parent_width = $('#numeric-reference').width();
-			$('.ui-autocomplete').width(parent_width);
-		},
-		select: function(event, ui){
-			$(this).val(ui.item.value);
-			var ref = getReferenceByName($(this).val());
-			if(ref){
-				$('#numeric-reference-id').val(ref.id);
 			}
-		}
-	}).bind('focus', function(){ $(this).autocomplete("search"); } );
+		}).bind('focus', function(){ $(this).autocomplete("search"); } );
+	}
 
-	$('#numeric-expression').autocomplete({
-		minLength: 0,
-		autocomplete: true,
-		source: function(request, response){
+	if (!$('#numeric-expression').hasClass("ui-autocomplete-input")) {
+		$('#numeric-expression').autocomplete({
+			minLength: 0,
+			autocomplete: true,
+			source: function(request, response){
 
-			var sharedData = userInputs.concat(referenceValues);
-			var formattedInputs = $.map(sharedData, function(value, key){
-				return {
-					label: value.name
-				}
-			});
+				var sharedData = userInputs.concat(referenceValues);
+				var formattedInputs = $.map(sharedData, function(value, key){
+					return {
+						label: value.name
+					}
+				});
 
-			// Do the autocomplete operation only with the last word inserted, based on the formatted input dataset and 
-			response( $.ui.autocomplete.filter(
-				formattedInputs, ( request.term ).split(/\s*[-+]\s/).pop()) 
-			);
-		},
-		open: function() { 
-			// Match width of combobow to fit parent
-			var parent_width = $('#numeric-expression').width();
-			$('.ui-autocomplete').width(parent_width);
-		},
-		focus: function() {
-			// prevent value inserted on focus
-			return false;
-		},
-		select: function( event, ui ) {
-			var terms = this.value.split(/\s+/);
-			// remove the current input, typed by user
-			terms.pop();
-			// add the selected item and a space
-			terms.push( ui.item.value + ' ' );
-			this.value = terms.join( " " );
+				// Do the autocomplete operation only with the last word inserted, based on the formatted input dataset and 
+				response( $.ui.autocomplete.filter(
+					formattedInputs, ( request.term ).split(/\s*[-+]\s/).pop()) 
+				);
+			},
+			open: function() { 
+				// Match width of combobow to fit parent
+				var parent_width = $('#numeric-expression').width();
+				$('.ui-autocomplete').width(parent_width);
+			},
+			focus: function() {
+				// prevent value inserted on focus
+				return false;
+			},
+			select: function( event, ui ) {
+				var terms = this.value.split(/\s+/);
+				// remove the current input, typed by user
+				terms.pop();
+				// add the selected item and a space
+				terms.push( ui.item.value + ' ' );
+				this.value = terms.join( " " );
 
-			var preview = $('#numeric-reference').val() + ' ' + $('#numeric-condition').val() + ' ' + this.value;
-			$('#numeric-visualization').val(preview);
+				var preview = $('#numeric-reference').val() + ' ' + $('#numeric-condition').val() + ' ' + this.value;
+				$('#numeric-visualization').val(preview);
 
-			return false;
-		}
-	}).bind('focus', function(){ $(this).autocomplete("search"); } );
+				return false;
+			}
+		}).bind('focus', function(){ $(this).autocomplete("search"); } );
+	}
  }
 
 

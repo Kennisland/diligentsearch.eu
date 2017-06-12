@@ -73,6 +73,7 @@ function loadGraphicNode(index, graphicNodeElt){
 	$('#node-data-id').val(graphicNodeElt.dataId)
 
 	// Enable autocomplete on modal loading
+	console.log('loadGraphicNode')
 	configDataSelection(graphicNodeElt.category);
 
 	// Db effect : retrieve data element based on its db id
@@ -169,16 +170,10 @@ function deleteNode(){
 
 // Configure autocomplete based on selected category
 function configCategorySelection(){
-
-	$('#node-category').on('click', 'focus', function(){
-		$(this).autocomplete();
-	});
-
 	$('#node-category').on('keypress', function(event){
 		event.preventDefault();
 		return false;
 	});
-
 	
 	$('#node-category').on('change', function(){
 		// Reset necessary fields
@@ -196,47 +191,52 @@ function configCategorySelection(){
 		delOutputs();
 
 		// Configure autocomplete
-		configDataSelection($(this).val());		
+		if ($(this).val() != "") {	
+			configDataSelection($(this).val());		
+		}
 	});
 }
 
 // Configure data loading
-function configDataSelection(category){	
-	$('#node-data').on('click', 'focus', function(){
-		$(this).autocomplete();
-	});
-
+function configDataSelection(category){
 	$('#node-data').on('keypress', function(event){
 		event.preventDefault();
 		return false;
 	});
 
-	var sources = getDataSource(category);
-	$('#node-data').autocomplete({
-		minLength: 0,
-		autocomplete: true,
-		source: function(request, response){
-			response($.map(sources, function(value, key){
-				return {
-					label: value.name
+	if (category !== "") {
+		var sources = getDataSource(category);
+
+		// Create autocomplete if needed
+		if (!$("#node-data").hasClass("ui-autocomplete-input")) {
+			$('#node-data').autocomplete({
+				minLength: 0,
+				autocomplete: true,
+				source: function(request, response) {
+					response($.map(sources, function(value, key) {
+						return { 
+							label: value.name
+						}
+					}));
+				},
+				open: function() { 
+					var parent_width = $('#node-data').width();
+					$('.ui-autocomplete').width(parent_width);
+				},
+				select: function(event, ui){
+					$(this).val(ui.item.value);
+					// Look for the id
+					for (var i = 0; i < sources.length; i++) {
+						if($(this).val() == sources[i].name){
+							$('#node-data-id').val(sources[i].id);
+							loadDataOutputs(category, sources[i]);
+						}
+					}
 				}
-			}));
-		},
-		open: function() { 
-			var parent_width = $('#node-data').width();
-			$('.ui-autocomplete').width(parent_width);
-		},
-		select: function(event, ui){
-			$(this).val(ui.item.value);
-			// Look for the id
-			for (var i = 0; i < sources.length; i++) {
-				if($(this).val() == sources[i].name){
-					$('#node-data-id').val(sources[i].id);
-					loadDataOutputs(category, sources[i]);
-				}
-			}
+			}).bind('focus', function(){ $(this).autocomplete("search"); } );		
 		}
-	}).bind('focus', function(){ $(this).autocomplete("search"); } );
+	}
+
 }
 
 
@@ -320,39 +320,40 @@ function getNewOutput(){
 
 // Configure autocomplete plugin for outputs
 function configOutputComplete(i){
-	$('#node-data-output-target-'+i).on('click', 'focus', function(){
-		$(this).autocomplete();
-	});
-
 	$('#node-data-output-target-'+i).on('keypress', function(event){
 		event.preventDefault();
 		return false;
 	});
 
-	$('#node-data-output-target-'+i).autocomplete({
-		minLength: 0,
-		autocomplete: true,
-		source: function(request, response){
-			var potentialTargets = $.map(getPotentialTargets(), function(target){
-				return {label:target.dataName, value:target.id}
-			});
-			response(potentialTargets);
-		},
-		open: function() { 
-			var parent_width = $('#node-data-output-target-'+i).width();
-			$('.ui-autocomplete').width(parent_width);
-		},
-		focus: function(event, ui){
-			$(this).val(ui.item.label);
-			return false;
-		},
-		select: function(event, ui){
-			// Display label, but save the target value (id)
-			$(this).val(ui.item.label);
-			$('#node-data-output-id-'+i).val(ui.item.value);
-			return false;
-		}
-	}).bind('focus', function(){ $(this).autocomplete("search"); } );
+	var targets = $.map(getPotentialTargets(), function(target){
+		return { label:target.dataName, value:target.id }
+	});
+
+	// Create autocomplete if needed
+	if (!$('#node-data-output-target-'+i).hasClass("ui-autocomplete-input")) {
+		$('#node-data-output-target-'+i).autocomplete({
+			minLength: 0,
+			autocomplete: true,
+			source: targets,
+			open: function() { 
+				var parent_width = $('#node-data-output-target-'+i).width();
+				$('.ui-autocomplete').width(parent_width);
+			},
+			focus: function(event, ui){
+				$(this).val(ui.item.label);
+				return false;
+			},
+			select: function(event, ui){
+				// Display label, but save the target value (id)
+				$(this).val(ui.item.label);
+				$('#node-data-output-id-'+i).val(ui.item.value);
+				return false;
+			}
+		}).bind('focus', function(){ $(this).autocomplete("search"); } );
+	} else {
+		// Update sources
+		$('#node-data-output-target-'+i).autocomplete( "option", "source", targets);
+	}
 }
 
 
