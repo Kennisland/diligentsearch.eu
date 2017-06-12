@@ -27,7 +27,8 @@ function customRender(){
 	var render = new dagreD3.render();
 	render(svgGroup, graphic);
 	configSVG();
-	resetZoom();
+	// resetZoom();
+
 }
 
 
@@ -74,6 +75,8 @@ function bindToNodeConfigModal(){
  * Configure the resetZoom button behaviour
  */
 function resetZoom(){
-	var xCenterOffset = (svg.attr("width") - graphic.graph().width) / 2;
-	svgGroup.attr("transform", "translate(" + xCenterOffset + ")" + "scale("+initialScale+")" );
+	// Reset zomm properties and update graph transformation
+	zoom.scale(1)
+	zoom.translate([0, 0])
+	svgGroup.attr("transform", "translate(" + [0, 0] + ")" + "scale(" + 1 + ")");
 }
