@@ -6,7 +6,7 @@ html_formRenderer =`
 		<label for="choose-country">
 			Select the jurisdiction you want to determine an orphan work in.
 		</label>
-		<a onclick="moreInfo(`Select the country in which the work was published or broadcasted for the first time. In case of cinematographic or audiovisual works, select the country in which the producer has his headquarters or habitual residence. In case the work has never been published, select the country in which the work has been made publicly accessible by a cultural institution or broadcasting organization.`)">more information</a>
+		<p>Select the country in which the work was published or broadcasted for the first time. In case of cinematographic or audiovisual works, select the country in which the producer has his headquarters or habitual residence. In case the work has never been published, select the country in which the work has been made publicly accessible by a cultural institution or broadcasting organization.</p>
 		<br>
 		<select id="choose-country">
 			<option value="">Choose a country</option>
@@ -129,7 +129,7 @@ function getLanguages(){
 				languages = success.lg;
 			}
 			if(languages.length == 0){
-				languages.push('Default');
+				languages.push('English');
 			}
 
 			// Inject it into select tag
@@ -282,7 +282,7 @@ function bindDecisionTreeData(){
 }
 
 function updateSearchReportId(){
-	$('#search-report-ref').text('Search-report('+dumpedForm.webHook+')');
+	$('#search-report-ref').text('Search-report (Report saved under '+dumpedForm.webHook+')');
 }
 
 
