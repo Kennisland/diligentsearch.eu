@@ -149,7 +149,7 @@ function handle_post_request(req, res, connection){
 	function defaultCallback(err, rows){
 		connection.release();
 		if(!err){			
-			console.log('default', currentTable, rows);
+			console.log('defaultCallback', currentTable, rows);
 			res.json(rows);
 		}else{
 			res.json(err);
@@ -276,7 +276,7 @@ var getTranslations = function(req, res){
 		translations = Object.keys(obj);
 	}
 	else{
-		translations.push('Default');
+		translations.push('English');
 	}
 	res.json({"lg": translations});
 }
@@ -291,7 +291,7 @@ function translate(sqlTable, rows, lg){
 		return;
 	}
 
-	if(lg.useTranslation == 'Default'){
+	if(lg.useTranslation == 'English'){
 		return;
 	}
 
