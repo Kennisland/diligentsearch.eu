@@ -598,5 +598,6 @@ function getRandomKey(){
  */
 function printPDF(){
 	var htmlContent = $('#work-data-selected').html();
-	ajaxPrintPdf(htmlContent, getRandomKey());
+	var pdfKey = dumpedForm.webHook ? dumpedForm.webHook : getRandomKey();
+	ajaxPrintPdf(htmlContent, pdfKey);
 }
