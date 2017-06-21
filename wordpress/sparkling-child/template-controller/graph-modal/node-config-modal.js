@@ -73,7 +73,6 @@ function loadGraphicNode(index, graphicNodeElt){
 	$('#node-data-id').val(graphicNodeElt.dataId)
 
 	// Enable autocomplete on modal loading
-	console.log('loadGraphicNode')
 	configDataSelection(graphicNodeElt.category);
 
 	// Db effect : retrieve data element based on its db id
@@ -191,7 +190,7 @@ function configCategorySelection(){
 		delOutputs();
 
 		// Configure autocomplete
-		if ($(this).val() != "") {	
+		if ($(this).val() != "") {
 			configDataSelection($(this).val());		
 		}
 	});
@@ -225,7 +224,6 @@ function configDataSelection(category){
 				},
 				select: function(event, ui){
 					$(this).val(ui.item.value);
-					// Look for the id
 					for (var i = 0; i < sources.length; i++) {
 						if($(this).val() == sources[i].name){
 							$('#node-data-id').val(sources[i].id);
@@ -234,6 +232,27 @@ function configDataSelection(category){
 					}
 				}
 			}).bind('focus', function(){ $(this).autocomplete("search"); } );		
+		} else {
+			// Update datasource of autocomplete
+			$('#node-data').autocomplete("option", "source", function(request, response) {
+				response($.map(sources, function(value, key) {
+					return { 
+						label: value.name
+					}
+				}));
+			});
+
+			// Update also the select event listener to fit the new sources array
+			$('#node-data').on( "autocompleteselect", function( event, ui ) {
+				$(this).val(ui.item.value);
+				for (var i = 0; i < sources.length; i++) {
+					if($(this).val() == sources[i].name){
+						$('#node-data-id').val(sources[i].id);
+						loadDataOutputs(category, sources[i]);
+					}
+				}
+			});
+
 		}
 	}
 
@@ -320,11 +339,6 @@ function getNewOutput(){
 
 // Configure autocomplete plugin for outputs
 function configOutputComplete(i){
-	$('#node-data-output-target-'+i).on('keypress', function(event){
-		event.preventDefault();
-		return false;
-	});
-
 	var targets = $.map(getPotentialTargets(), function(target){
 		return { label:target.dataName, value:target.id }
 	});
@@ -351,7 +365,7 @@ function configOutputComplete(i){
 			}
 		}).bind('focus', function(){ $(this).autocomplete("search"); } );
 	} else {
-		// Update sources
+		// Update sources / No need to update the select handler function
 		$('#node-data-output-target-'+i).autocomplete( "option", "source", targets);
 	}
 }
