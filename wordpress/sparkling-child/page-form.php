@@ -27,16 +27,14 @@ get_header('custom'); ?>
 								<p>Sorry, no posts matched your criteria.</p>
 							<?php endif; ?>
 							<div id="form-menu" class="form-menu">
-								<h2>Please select an option below</h2>
-								<ol>
-									<li><a onclick="newSearch();">Start a new diligent search</a></li>
-									<li>Continue working on a diligent search by entering its ID below. Version is optional
-										<br>
+								<h2>Start a new search</h2>
+									<p>This allows you to do start a diligent search for an orphan in a given jurisdiction of the European Union. In the current beta the Netherlands, the UK, Italy and Germany are available.</p>
+									<a class="btn btn-primary btn " href="#" target="_self" onclick="newSearch();">Start a new search</a>
+								<h2>Continue a search</h2>
+									<p>Continue working on a diligent search by entering its ID below. Entering a version number is optional. The latests version is loaded if no version number is given.</p>
 										<input id="search-hook" type="text" placeholder="Research ID">
 										<input id="search-version" type="text" placeholder="#Version" style="max-width: 100px">
-										<a onclick="getSearch();">Continue</a>
-									</li>			
-								</ol>				
+										<a class="btn btn-primary btn " href="#" target="_self" onclick="getSearch();">Continue search</a>			
 							</div><!-- #form-menu -->
 
 							<div id='form-renderer' class="form-renderer"></div>
