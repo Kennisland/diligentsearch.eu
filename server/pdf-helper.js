@@ -7,6 +7,7 @@ var htmlHeader = `
 	<html lang="en">
 	<head>
 		<!-- Custom css Only -->
+		<meta charset="utf-8">
 		<link rel="stylesheet" href="`+path.resolve(__dirname, 'pdf-form.css') +`">
 	</head>
 	<body>

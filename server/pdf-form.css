@@ -5,7 +5,6 @@ html,
 body,
 div.container-fluid  {
 	height: 100%;
-	overflow: auto;
 }
 
 h1{
