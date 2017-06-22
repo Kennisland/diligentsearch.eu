@@ -484,17 +484,17 @@ function getDecisionTree(){
 		function(decisionTree){
 			if(decisionTree && decisionTree[0] && decisionTree[0].value && decisionTree[0].id){
 				graphicNodes = JSON.parse(decisionTree[0].value);
-				graphicNodesDatabaseId = decisionTree[0].id;				
+				graphicNodesDatabaseId = decisionTree[0].id;
 				if(graphicNodes.length == 0){
 					createGraphicNode(ROOT_NODE_ID);
 				} else {
 					graphicNodes.forEach(function(node, idx){
 						loadGraphicalNodeData(node, idx);
-					});					
+					});
 				}
 			}
 			else{
-				createGraphicNode(ROOT_NODE_ID);				
+				createGraphicNode(ROOT_NODE_ID);
 			}
 			customRender();
 		},
@@ -511,9 +511,12 @@ function getDecisionTree(){
  * @param {number} idx - Index of the graphicNode element for click bindings
  */
 function loadGraphicalNodeData(node, idx){
+	// Create graphically the current node and the relative targets if needed
 	createGraphicNode(node.id);
 	node.targets.forEach(function(targetId){
-		createGraphicNode(targetId);
+		if(!graphic.node(targetId)) {
+			createGraphicNode(targetId);
+		}
 	});
 
 	// Find out what is the name of the current node

@@ -494,7 +494,7 @@ function getDecisionTree(){
 				}
 			}
 			else{
-				createGraphicNode(ROOT_NODE_ID);				
+				createGraphicNode(ROOT_NODE_ID);
 			}
 			customRender();
 		},
@@ -511,9 +511,12 @@ function getDecisionTree(){
  * @param {number} idx - Index of the graphicNode element for click bindings
  */
 function loadGraphicalNodeData(node, idx){
+	// Create graphically the current node and the relative targets if needed
 	createGraphicNode(node.id);
 	node.targets.forEach(function(targetId){
-		createGraphicNode(targetId);
+		if(!graphic.node(targetId)) {
+			createGraphicNode(targetId);
+		}
 	});
 
 	// Find out what is the name of the current node
