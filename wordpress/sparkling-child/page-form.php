@@ -32,8 +32,8 @@ get_header('custom'); ?>
 									<a class="btn btn-primary btn " href="#" target="_self" onclick="newSearch();">Start a new search</a>
 								<h2>Continue a search</h2>
 									<p>Continue working on a diligent search by entering its ID below. Entering a version number is optional. The latests version is loaded if no version number is given.</p>
-										<input id="search-hook" type="text" placeholder="Research ID">
-										<input id="search-version" type="text" placeholder="#Version" style="max-width: 100px">
+										<input id="search-hook" type="text" placeholder="Research ID"/>
+										<input id="search-version" type="text" placeholder="#Version" style="max-width: 100px"/>
 										<a class="btn btn-primary btn " href="#" target="_self" onclick="getSearch();">Continue search</a>			
 							</div><!-- #form-menu -->
 
