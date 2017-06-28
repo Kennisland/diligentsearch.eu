@@ -86,11 +86,9 @@ function getSearch(){
  * Load the form data step by step, and triggering 'change' event after each insertion, to get further input via the loadElement function
  */
 function loadSearch(){
-
 	setTimeout(function(){
 		var data = dumpedForm.json;
 		for (var i = 0; i < data.length; i++) {
-
 			// Inject a new block section if necessary
 			var isBlock = data[i].htmlId.split('-').length > 1;
 			if(isBlock){
@@ -126,8 +124,9 @@ function loadSearch(){
 				}
 			}
 			if(isSelect){
+				// Specify the 'isLoading' flag to this trigger function to prevent warning modal to show up
 				v = data[i].value;
-				$('#'+data[i].htmlId+' select').val(v).trigger('change');
+				$('#'+data[i].htmlId+' select').val(v).trigger('change', [true]);
 			}
 		}
 	}, 250);
@@ -186,11 +185,13 @@ function generateElementHtml(nodeElt){
 		bindQuestionToTarget(nodeElt, eltToDisplay);
 	}
 	else if(nodeElt.category == 'block'){
+		// Block generation: title + content
 		htmlContent = getBlockElementHtml(nodeElt.id, eltToDisplay, 0);
 		injectElementIntoForm(htmlContent);
 		bindBlockQuestionsToValue(nodeElt.id, eltToDisplay.questions, 0);
 		bindAddBlock(nodeElt.id, eltToDisplay.questions, 1);
-		// Load the output direclty, to provide further navigation to user
+
+		// Block output generation: the follow up question / block / result
 		loadElement(nodeElt.targets[0]);
 	}
 	else if(nodeElt.category == 'result'){

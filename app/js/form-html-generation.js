@@ -171,8 +171,7 @@ function questionListEvent(htmlId, outputs, targets){
 	var selector = htmlId+' select';
 
 	var oldValue = '';
-	$('#'+selector).on('change', function(){		
-		// Configure warning modal
+	$('#'+selector).on('change', function(){
 		setUpListWarningModal($(this), oldValue);
 		if(oldValue != '' && $(this).val() != oldValue){
 			$('#form-warningModal').modal('show');
@@ -185,7 +184,7 @@ function questionListEvent(htmlId, outputs, targets){
 				toFollow = targets[i];
 			}
 		}
-		handleFollowers(toFollow, targets);		
+		handleFollowers(toFollow, targets);
 		bindHtmlForPdf($(this));
 	});
 }
@@ -376,6 +375,7 @@ function getBlockQuestionElementHtml(questions, innerBlockId){
 		var eltToDisplay = getDataElt('question', dataId),
 			eltHtml = '',
 			innerQuestionId = innerBlockId+'-'+dataId;
+
 		if(eltToDisplay.type != 'numeric'){
 			eltHtml += getQuestionElementHtml(innerQuestionId, eltToDisplay);
 		}
@@ -430,11 +430,12 @@ function bindBlockQuestionsToValue(blockId){
 
 	// Handle select
 	var oldValue = '';
-	$('#'+blockId+' select').on('change', function(){
+	$('#'+blockId+' select').on('change', function(event, isLoading){
 		bindHtmlForPdf($(this));
-
 		setUpListWarningModal($(this), oldValue);
-		if(oldValue != '' && $(this).val() != oldValue){
+
+		// Display modal only if it's not a loading operation and the value changed
+		if(!isLoading && oldValue != '' && $(this).val() != oldValue){
 			$('#form-warningModal').modal('show');
 		}
 		oldValue = $(this).val();
