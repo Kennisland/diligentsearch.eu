@@ -25,6 +25,7 @@ h2, label {
 
 a {
 	color:#46723E;
+	visibility: hidden;
 }
 
 div.form-menu {
@@ -36,6 +37,10 @@ div.form-renderer {
 	height:90%;
 	width:60%;
 	margin:5%;
+}
+
+.form-group {
+	margin-bottom: 15px;
 }
 
 .form-infobox {
@@ -100,6 +105,24 @@ div.form-renderer {
 
 .form-block > div > input[type=checkbox] {
 	float: left;
+}
+
+input[type=text] {
+	border: none;
+	display: inline-block;
+	overflow: show;
+    text-overflow: string; 
+}
+
+select {
+	border: none;
+	display: inline-block;
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	border: 0;
+	overflow: show;
+    text-overflow: string; 
 }
 
 /*.form-block > div {
