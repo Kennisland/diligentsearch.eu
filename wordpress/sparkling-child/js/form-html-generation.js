@@ -1,4 +1,4 @@
-REGEX_URL = /(http:\/\/|wwww.)([^ ]*\.)([^ ]*)/g;
+REGEX_URL = /(https?:\/\/|www\.)([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-?#\&-]*)*\/?[^\. ]/g;
 
 /*
 	Question html
