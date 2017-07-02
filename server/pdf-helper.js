@@ -1,6 +1,7 @@
 const fs 	= require('fs');
 const path 	= require('path');
 const exec 	= require('child_process').exec;
+const cheerio = require('cheerio');
 
 var htmlHeader = `
 	<!DOCTYPE html>
@@ -24,11 +25,10 @@ var generatePdf = function(req, res){
 	    fs.mkdirSync(path.resolve(__dirname, './pdf/'));
 	}
 
-	// Reference file
-	var content = htmlHeader + req.body.html + htmlFooter,
+	// Reference file with formatted html
+	var content = formatHtml(htmlHeader + req.body.html + htmlFooter),
 		fileName = req.body.key,
 		filePath = path.resolve(__dirname, './pdf/'+fileName);
-	
 
 	// Create or replace content
 	if (!fs.existsSync(filePath+'.html')){
@@ -38,7 +38,7 @@ var generatePdf = function(req, res){
 				res.json({"code" : 500, "error" : "PDF source not translated"});
 				return;
 			}
-		});		
+		});
 	}
 	else{
 		fs.writeFileSync(filePath+'.html', content);
@@ -65,6 +65,25 @@ var generatePdf = function(req, res){
 		});
 	});
 };
+
+function formatHtml(htmlToFormat) {
+	const $ = cheerio.load(htmlToFormat, {
+		normalizeWhitespace: true
+	});
+	$('input').each(function(i, elem) {
+		// For each etxt field, insert a new p tag, with a new line if required (80 char per line)
+		if($(this).attr('type') === 'text') {
+			var value = $(this).val();
+			if(value.length === 0) {
+				$(this).replaceWith('<p>'+value+'</p>');
+			} else {
+				var newValue = value.match(/.{80}/g).join('<br>');
+				$(this).replaceWith('<p>'+newValue+'</p>');
+			}
+		}
+	});
+	return $.html();
+}
 
 var getPdf = function(req, res){
 	if(req.params.file){

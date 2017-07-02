@@ -87,6 +87,7 @@ div.form-renderer {
 	margin-top: 5px;
 	margin-bottom: 5px;
 	padding: 5px;
+	overflow:auto;
 }
 
 .form-block > div > label {
@@ -99,8 +100,14 @@ div.form-renderer {
 	float: right;
 }
 
+.form-block > div > p {
+	text-align: right;
+	float: right;
+}
+
 .form-block > div > select {
 	float: right;
+	text-align: right;
 }
 
 .form-block > div > input[type=checkbox] {

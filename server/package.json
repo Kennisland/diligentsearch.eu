@@ -5,5 +5,8 @@
     "express": "^4.10.6",
     "body-parser": "^1.15.2",
     "mysql": "^2.5.4"
+  },
+  "devDependencies": {
+    "cheerio": "^1.0.0-rc.2"
   }
 }
