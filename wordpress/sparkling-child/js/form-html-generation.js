@@ -93,8 +93,8 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 function moreInfo(information){
 	// Convert new line to br tags and replace url by a tags
 	information = information.replace(/\n/g, ' <br> ');
-	information = information.replace(REGEX_URL, function(match, p1, p2, p3){
-		return ['<a href="'+p1+p2+p3+'" target="_blank">'+p1+p2+p3+'</a>'];
+	information = information.replace(REGEX_URL, function(match){
+		return ['<a href="' + match + '" target="_blank">' + match + '</a>'];
 	});
 
 	$('#form-infoModal-content').html(information);
