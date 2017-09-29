@@ -405,7 +405,8 @@ function translate(sqlTable, rows, lg){
 				}
 
 				// ReWrite json into the row
-				row.json = JSON.stringify(subJson);				
+				// row.json = JSON.stringify(subJson);
+				row.value = JSON.stringify(subJson);
 			}
 
 
