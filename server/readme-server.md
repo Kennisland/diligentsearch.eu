@@ -39,7 +39,7 @@ The data required for the research work of an end user is appended into this fil
 
 ### Adding a new translation
 
-1. Create a file which has the following pattern : <jurisdiction>.json.
+1. Create a file which has the following pattern : jurisdiction.json where jurisdiction is replaced by the lowercase version of the given name of the jurisdiction as it appears in the tool.
 2. Initiate it as an empty JSON object : **{}**
 3. Copy json template content and paste it inside. Update the **"language"** to your needs, it can be for example **"English"**.
 
