@@ -367,10 +367,15 @@ function translate(sqlTable, rows, lg){
 						if(sqlTranslation[row.id].translatedTitle != ""){
 							subJson.title = sqlTranslation[row.id].translatedTitle;
 						}
+						if(sqlTranslation[row.id].translatedInformation != ""){
+							subJson.information = sqlTranslation[row.id].translatedInformation;
+						}
 					}else{
 						sqlTranslation[row.id] = {
 							"originalTitle"	 : subJson.title,
-							"translatedTitle": ''
+							"translatedTitle": '',
+							"originalInformation"	: subJson.information,
+							"translatedInformation" : ''
 						};
 						modified = true;
 					}
