@@ -5,12 +5,44 @@ REGEX_URL = /(https?:\/\/|www\.)([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-?#\&-]*)*\
 */
 
 /**
+ * Get the corresponding HTML content of a sources element
+ * @param {number} decisionTreeId - Id of the decision tree element, used as main div id
+ * @param {object} sources - sources to format to html
+ * @returns {string} html content
+ */
+function getSourcesElementHtml(sources){	
+	// Stop if no sources.
+	if (sources.length == 0) {
+		return "";
+	}
+	
+	var content = '<div id="sources" class="form-group form-sources-input">';
+	content += '<label>You will be directed to the sources below to check for provenance information.</label>';
+	jQuery.each(sources, function(i, source) {
+		content += '<div id="src_' + source.id + '" class="form-group form-sources-input">';
+		content += '<input type="checkbox" value=""></input>';
+		content += '<label class="form-source-check">'+source.content+'</label>';
+		if(source.details && source.details != ""){
+			content += '<br><a oncLick="moreInfo(`'+source.details+'`)">more information</a>';
+		}
+		content += '<br>';
+		content += '</div>';
+
+	});
+
+	content += '<br>';
+	content += "</div>";
+	return content;
+}
+
+
+/**
  * Get the corresponding HTML content of a basic question element
  * @param {number} decisionTreeId - Id of the decision tree element, used as main div id
  * @param {object} question - Object to format to html
  * @returns {string} html content
  */
-function getQuestionElementHtml(decisionTreeId, question){	
+function getQuestionElementHtml(decisionTreeId, question){
 	var content = '<div id="'+decisionTreeId+'" class="form-group form-question-input">';
 
 	if(question.type == 'text'){
@@ -113,6 +145,24 @@ function hideInfo(){
 /*
 	Question events
 */
+
+/**
+ * Configure the change event of a source checkbox.
+ * @param {string} htmlId - id of the element within html page
+ */
+function sourceCheckEvent(htmlId){
+	var selector = htmlId +' input';
+	$('#'+selector).on('change', function(){
+		if($('#'+selector).is(':checked')){
+			$(this).val('on');
+		}
+		else{
+			$(this).val('off');
+		}
+		bindHtmlForPdf($(this));
+	}).trigger('change');
+}
+
 
 /**
  * Configure the change event of a text question.

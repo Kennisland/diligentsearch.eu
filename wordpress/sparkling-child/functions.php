@@ -40,6 +40,7 @@ function diligentSearch_enqueue_scripts(){
   wp_enqueue_script('editor-question-modal',  get_stylesheet_directory_uri().'/template-controller/data-modal/question-modal.js', array('jquery', 'jquery-ui-autocomplete'), true);
   wp_enqueue_script('editor-result-modal',    get_stylesheet_directory_uri().'/template-controller/data-modal/result-modal.js', array('jquery'), true);
   wp_enqueue_script('editor-data-block-modal',get_stylesheet_directory_uri().'/template-controller/data-modal/block-modal.js', array('jquery'), true);
+  wp_enqueue_script('editor-data-source-modal',get_stylesheet_directory_uri().'/template-controller/data-modal/source-modal.js', array('jquery'), true);
   wp_enqueue_script('editor-template',        get_stylesheet_directory_uri().'/template-controller/data-editor.js', array('jquery'), true);
 
 

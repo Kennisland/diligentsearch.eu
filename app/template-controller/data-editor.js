@@ -22,7 +22,7 @@ html_dataModelEditor = `
 		<label>User inputs:</label>
 		<ul id="data-userInputs" class="list-group">		
 		</ul>
-		<button class="btn btn-default" onclick="add('userInput')">Add a user input</button>
+		<button class="btn btn-default" onclick="add('userInput')">Add a numerical user input</button>
 	</div>
 
 	<div>
@@ -51,6 +51,13 @@ html_dataModelEditor = `
 		<ul id="data-blocks" class="list-group">
 		</ul>
 		<button class="btn btn-default" onclick="add('block')">Add a block</button>
+	</div>
+	
+	<div>
+		<label>Sources:</label>
+		<ul id="data-sources" class="list-group">
+		</ul>
+		<button class="btn btn-default" onclick="add('source')">Add a source</button>
 	</div>
 </div>
 `;
@@ -129,11 +136,12 @@ function getData(workIdx){
 
 	selectedWork = works[workIdx];
 	// Ajax call to get data for a specific work
-	$.when(ajaxGetElt('Question', selectedWork.id), ajaxGetElt('Block', selectedWork.id), ajaxGetElt('Result', selectedWork.id)).then(
-		function(resultQuestions, resultBlocks, resultResults){
+	$.when(ajaxGetElt('Question', selectedWork.id), ajaxGetElt('Block', selectedWork.id), ajaxGetElt('Result', selectedWork.id), ajaxGetElt('Source', selectedWork.id)).then(
+		function(resultQuestions, resultBlocks, resultResults, resultSources){
 			forceDataId(resultQuestions[0], questions);
 			forceDataId(resultBlocks[0], blocks);
 			forceDataId(resultResults[0], results);
+			forceDataId(resultSources[0], sources);
 
 			// Retrieve index of country
 			$('#breadcrumb li:nth-child(2) a').text(selectedWork.name).attr('onclick', 'getWork('+selectedCountry.id+')');	
@@ -171,9 +179,12 @@ function resetDataModel(){
 	results = [];
 	questions = [];
 	blocks = [];
+	sources = [];
 	$('#data-results > li').remove();
 	$('#data-questions > li').remove();
 	$('#data-blocks > li').remove();
+	$('#data-results > li').remove();
+	$('#data-sources > li').remove();
 }
 
 function injectCountryData(){	
@@ -224,6 +235,9 @@ function injectDataBasePrimaryModel(){
 	blocks.forEach(function(elt, idx){
 		injectData('block', idx, elt, loadBlock);
 	});
+	sources.forEach(function(elt, idx){
+		injectData('source', idx, elt, loadSource);
+	});
 	$('#display-data-model').show();
 }
 
@@ -250,6 +264,9 @@ function add(elementType){
 			break;
 		case 'block':
 			$('#add-blockModal').modal('show');
+			break;
+		case 'source':
+			$('#add-sourceModal').modal('show');
 			break;
 	}
 }
