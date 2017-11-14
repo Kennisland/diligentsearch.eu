@@ -57,6 +57,7 @@
 		injectResultModal();
 		injectQuestionModal();
 		injectBlockModal();
+		injectSourceModal();
 
 		// Inject graph editor
 		injectGraphEditor();

@@ -80,12 +80,12 @@ function isCountryOrWork(table){
 }
 
 /**
- * Check if given SQL table is a "primary" table : 'SharedUserInput', 'SharedRefValue', 'Question', 'Block' or 'Result'
+ * Check if given SQL table is a "primary" table : 'SharedUserInput', 'SharedRefValue', 'Question', 'Block', 'Result' or 'Source'
  * @params {string] table - SQL Table name}
  * @return {boolean}
  */
 function isPrimaryData(table){
-	return table == 'SharedUserInput' || table == 'SharedRefValue' || table == 'Question' || table == 'Block' || table == 'Result';
+	return table == 'SharedUserInput' || table == 'SharedRefValue' || table == 'Question' || table == 'Block' || table == 'Result' || table == 'Source';
 }
 
 /**

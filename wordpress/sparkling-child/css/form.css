@@ -27,12 +27,43 @@ div.form-renderer {
 	width:100%;
 }
 
+.form-group {
+	width : 60%;
+}
+
+.form-block > .form-group {
+	width : 100%;
+}
 /*Generic question display*/
 .form-question-check {
 	margin-left: 10px;
 }
 
 .form-question-input > label{
+	margin-right: 10px;
+	font-size: 15px;
+}
+
+
+#sources {
+	float : right;
+	width : 39%;
+	border: 1px;
+    border-style: solid;
+    border-color: #34A301;
+    padding: 5px;
+}
+ 
+#work-data-selected-save {
+	clear: both;
+}
+
+.form-sources-input > label{
+	margin-right: 10px;
+	font-size: 15px;
+}
+
+.form-sources-input > checkbox{
 	margin-right: 10px;
 	font-size: 15px;
 }

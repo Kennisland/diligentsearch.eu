@@ -176,15 +176,20 @@ function getSharedValue(countryId){
 }
 
 function getDataForm(workId){	
-	$.when(ajaxGetElt('Question', workId), ajaxGetElt('Block', workId), ajaxGetElt('Result', workId), ajaxGetElt('DecisionTree', workId)).then(
-		function(resultQuestions, resultBlocks, resultResults, resultDecisionTree){
+	$.when(ajaxGetElt('Question', workId), ajaxGetElt('Block', workId), ajaxGetElt('Result', workId), ajaxGetElt('DecisionTree', workId), ajaxGetElt('Source', workId)).then(
+		function(resultQuestions, resultBlocks, resultResults, resultDecisionTree, resultSources){
 			questions 	= resultQuestions[0].map(function(elt){ return JSON.parse(elt.value); 	});
 			blocks 		= resultBlocks[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
 			results 	= resultResults[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
+			source	 	= resultSources[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
 			decisionTree = JSON.parse(resultDecisionTree[0][0].value);
 			logData();
+			
+			// Load list of sources to be consulted. 
+			loadSources(source);
+				
 			// Now we have data, we do something --> load first element
-			loadElement();
+			loadElement();			
 		},
 		function(error){
 			$('#form-renderer').notify("Error in specific data retrieval", {position:'bottom-left', className:'error'});
