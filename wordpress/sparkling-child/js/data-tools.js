@@ -11,6 +11,7 @@ referenceValues = [];
 results = [];
 questions = [];
 blocks = [];
+source = [];
 
 // Form dedicated model
 languages = [];
@@ -47,6 +48,7 @@ function logData(){
 	console.log("blocks ", blocks);
 	console.log("results ", results);
 	console.log("decisionTree", decisionTree);
+	console.log("sources", source);
 }
 
 
@@ -146,6 +148,8 @@ function getDataSource(category){
 		return blocks;
 	if(category == 'result')
 		return results;
+	if(category == 'source')
+		return source;
 }
 
 /**
@@ -209,6 +213,13 @@ function injectData(elementType, index, element, modalCallback){
 	}
 	else if(elementType == 'block'){
 		dataModel = blocks;
+	}
+	else if(elementType == 'source'){
+		dataModel = source;
+	}
+	else {
+		console.log('unknown elementType', elementType);
+		return;
 	}
 
 	if(dataModel){

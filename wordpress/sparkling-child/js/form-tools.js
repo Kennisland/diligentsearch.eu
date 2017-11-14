@@ -86,6 +86,10 @@ function getSearch(){
  * Load the form data step by step, and triggering 'change' event after each insertion, to get further input via the loadElement function
  */
 function loadSearch(){
+	// Load all consulted sources first
+	LoadSavedSources();	
+	
+	// Load decision tree stored answers
 	setTimeout(function(){
 		var data = dumpedForm.json;
 		for (var i = 0; i < data.length; i++) {
@@ -132,11 +136,37 @@ function loadSearch(){
 	}, 250);
 }
 
+/**
+ * Load
+ */
+function LoadSavedSources() {
+	setTimeout(function(){
+		var data = dumpedForm.json;
+		for (var i = 0; i < data.length; i++) {
+			if (data[i].htmlId.substring(0, 4) == "src_") {
+				v = data[i].value == "on" ? true : false;
+				$('#'+data[i].htmlId+' input').prop('checked', v).trigger('change');
+			}
+		}
+	}, 250);
+}
 
 
 /*
 	HTML injection
 */
+
+/**
+ * Present all sources if they are available into the HTML page
+ *
+ */
+function loadSources(source)
+{
+	htmlContent = getSourcesElementHtml(source);
+	injectElementIntoForm(htmlContent);
+	bindSourcesToTarget(source);
+}
+
 /**
  * Load a decision tree element into the HTML page
  * @param {number} [id=ROOT_NODE_ID] - id of the decision tree element to display
@@ -162,6 +192,11 @@ function getDecisionTreeElement(id){
 			return decisionTree[i];
 		}
 	}
+	for (var i = 0; i < sources.length; i++) {
+		if(decisionTree[i].id == id){
+			return decisionTree[i];
+		}
+	} 
 	return undefined;
 }
 
@@ -205,6 +240,18 @@ function generateElementHtml(nodeElt){
 /*
 	HTML Jquery event / remove / hide / show
 */
+
+/**
+ * Generic sources binding
+ * @param {object} sources - lists of all sources injected into display
+ */
+function bindSourcesToTarget(sources){
+
+	jQuery.each(sources, function(i, source) {
+		sourceCheckEvent("src_" + source.id);
+	});
+
+}
 
 /**
  * Generic question binding according to question type
@@ -445,6 +492,19 @@ function getHtmlId(){
 	return elementsId;
 }
 
+/**
+ * Retrieve all id starting by 'src_'
+ * @return {object} list of corresponding id
+ */
+function getSourcesHtmlID(){
+	// Add sources
+	var elementsId = [];
+	$('#work-data-selected').find('[id^="src_"]').map(function(elt){
+		elementsId.push($(this)[0].id);
+	});
+	return elementsId;
+}
+
 
 /**
  * Retrieve a question by giving the retrieved html id
@@ -510,6 +570,14 @@ function dumpHtmlForm(){
 			formData.push(new FormEntry(id, value));
 		}
 	});
+	
+	// Add sources to formData
+	getSourcesHtmlID().map(function(id){
+		value = $('#'+id).find('input').val() || undefined;
+		console.log(id, value);
+		formData.push(new FormEntry(id, value));
+	});
+	
 	return {'lg':language, 'formData':formData};
 }
 
