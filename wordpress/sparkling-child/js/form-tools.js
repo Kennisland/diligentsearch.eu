@@ -87,7 +87,7 @@ function getSearch(){
  */
 function loadSearch(){
 	// Load all consulted sources first
-	LoadSavedSources();	
+	LoadSavedSourcesandInformation();	
 	
 	// Load decision tree stored answers
 	setTimeout(function(){
@@ -139,7 +139,7 @@ function loadSearch(){
 /**
  * Load
  */
-function LoadSavedSources() {
+function LoadSavedSourcesandInformation() {
 	setTimeout(function(){
 		var data = dumpedForm.json;
 		for (var i = 0; i < data.length; i++) {
@@ -166,6 +166,19 @@ function loadSources(source)
 	injectElementIntoForm(htmlContent);
 	bindSourcesToTarget(source);
 }
+
+/**
+ * Present all sources if they are available into the HTML page
+ *
+ */
+function loadGeneralInformation(information)
+{
+	htmlContent = getInformationElementHtml(information);
+	injectElementIntoForm(htmlContent);
+	bindInformationToTarget(information);
+}
+
+
 
 /**
  * Load a decision tree element into the HTML page
@@ -249,6 +262,18 @@ function bindSourcesToTarget(sources){
 
 	jQuery.each(sources, function(i, source) {
 		sourceCheckEvent("src_" + source.id);
+	});
+
+}
+
+/**
+ * Generic information binding
+ * @param {object} informationElements - lists of all information injected into display
+ */
+function bindSourcesToTarget(informationElements){
+
+	jQuery.each(informationElements, function(i, information) {
+		informationCheckEvent("src_" + source.id);
 	});
 
 }

@@ -1,7 +1,49 @@
 REGEX_URL = /(https?:\/\/|www\.)([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-?#\&-]*)*\/?[^\., ]/g;
 
+
 /*
-	Question html
+	Information html
+*/
+
+/**
+ * Get the corresponding HTML content of an information element
+ * @param {number} decisionTreeId - Id of the decision tree element, used as main div id
+ * @param {object} information - general information to format to html
+ * @returns {string} html content
+ */
+function getInformationElementHtml(infoElements){	
+	// Stop if no infoElements.
+	if (infoElements.length == 0) {
+		return "";
+	}
+	
+	var content = '<div id="information" class="form-group form-information-input">';
+	content += '';
+	jQuery.each(infoElements, function(i, infoElement) {
+		content += '<div id="src_' + infoElement.id + '" class="form-group form-information-input">';
+		content += '<input type="checkbox" value=""></input>';
+		content += '<label class="form-information-check">'+infoElement.content+'</label>';
+		if(infoElement.details && infoElement.details != ""){
+			content += '<br><a oncLick="moreInfo(`'+infoElement.details+'`)">more information</a>';
+		}
+		content += '<br>';
+		content += '</div>';
+
+	});
+
+	content += '<br>';
+	content += "</div>";
+	return content;
+}
+
+/*
+	Information events
+*/
+
+// TODO add listeners to on change of answers.
+
+/*
+	Source html
 */
 
 /**
@@ -34,6 +76,32 @@ function getSourcesElementHtml(sources){
 	content += "</div>";
 	return content;
 }
+
+/*
+	Source events
+*/
+
+/**
+ * Configure the change event of a source checkbox.
+ * @param {string} htmlId - id of the element within html page
+ */
+function sourceCheckEvent(htmlId){
+	var selector = htmlId +' input';
+	$('#'+selector).on('change', function(){
+		if($('#'+selector).is(':checked')){
+			$(this).val('on');
+		}
+		else{
+			$(this).val('off');
+		}
+		bindHtmlForPdf($(this));
+	}).trigger('change');
+}
+
+
+/*
+	Question html
+*/
 
 
 /**
@@ -145,24 +213,6 @@ function hideInfo(){
 /*
 	Question events
 */
-
-/**
- * Configure the change event of a source checkbox.
- * @param {string} htmlId - id of the element within html page
- */
-function sourceCheckEvent(htmlId){
-	var selector = htmlId +' input';
-	$('#'+selector).on('change', function(){
-		if($('#'+selector).is(':checked')){
-			$(this).val('on');
-		}
-		else{
-			$(this).val('off');
-		}
-		bindHtmlForPdf($(this));
-	}).trigger('change');
-}
-
 
 /**
  * Configure the change event of a text question.

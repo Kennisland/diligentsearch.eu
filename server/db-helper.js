@@ -83,7 +83,7 @@ function handle_get_request(req, res, connection){
 		q = "select * from "+currentTable+" where countryId = ?"
 		params.push(req.query.foreignKeyId);
 	}
-	else if(currentTable == 'DecisionTree' || currentTable == 'Question' || currentTable == 'Block' || currentTable == 'Result' || currentTable == 'Source') {
+	else if(currentTable == 'DecisionTree' || currentTable == 'Question' || currentTable == 'Block' || currentTable == 'Result' || currentTable == 'Source'  || currentTable == 'Information') {
 		q = "select * from "+currentTable+" where workId = ?";
 		params.push(req.query.foreignKeyId);
 		if(currentTable == 'DecisionTree'){
@@ -212,7 +212,7 @@ function handle_post_request(req, res, connection){
 			error += "Error Mysql parameter not found   ";
 		}
 	}
-	else if( currentTable == 'DecisionTree' || currentTable == 'SharedUserInput' || currentTable == 'SharedRefValue' || currentTable == 'Question' || currentTable == 'Block' || currentTable == 'Result' || currentTable == 'Source'){
+	else if( currentTable == 'DecisionTree' || currentTable == 'SharedUserInput' || currentTable == 'SharedRefValue' || currentTable == 'Question' || currentTable == 'Block' || currentTable == 'Result' || currentTable == 'Source'  || currentTable == 'Information'){
 
 			// Delete case
 			if(req.body.remove){
@@ -410,6 +410,25 @@ function translate(sqlTable, rows, lg){
 				}
 				
 				if(sqlTable == "Source"){
+					if(sqlTranslation[row.id]){
+						if(sqlTranslation[row.id].translatedContent != ""){
+							subJson.content = sqlTranslation[row.id].translatedContent;
+						}
+						if(sqlTranslation[row.id].translatedInformation != ""){
+							subJson.information = sqlTranslation[row.id].translatedInformation;
+						}
+					}else{
+						sqlTranslation[row.id] = {
+							"originalContent"	 : subJson.content,
+							"translatedContent": '',
+							"originalInformation"	: subJson.information,
+							"translatedInformation" : ''
+						};
+						modified = true;
+					}
+				}
+				
+				if(sqlTable == "Information"){
 					if(sqlTranslation[row.id]){
 						if(sqlTranslation[row.id].translatedContent != ""){
 							subJson.content = sqlTranslation[row.id].translatedContent;
