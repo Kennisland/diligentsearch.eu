@@ -45,8 +45,9 @@ div.form-renderer {
 }
 
 
-#sources {
+#sources, #information {
 	float : right;
+	clear: right;
 	width : 39%;
 	border: 1px;
     border-style: solid;

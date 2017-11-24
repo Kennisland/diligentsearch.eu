@@ -176,17 +176,22 @@ function getSharedValue(countryId){
 }
 
 function getDataForm(workId){	
-	$.when(ajaxGetElt('Question', workId), ajaxGetElt('Block', workId), ajaxGetElt('Result', workId), ajaxGetElt('DecisionTree', workId), ajaxGetElt('Source', workId)).then(
-		function(resultQuestions, resultBlocks, resultResults, resultDecisionTree, resultSources){
+	$.when(ajaxGetElt('Question', workId), ajaxGetElt('Block', workId), ajaxGetElt('Result', workId), ajaxGetElt('DecisionTree', workId), ajaxGetElt('Source', workId), ajaxGetElt('Information', workId)).then(
+		function(resultQuestions, resultBlocks, resultResults, resultDecisionTree, resultSources, resultInformation){
 			questions 	= resultQuestions[0].map(function(elt){ return JSON.parse(elt.value); 	});
 			blocks 		= resultBlocks[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
 			results 	= resultResults[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
 			source	 	= resultSources[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
+			information	= resultInformation[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
 			decisionTree = JSON.parse(resultDecisionTree[0][0].value);
 			logData();
 			
+			// Load general information Fields
+			loadGeneralInformation(information);
+			
 			// Load list of sources to be consulted. 
 			loadSources(source);
+			
 				
 			// Now we have data, we do something --> load first element
 			loadElement();			
@@ -288,8 +293,6 @@ function bindDecisionTreeData(){
 function updateSearchReportId(){
 	$('#search-report-ref').text('Search-report('+dumpedForm.webHook+')');
 }
-
-
 
 /*
 	Generic HTML element injection for the rest of Form

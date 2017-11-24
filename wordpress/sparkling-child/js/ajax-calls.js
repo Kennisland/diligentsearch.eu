@@ -80,12 +80,12 @@ function isCountryOrWork(table){
 }
 
 /**
- * Check if given SQL table is a "primary" table : 'SharedUserInput', 'SharedRefValue', 'Question', 'Block', 'Result' or 'Source'
+ * Check if given SQL table is a "primary" table : 'SharedUserInput', 'SharedRefValue', 'Question', 'Block', 'Result' or 'Source' or 'Information'
  * @params {string] table - SQL Table name}
  * @return {boolean}
  */
 function isPrimaryData(table){
-	return table == 'SharedUserInput' || table == 'SharedRefValue' || table == 'Question' || table == 'Block' || table == 'Result' || table == 'Source';
+	return table == 'SharedUserInput' || table == 'SharedRefValue' || table == 'Question' || table == 'Block' || table == 'Result' || table == 'Source'  || table == 'Information';
 }
 
 /**
@@ -360,9 +360,17 @@ function saveElt(table, elt, foreignKey, callback){
 	else if( isPrimaryData(table) ){
 		$.when(ajaxInsertElt(table, elt, foreignKey)).then(
 			function(result){
-				console.log("saveElt Id, updating: ", result.insertId);
-				elt.id = result.insertId;
-				updateElt(table, elt, callback);
+				// Check for error
+				if (result.errno != undefined) {
+					console.log("saveElt Id, error updating: ", result);
+				
+				}
+				else
+				{
+					console.log("saveElt Id, updating: ", result.insertId);
+					elt.id = result.insertId;
+					updateElt(table, elt, callback);
+				}
 			},
 			function(error){
 				callback(false);

@@ -284,19 +284,6 @@ function ajaxPrintPdf(htmlContent, key){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 	Generic element manipulation handler
 */

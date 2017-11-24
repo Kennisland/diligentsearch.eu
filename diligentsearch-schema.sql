@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 24, 2017 at 10:24 AM
+-- Generation Time: Nov 22, 2017 at 02:39 PM
 -- Server version: 5.7.17-0ubuntu0.16.04.1
--- PHP Version: 7.0.13-0ubuntu0.16.04.1
+-- PHP Version: 7.0.15-0ubuntu0.16.04.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -19,8 +19,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `diligent_search`
 --
-CREATE DATABASE IF NOT EXISTS `diligent_search` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `diligent_search`;
 
 -- --------------------------------------------------------
 
@@ -77,16 +75,28 @@ CREATE TABLE `Form` (
 --
 DELIMITER $$
 CREATE TRIGGER `FormVersioning` BEFORE INSERT ON `Form` FOR EACH ROW BEGIN
-  DECLARE c INT;
+	DECLARE c INT;
     SET c = (SELECT COUNT(*) FROM Form WHERE hook = NEW.hook);
     IF c=0 THEN
         SET NEW.version = 1;
     ELSE
-      SET NEW.version = (SELECT (MAX(version)+1) FROM Form WHERE hook = NEW.hook);
-  END IF;
+    	SET NEW.version = (SELECT (MAX(version)+1) FROM Form WHERE hook = NEW.hook);
+	END IF;
 END
 $$
 DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Information`
+--
+
+CREATE TABLE `Information` (
+  `id` int(4) NOT NULL,
+  `workId` int(3) NOT NULL,
+  `value` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -139,6 +149,18 @@ CREATE TABLE `SharedUserInput` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `Source`
+--
+
+CREATE TABLE `Source` (
+  `id` int(4) NOT NULL,
+  `workId` int(3) NOT NULL,
+  `value` text CHARACTER SET utf8 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `Work`
 --
 
@@ -180,6 +202,13 @@ ALTER TABLE `Form`
   ADD KEY `formWorkConstraint` (`workId`);
 
 --
+-- Indexes for table `Information`
+--
+ALTER TABLE `Information`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `SourceWorkID` (`workId`);
+
+--
 -- Indexes for table `Question`
 --
 ALTER TABLE `Question`
@@ -208,6 +237,13 @@ ALTER TABLE `SharedUserInput`
   ADD KEY `UserInputsCountry` (`countryId`);
 
 --
+-- Indexes for table `Source`
+--
+ALTER TABLE `Source`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `SourceWorkID` (`workId`);
+
+--
 -- Indexes for table `Work`
 --
 ALTER TABLE `Work`
@@ -222,47 +258,52 @@ ALTER TABLE `Work`
 -- AUTO_INCREMENT for table `Block`
 --
 ALTER TABLE `Block`
-  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `Country`
 --
 ALTER TABLE `Country`
-  MODIFY `id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(2) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `DecisionTree`
 --
 ALTER TABLE `DecisionTree`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `Form`
 --
 ALTER TABLE `Form`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `Question`
 --
 ALTER TABLE `Question`
-  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `Result`
 --
 ALTER TABLE `Result`
-  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `SharedRefValue`
 --
 ALTER TABLE `SharedRefValue`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `SharedUserInput`
 --
 ALTER TABLE `SharedUserInput`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `Source`
+--
+ALTER TABLE `Source`
+  MODIFY `id` int(4) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `Work`
 --
 ALTER TABLE `Work`
-  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(3) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
 --
@@ -271,49 +312,55 @@ ALTER TABLE `Work`
 -- Constraints for table `Block`
 --
 ALTER TABLE `Block`
-  ADD CONSTRAINT `blockWorkId` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`);
+  ADD CONSTRAINT `blockWorkId` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `DecisionTree`
 --
 ALTER TABLE `DecisionTree`
-  ADD CONSTRAINT `DecisionTreeWorkConstraint` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`);
+  ADD CONSTRAINT `DecisionTreeWorkConstraint` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `Form`
 --
 ALTER TABLE `Form`
-  ADD CONSTRAINT `formWorkConstraint` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`);
+  ADD CONSTRAINT `formWorkConstraint` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `Question`
 --
 ALTER TABLE `Question`
-  ADD CONSTRAINT `QuestionWorkId` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`);
+  ADD CONSTRAINT `QuestionWorkId` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `Result`
 --
 ALTER TABLE `Result`
-  ADD CONSTRAINT `ResultWorkId` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`);
+  ADD CONSTRAINT `ResultWorkId` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `SharedRefValue`
 --
 ALTER TABLE `SharedRefValue`
-  ADD CONSTRAINT `RefValuesCountry` FOREIGN KEY (`countryId`) REFERENCES `Country` (`id`);
+  ADD CONSTRAINT `RefValuesCountry` FOREIGN KEY (`countryId`) REFERENCES `Country` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `SharedUserInput`
 --
 ALTER TABLE `SharedUserInput`
-  ADD CONSTRAINT `UserInputsCountry` FOREIGN KEY (`countryId`) REFERENCES `Country` (`id`);
+  ADD CONSTRAINT `UserInputsCountry` FOREIGN KEY (`countryId`) REFERENCES `Country` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `Source`
+--
+ALTER TABLE `Source`
+  ADD CONSTRAINT `SourceWorkID` FOREIGN KEY (`workId`) REFERENCES `Work` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `Work`
 --
 ALTER TABLE `Work`
-  ADD CONSTRAINT `WorkCountry#` FOREIGN KEY (`countryId`) REFERENCES `Country` (`id`);
+  ADD CONSTRAINT `WorkCountry#` FOREIGN KEY (`countryId`) REFERENCES `Country` (`id`) ON DELETE CASCADE;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
