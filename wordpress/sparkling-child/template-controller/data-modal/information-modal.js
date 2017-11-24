@@ -15,9 +15,9 @@ html_information = `
 				</div>
 
 				<div class="form-group">
-					<label for="information-content">Information to display: </label>
+					<label for="information-content">Information to ask: </label>
 					<br>
-					<textarea id="Information-content" type="text" style="min-width:100%; max-width:100%"/>					
+					<textarea id="information-content" type="text" style="min-width:100%; max-width:100%"/>					
 				</div>
 				
 				<div class="form-group">
@@ -44,6 +44,7 @@ function injectInformationModal(){
 
 currentInformationIndex = -1;
 currentInformationId = undefined;
+
 function loadInformation(index, resElt){
 	currentInformationIndex = index;
 	currentInformationId = resElt.id;

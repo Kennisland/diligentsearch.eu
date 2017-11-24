@@ -18,11 +18,11 @@ function getInformationElementHtml(infoElements){
 	}
 	
 	var content = '<div id="information" class="form-group form-information-input">';
-	content += '';
+	content += '<label>Please fill in the information below to identify the work you are calculating:</label>';
 	jQuery.each(infoElements, function(i, infoElement) {
-		content += '<div id="src_' + infoElement.id + '" class="form-group form-information-input">';
-		content += '<input type="checkbox" value=""></input>';
-		content += '<label class="form-information-check">'+infoElement.content+'</label>';
+		content += '<div id="info_' + infoElement.id + '" class="form-group form-information-input">';
+		content += '<label class="form-information-text">'+infoElement.content+'</label>';
+		content += '<input type="textarea" value=""></input>';
 		if(infoElement.details && infoElement.details != ""){
 			content += '<br><a oncLick="moreInfo(`'+infoElement.details+'`)">more information</a>';
 		}
@@ -42,6 +42,21 @@ function getInformationElementHtml(infoElements){
 
 // TODO add listeners to on change of answers.
 
+/**
+ * Configure the change event of a information question.
+ * @param {string} htmlId - id of the element within html page
+ * @param {objects} outputs - array of possible outputs of this question
+ * @param {objects} targets - array of possible targets of this question
+ */
+function informationTextEvent(htmlId){
+	var selector = htmlId+' input';
+
+	$('#'+selector).on('change', function(){	
+		bindHtmlForPdf($(this));
+	});
+}
+
+
 /*
 	Source html
 */
@@ -59,7 +74,7 @@ function getSourcesElementHtml(sources){
 	}
 	
 	var content = '<div id="sources" class="form-group form-sources-input">';
-	content += '<label>You will be directed to the sources below to check for provenance information.</label>';
+	content += '<label>You will be directed to the sources below to check for provenance information:</label>';
 	jQuery.each(sources, function(i, source) {
 		content += '<div id="src_' + source.id + '" class="form-group form-sources-input">';
 		content += '<input type="checkbox" value=""></input>';

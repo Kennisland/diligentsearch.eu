@@ -360,9 +360,17 @@ function saveElt(table, elt, foreignKey, callback){
 	else if( isPrimaryData(table) ){
 		$.when(ajaxInsertElt(table, elt, foreignKey)).then(
 			function(result){
-				console.log("saveElt Id, updating: ", result.insertId);
-				elt.id = result.insertId;
-				updateElt(table, elt, callback);
+				// Check for error
+				if (result.errno != undefined) {
+					console.log("saveElt Id, error updating: ", result);
+				
+				}
+				else
+				{
+					console.log("saveElt Id, updating: ", result.insertId);
+					elt.id = result.insertId;
+					updateElt(table, elt, callback);
+				}
 			},
 			function(error){
 				callback(false);

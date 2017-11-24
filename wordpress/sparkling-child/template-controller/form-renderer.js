@@ -186,8 +186,12 @@ function getDataForm(workId){
 			decisionTree = JSON.parse(resultDecisionTree[0][0].value);
 			logData();
 			
+			// Load general information Fields
+			loadGeneralInformation(information);
+			
 			// Load list of sources to be consulted. 
 			loadSources(source);
+			
 				
 			// Now we have data, we do something --> load first element
 			loadElement();			
@@ -289,8 +293,6 @@ function bindDecisionTreeData(){
 function updateSearchReportId(){
 	$('#search-report-ref').text('Search-report('+dumpedForm.webHook+')');
 }
-
-
 
 /*
 	Generic HTML element injection for the rest of Form

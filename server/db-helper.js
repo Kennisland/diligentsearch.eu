@@ -370,6 +370,30 @@ function translate(sqlTable, rows, lg){
 						if(sqlTranslation[row.id].translatedInformation != ""){
 							subJson.information = sqlTranslation[row.id].translatedInformation;
 						}
+						
+						// Add translation of answers
+						if(sqlTranslation[row.id].outputs){
+		
+							for (i = 0; i < subJson.outputs.length; i++) { 
+								output = subJson.outputs[i];
+								if(sqlTranslation[row.id]['outputs'][output]) {
+									subJson.outputs[i] = sqlTranslation[row.id]['outputs'][output];
+								} 
+								else {
+									// Add new untranslated string
+									sqlTranslation[row.id]['outputs'][output] = '';
+									modified = true;
+								}
+							}
+						} else {
+						// No translations yet
+							outputTrans = {};						
+							subJson.outputs.forEach(function(output){
+								outputTrans[output] = '';
+							});
+							sqlTranslation[row.id].outputs = outputTrans;
+							modified = true;
+						}
 					}else{
 						sqlTranslation[row.id] = {
 							"originalTitle"	 : subJson.title,

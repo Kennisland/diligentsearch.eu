@@ -40,6 +40,7 @@ function getSearch(){
 				$('#form-renderer').hide();
 				injectFormRenderer();
 
+				console.log("saved data:", success);
 				var workId 	= success[0].workId
 					json = JSON.parse(success[0].value);
 
@@ -149,6 +150,16 @@ function LoadSavedSourcesandInformation() {
 			}
 		}
 	}, 250);
+	
+	setTimeout(function(){
+		var data = dumpedForm.json;
+		for (var i = 0; i < data.length; i++) {
+			if (data[i].htmlId.substring(0, 5) == "info_") {
+				v = data[i].value;
+				$('#'+data[i].htmlId+' input').val(v).trigger('change');
+			}
+		}
+	}, 250);
 }
 
 
@@ -205,9 +216,11 @@ function getDecisionTreeElement(id){
 			return decisionTree[i];
 		}
 	}
-	for (var i = 0; i < sources.length; i++) {
-		if(decisionTree[i].id == id){
-			return decisionTree[i];
+	if (sources != undefined) {
+		for (var i = 0; i < sources.length; i++) {
+			if(decisionTree[i].id == id){
+				return decisionTree[i];
+			}
 		}
 	} 
 	return undefined;
@@ -270,10 +283,10 @@ function bindSourcesToTarget(sources){
  * Generic information binding
  * @param {object} informationElements - lists of all information injected into display
  */
-function bindSourcesToTarget(informationElements){
+function bindInformationToTarget(informationElements){
 
 	jQuery.each(informationElements, function(i, information) {
-		informationCheckEvent("src_" + source.id);
+		informationTextEvent("info_" + information.id);
 	});
 
 }
@@ -530,6 +543,19 @@ function getSourcesHtmlID(){
 	return elementsId;
 }
 
+/**
+ * Retrieve all id starting by 'info_'
+ * @return {object} list of corresponding id
+ */
+function getInformationHtmlID(){
+	// Add information sources
+	var elementsId = [];
+	$('#work-data-selected').find('[id^="info_"]').map(function(elt){
+		elementsId.push($(this)[0].id);
+	});
+	return elementsId;
+}
+
 
 /**
  * Retrieve a question by giving the retrieved html id
@@ -602,6 +628,14 @@ function dumpHtmlForm(){
 		console.log(id, value);
 		formData.push(new FormEntry(id, value));
 	});
+	
+	// Add information fields to formData
+	getInformationHtmlID().map(function(id){
+		value = $('#'+id).find('input').val() || undefined;
+		console.log(id, value);
+		formData.push(new FormEntry(id, value));
+	});
+	
 	
 	return {'lg':language, 'formData':formData};
 }
