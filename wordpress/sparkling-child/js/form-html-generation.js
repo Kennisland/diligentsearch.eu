@@ -80,7 +80,8 @@ function getSourcesElementHtml(sources){
 		content += '<input type="checkbox" value=""></input>';
 		content += '<label class="form-source-check">'+source.content+'</label>';
 		if(source.details && source.details != ""){
-			content += '<br><a oncLick="moreInfo(`'+source.details+'`)">more information</a>';
+			escapedDetails = source.details.replace(/'/g, '\'');
+			content += '<br><a oncLick="moreInfo(`'+escapedDetails+'`)">more information</a>';
 		}
 		content += '<br>';
 		content += '</div>';
@@ -294,11 +295,13 @@ function questionListEvent(htmlId, outputs, targets){
 		oldValue = $(this).val();
 
 		var toFollow = undefined;
+		console.log(outputs, $(this).val());
 		for (var i = 0; i < outputs.length; i++) {
-			if(outputs[i] == $(this).val()){
+			if(outputs[i].trim() == $(this).val()){
 				toFollow = targets[i];
 			}
 		}
+		console.log(toFollow, targets);
 		handleFollowers(toFollow, targets);
 		bindHtmlForPdf($(this));
 	});
