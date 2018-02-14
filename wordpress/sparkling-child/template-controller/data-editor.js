@@ -188,7 +188,7 @@ function resetDataModel(){
 	$('#data-blocks > li').remove();
 	$('#data-results > li').remove();
 	$('#data-sources > li').remove();
-	$('#data-information > li').remove();
+	$('#data-informations > li').remove();
 }
 
 function injectCountryData(){	
