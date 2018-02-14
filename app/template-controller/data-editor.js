@@ -59,21 +59,24 @@ html_dataModelEditor = `
 		</ul>
 		<button class="btn btn-default" onclick="add('source')">Add a source</button>
 	</div>
+	
+	<div>
+		<label>General Information:</label>
+		<ul id="data-informations" class="list-group">
+		</ul>
+		<button class="btn btn-default" onclick="add('information')">Add General information input</button>
+	</div>
 </div>
 `;
 
-
+// Initialisation
 selectedCountry = '';
 selectedWork = '';
-
-
-
 
 function injectDataModelEditor(){
 	$('#data-editor').html(html_dataModelEditor);
 	getCountry();
 }
-
 
 function getCountry(){
 	// Reset country data & work
@@ -92,7 +95,6 @@ function getCountry(){
 	});
 	$('#select-country').show();
 }
-
 
 function getWork(countryId){
 	// Reset and hide unecessary divs
@@ -136,12 +138,13 @@ function getData(workIdx){
 
 	selectedWork = works[workIdx];
 	// Ajax call to get data for a specific work
-	$.when(ajaxGetElt('Question', selectedWork.id), ajaxGetElt('Block', selectedWork.id), ajaxGetElt('Result', selectedWork.id), ajaxGetElt('Source', selectedWork.id)).then(
-		function(resultQuestions, resultBlocks, resultResults, resultSources){
+	$.when(ajaxGetElt('Question', selectedWork.id), ajaxGetElt('Block', selectedWork.id), ajaxGetElt('Result', selectedWork.id), ajaxGetElt('Source', selectedWork.id), ajaxGetElt('Information', selectedWork.id)).then(
+		function(resultQuestions, resultBlocks, resultResults, resultSources, resultInformation){
 			forceDataId(resultQuestions[0], questions);
 			forceDataId(resultBlocks[0], blocks);
 			forceDataId(resultResults[0], results);
 			forceDataId(resultSources[0], sources);
+			forceDataId(resultInformation[0], information);
 
 			// Retrieve index of country
 			$('#breadcrumb li:nth-child(2) a').text(selectedWork.name).attr('onclick', 'getWork('+selectedCountry.id+')');	
@@ -153,7 +156,6 @@ function getData(workIdx){
 			$('#data-editor').notify("Error in specific data retrieval", {position:'top-left', className:'error'});
 	});
 }
-
 
 function resetWorkModel(){
 	// Reset work part
@@ -180,11 +182,13 @@ function resetDataModel(){
 	questions = [];
 	blocks = [];
 	sources = [];
+	information = [];
 	$('#data-results > li').remove();
 	$('#data-questions > li').remove();
 	$('#data-blocks > li').remove();
 	$('#data-results > li').remove();
 	$('#data-sources > li').remove();
+	$('#data-informations > li').remove();
 }
 
 function injectCountryData(){	
@@ -218,7 +222,6 @@ function injectWorkData(){
 	$('#breadcrumb li:last-child').hide();	
 }
 
-
 function injectDataBasePrimaryModel(){	
 	userInputs.forEach(function(elt, idx){
 		injectData('userInput', idx, elt, loadUserInput);
@@ -237,6 +240,9 @@ function injectDataBasePrimaryModel(){
 	});
 	sources.forEach(function(elt, idx){
 		injectData('source', idx, elt, loadSource);
+	});
+	information.forEach(function(elt, idx){
+		injectData('information', idx, elt, loadInformation);
 	});
 	$('#display-data-model').show();
 }
@@ -267,6 +273,9 @@ function add(elementType){
 			break;
 		case 'source':
 			$('#add-sourceModal').modal('show');
+			break;
+		case 'information':
+			$('#add-informationModal').modal('show');
 			break;
 	}
 }
