@@ -17,10 +17,10 @@ function getInformationElementHtml(infoElements){
 		return "";
 	}
 	
-	var content = '<div id="information" class="form-group form-information-input">';
+	var content = '<div id="information" class="form-information-input">';
 	content += '<label>Please fill in the information below to identify the work you are calculating:</label>';
 	jQuery.each(infoElements, function(i, infoElement) {
-		content += '<div id="info_' + infoElement.id + '" class="form-group form-information-input">';
+		content += '<div id="info_' + infoElement.id + '" class="form-information-input">';
 		content += '<label class="form-information-text">'+infoElement.content+'</label>';
 		content += '<input type="textarea" value=""></input>';
 		if(infoElement.details && infoElement.details != ""){
@@ -73,10 +73,10 @@ function getSourcesElementHtml(sources){
 		return "";
 	}
 	
-	var content = '<div id="sources" class="form-group form-sources-input">';
+	var content = '<div id="sources" class="form-sources-input">';
 	content += '<label>You will be directed to the sources below to check for provenance information:</label>';
 	jQuery.each(sources, function(i, source) {
-		content += '<div id="src_' + source.id + '" class="form-group form-sources-input">';
+		content += '<div id="src_' + source.id + '" class="form-sources-input">';
 		content += '<input type="checkbox" value=""></input>';
 		content += '<label class="form-source-check">'+source.content+'</label>';
 		if(source.details && source.details != ""){
