@@ -444,7 +444,7 @@ function toggleQuestionTypeVisibility(type){
 				injectDefaultAnswers(2, ['True', 'False']);
 				break;
 			case "list" :
-				injectDefaultAnswers(3, ['First choice', 'Second choice', 'Third choice'], true);
+				injectDefaultAnswers(2, ['Yes', 'No'], true);
 			default:
 				break;
 		}
