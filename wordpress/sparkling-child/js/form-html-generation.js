@@ -24,7 +24,7 @@ function getInformationElementHtml(infoElements){
 		content += '<label class="form-information-text">'+infoElement.content+'</label>';
 		content += '<input type="textarea" value=""></input>';
 		if(infoElement.details && infoElement.details != ""){
-			content += '<br><a oncLick="moreInfo(`'+infoElement.details+'`)">more information</a>';
+			content += ' <a oncLick="moreInfo(`'+infoElement.details+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
 		content += '<br>';
 		content += '</div>';
@@ -77,11 +77,13 @@ function getSourcesElementHtml(sources){
 	content += '<label>You will be directed to the sources below to check for provenance information:</label>';
 	jQuery.each(sources, function(i, source) {
 		content += '<div id="src_' + source.id + '" class="form-sources-input">';
+		content += '<label class="form-source-check">';
 		content += '<input type="checkbox" value=""></input>';
-		content += '<label class="form-source-check">'+source.content+'</label>';
+		content +=  source.content;
+		content += '</label>';
 		if(source.details && source.details != ""){
 			escapedDetails = source.details.replace(/'/g, '\'');
-			content += '<br><a oncLick="moreInfo(`'+escapedDetails+'`)">more information</a>';
+			content += ' <a oncLick="moreInfo(`'+escapedDetails+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
 		content += '<br>';
 		content += '</div>';
@@ -132,7 +134,7 @@ function getQuestionElementHtml(decisionTreeId, question){
 	if(question.type == 'text'){
 		content += '<label>'+question.title+'</label>';
 		if(question.information && question.information != ""){
-			content += '<a oncLick="moreInfo(`'+question.information+'`)">more information</a>';
+			content += ' <a oncLick="moreInfo(`'+question.information+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
 		content += '<br>';
 		content += '<input type="text"></input>';
@@ -141,13 +143,13 @@ function getQuestionElementHtml(decisionTreeId, question){
 		content += '<input type="checkbox" value=""></input>';
 		content += '<label class="form-question-check">'+question.title+'</label>';
 		if(question.information && question.information != ""){
-			content += '<a oncLick="moreInfo(`'+question.information+'`)">more information</a>';
+			content += ' <a oncLick="moreInfo(`'+question.information+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
 	}
 	else if(question.type == 'list'){
 		content += '<label>'+question.title+'</label>';
 		if(question.information && question.information != ""){
-			content += '<a oncLick="moreInfo(`'+question.information+'`)">more information</a>';
+			content += ' <a oncLick="moreInfo(`'+question.information+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
 		content += '<br>';	
 		content += '<select>';
@@ -184,7 +186,7 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 				}
 				content += '<label>'+elt.question+'</label>';
 				if(elt.information && elt.information != ""){
-					content += '<a oncLick="moreInfo(`'+elt.information+'`)">more information</a>';
+					content += ' <a oncLick="moreInfo(`'+elt.information+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 				}
 				content += '<br>';
 				content += '<input></input>';
