@@ -1,7 +1,64 @@
 REGEX_URL = /(https?:\/\/|www\.)([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w\.-?#\&-]*)*\/?[^\., ]/g;
 
+
 /*
-	Question html
+	Information html
+*/
+
+/**
+ * Get the corresponding HTML content of an information element
+ * @param {number} decisionTreeId - Id of the decision tree element, used as main div id
+ * @param {object} information - general information to format to html
+ * @returns {string} html content
+ */
+function getInformationElementHtml(infoElements){	
+	// Stop if no infoElements.
+	if (infoElements.length == 0) {
+		return "";
+	}
+	
+	var content = '<div id="information" class="form-information-input">';
+	content += '<label>Please fill in the information below to identify the work you are calculating:</label>';
+	jQuery.each(infoElements, function(i, infoElement) {
+		content += '<div id="info_' + infoElement.id + '" class="form-information-input">';
+		content += '<label class="form-information-text">'+infoElement.content+'</label>';
+		content += '<input type="textarea" value=""></input>';
+		if(infoElement.details && infoElement.details != ""){
+			content += ' <a oncLick="moreInfo(`'+infoElement.details+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
+		}
+		content += '<br>';
+		content += '</div>';
+
+	});
+
+	content += '<br>';
+	content += "</div>";
+	return content;
+}
+
+/*
+	Information events
+*/
+
+// TODO add listeners to on change of answers.
+
+/**
+ * Configure the change event of a information question.
+ * @param {string} htmlId - id of the element within html page
+ * @param {objects} outputs - array of possible outputs of this question
+ * @param {objects} targets - array of possible targets of this question
+ */
+function informationTextEvent(htmlId){
+	var selector = htmlId+' input';
+
+	$('#'+selector).on('change', function(){	
+		bindHtmlForPdf($(this));
+	});
+}
+
+
+/*
+	Source html
 */
 
 /**
@@ -16,15 +73,23 @@ function getSourcesElementHtml(sources){
 		return "";
 	}
 	
-	var content = '<div id="sources" class="form-group form-sources-input">';
-	content += '<label>You will be directed to the sources below to check for provenance information.</label>';
+	var content = '<div id="sources" class="form-sources-input">';
+	content += '<label>Search the requested information by consulting the sources below. Choose the source or sources you consider relevant to your search and tick the box once consulted:</label>';
 	jQuery.each(sources, function(i, source) {
-		content += '<div id="src_' + source.id + '" class="form-group form-sources-input">';
+		content += '<div id="src_' + source.id + '" class="form-sources-input">';
 		content += '<input type="checkbox" value=""></input>';
-		content += '<label class="form-source-check">'+source.content+'</label>';
-		if(source.details && source.details != ""){
-			content += '<br><a oncLick="moreInfo(`'+source.details+'`)">more information</a>';
+		content += '<label class="form-source-check">';
+		// Add link if available.
+		if ('url' in source && source.url != "") {
+			content +=  "<a href=\"" + source.url + "\" target=”_blank”>" + source.content + "</a>";
+		} else {
+			content +=  source.content;	
 		}
+		if(source.details && source.details != ""){
+			escapedDetails = source.details.replace(/'/g, '\'');
+			content += ' <a oncLick="moreInfo(`'+escapedDetails+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
+		}
+		content += '</label>';
 		content += '<br>';
 		content += '</div>';
 
@@ -34,6 +99,32 @@ function getSourcesElementHtml(sources){
 	content += "</div>";
 	return content;
 }
+
+/*
+	Source events
+*/
+
+/**
+ * Configure the change event of a source checkbox.
+ * @param {string} htmlId - id of the element within html page
+ */
+function sourceCheckEvent(htmlId){
+	var selector = htmlId +' input';
+	$('#'+selector).on('change', function(){
+		if($('#'+selector).is(':checked')){
+			$(this).val('on');
+		}
+		else{
+			$(this).val('off');
+		}
+		bindHtmlForPdf($(this));
+	}).trigger('change');
+}
+
+
+/*
+	Question html
+*/
 
 
 /**
@@ -48,7 +139,7 @@ function getQuestionElementHtml(decisionTreeId, question){
 	if(question.type == 'text'){
 		content += '<label>'+question.title+'</label>';
 		if(question.information && question.information != ""){
-			content += '<a oncLick="moreInfo(`'+question.information+'`)">more information</a>';
+			content += ' <a oncLick="moreInfo(`'+question.information+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
 		content += '<br>';
 		content += '<input type="text"></input>';
@@ -57,13 +148,13 @@ function getQuestionElementHtml(decisionTreeId, question){
 		content += '<input type="checkbox" value=""></input>';
 		content += '<label class="form-question-check">'+question.title+'</label>';
 		if(question.information && question.information != ""){
-			content += '<a oncLick="moreInfo(`'+question.information+'`)">more information</a>';
+			content += ' <a oncLick="moreInfo(`'+question.information+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
 	}
 	else if(question.type == 'list'){
 		content += '<label>'+question.title+'</label>';
 		if(question.information && question.information != ""){
-			content += '<a oncLick="moreInfo(`'+question.information+'`)">more information</a>';
+			content += ' <a oncLick="moreInfo(`'+question.information+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
 		content += '<br>';	
 		content += '<select>';
@@ -100,7 +191,7 @@ function getNumericQuestionElementHtml(decisionTreeId, question){
 				}
 				content += '<label>'+elt.question+'</label>';
 				if(elt.information && elt.information != ""){
-					content += '<a oncLick="moreInfo(`'+elt.information+'`)">more information</a>';
+					content += ' <a oncLick="moreInfo(`'+elt.information+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 				}
 				content += '<br>';
 				content += '<input></input>';
@@ -141,28 +232,17 @@ function hideInfo(){
 	$('#form-infoModal').modal('hide');
 }
 
+/**
+ * Close the more Save pop-up
+ */
+function hideSaveModal(){
+	$('#form-saveModal').modal('hide');
+}
+
 
 /*
 	Question events
 */
-
-/**
- * Configure the change event of a source checkbox.
- * @param {string} htmlId - id of the element within html page
- */
-function sourceCheckEvent(htmlId){
-	var selector = htmlId +' input';
-	$('#'+selector).on('change', function(){
-		if($('#'+selector).is(':checked')){
-			$(this).val('on');
-		}
-		else{
-			$(this).val('off');
-		}
-		bindHtmlForPdf($(this));
-	}).trigger('change');
-}
-
 
 /**
  * Configure the change event of a text question.
@@ -229,11 +309,13 @@ function questionListEvent(htmlId, outputs, targets){
 		oldValue = $(this).val();
 
 		var toFollow = undefined;
+		console.log(outputs, $(this).val());
 		for (var i = 0; i < outputs.length; i++) {
-			if(outputs[i] == $(this).val()){
+			if(outputs[i].trim() == $(this).val()){
 				toFollow = targets[i];
 			}
 		}
+		console.log(toFollow, targets);
 		handleFollowers(toFollow, targets);
 		bindHtmlForPdf($(this));
 	});

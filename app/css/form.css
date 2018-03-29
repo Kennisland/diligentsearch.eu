@@ -20,21 +20,52 @@ a {
 
 div.form-menu {
 	height:10%;
-	width:60%;
-	margin:5%;
+	width:100%;
 }
 div.form-renderer {
 	height:90%;
-	width:60%;
-	margin:5%;
+	width:100%;
 }
 
+.form-group {
+	width : 60%;
+}
+
+.form-block > .form-group {
+	width : 100%;
+}
 /*Generic question display*/
 .form-question-check {
 	margin-left: 10px;
 }
 
 .form-question-input > label{
+	margin-right: 10px;
+	font-size: 15px;
+}
+
+
+#sources, #information {
+	float : right;
+	clear: right;
+	width : 39%;
+	border: 1px;
+    border-style: solid;
+    border-color: #34A301;
+    padding: 5px;
+}
+ 
+#work-data-selected-save {
+	clear: both;
+	height: 25px;
+}
+
+.form-sources-input > label{
+	margin-right: 10px;
+	font-size: 15px;
+}
+
+.form-sources-input > checkbox{
 	margin-right: 10px;
 	font-size: 15px;
 }
@@ -46,7 +77,6 @@ div.form-renderer {
 .form-question-input > select {
 	margin-left: 10px;
 }
-
 
 .form-question-numeric > div > label{
 	margin-right: 10px;
@@ -111,6 +141,7 @@ div.form-renderer {
 	margin: 0%;
 }
 
+
 /*Result display*/
 .form-result {
 	min-width:85%;
@@ -120,4 +151,26 @@ div.form-renderer {
 	font-weight: 500;
 	color:#46723E;
 	font-family: 'Roboto Slab', serif;
+}
+
+.form-source-check {
+	font-size:14px;
+	font-weight:700;
+	height:20px;
+	line-height:20px;
+	margin-bottom:5px;
+	margin-right:0px;
+	max-width:100%;
+	text-size-adjust:100%;
+}
+
+.form-source-check > label{
+	font-size:14px;
+	font-weight:700;
+	height:20px;
+	line-height:20px;
+	margin-bottom:5px;
+	margin-right:0px;
+	max-width:100%;
+	text-size-adjust:100%;
 }

@@ -1,6 +1,11 @@
 html_formRenderer =`
-	<h2 id="search-report-ref">Search-report not saved yet</h2>
+	<div id="work-data-selected-save" style="display:none">
+		<button id="work-print-btn" type="button" class="btn btn-primary pull-left" onclick="printPDF()">Get Pdf</button>
+		<button id="work-save-btn" type="button" class="btn btn-success pull-right" onclick="saveForm()">Save</button>
+	</div>	
 
+	<h2>Search</h2>
+	<div id="search-report-ref"></div>
 
 	<div class="form-group">	
 		<label for="choose-country">
@@ -11,9 +16,6 @@ html_formRenderer =`
 			<option value="">Choose a country</option>
 		</select>
 	</div>
-
-
-
 
 	<div id="country-data-selected" class="form-group" style="display:none">
 		<label>
@@ -70,6 +72,25 @@ html_formRenderer =`
 			</div>
 		</div>
 
+		<div id="form-saveModal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal-title">Save successful</h3>
+					</div>
+
+					<div class="modal-body">
+						<p>Diligent search saved.</p>
+						<div id="search-report-notice"></div>
+					</div>
+
+					<div class="modal-footer">
+						<button id="form-saveModal-close" type="button" class="btn btn-default" onclick="hideSaveModal();">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div id="form-infoModal" class="modal fade">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -86,12 +107,7 @@ html_formRenderer =`
 					</div>
 				</div>
 			</div>
-		</div>
-
-		<div id="work-data-selected-save" style="display:none">
-			<button id="work-print-btn" type="button" class="btn btn-primary pull-left" onclick="printPDF()">Get Pdf</button>
-			<button id="work-save-btn" type="button" class="btn btn-success pull-right" onclick="saveForm()">Save</button>
-		</div>		
+		</div>	
 	</div>
 `;
 
@@ -176,17 +192,22 @@ function getSharedValue(countryId){
 }
 
 function getDataForm(workId){	
-	$.when(ajaxGetElt('Question', workId), ajaxGetElt('Block', workId), ajaxGetElt('Result', workId), ajaxGetElt('DecisionTree', workId), ajaxGetElt('Source', workId)).then(
-		function(resultQuestions, resultBlocks, resultResults, resultDecisionTree, resultSources){
+	$.when(ajaxGetElt('Question', workId), ajaxGetElt('Block', workId), ajaxGetElt('Result', workId), ajaxGetElt('DecisionTree', workId), ajaxGetElt('Source', workId), ajaxGetElt('Information', workId)).then(
+		function(resultQuestions, resultBlocks, resultResults, resultDecisionTree, resultSources, resultInformation){
 			questions 	= resultQuestions[0].map(function(elt){ return JSON.parse(elt.value); 	});
 			blocks 		= resultBlocks[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
 			results 	= resultResults[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
 			source	 	= resultSources[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
+			information	= resultInformation[0].map(function(elt){ 	return JSON.parse(elt.value); 	});
 			decisionTree = JSON.parse(resultDecisionTree[0][0].value);
 			logData();
 			
+			// Load general information Fields
+			loadGeneralInformation(information);
+			
 			// Load list of sources to be consulted. 
 			loadSources(source);
+			
 				
 			// Now we have data, we do something --> load first element
 			loadElement();			
@@ -211,9 +232,23 @@ function injectLanguageIntoForm(){
 	}
 	$('#choose-lg').html(lgContent);
 }
-	
+
 function injectCountriesIntoForm(){
 	var selectContent = '<option value="">Choose a country</option>';
+
+	countries.sort(function(a, b) {
+	  var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+	  var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+	  if (nameA < nameB) {
+		return -1;
+	  }
+	  if (nameA > nameB) {
+		return 1;
+	  }
+	  // names must be equal
+	  return 0;
+	});
+
 	for (var i = 0; i < countries.length; i++) {
 		var countryId = countries[i].id,
 			countryName = countries[i].name;
@@ -286,10 +321,10 @@ function bindDecisionTreeData(){
 }
 
 function updateSearchReportId(){
-	$('#search-report-ref').text('Search-report('+dumpedForm.webHook+')');
+	$('#search-report-ref').text('Reseach ID: '+dumpedForm.webHook);
+	$('#search-report-notice').text('Reseach ID: '+dumpedForm.webHook);
+	$('#form-saveModal').modal('show');
 }
-
-
 
 /*
 	Generic HTML element injection for the rest of Form

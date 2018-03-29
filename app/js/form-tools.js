@@ -40,6 +40,7 @@ function getSearch(){
 				$('#form-renderer').hide();
 				injectFormRenderer();
 
+				console.log("saved data:", success);
 				var workId 	= success[0].workId
 					json = JSON.parse(success[0].value);
 
@@ -87,7 +88,7 @@ function getSearch(){
  */
 function loadSearch(){
 	// Load all consulted sources first
-	LoadSavedSources();	
+	LoadSavedSourcesandInformation();	
 	
 	// Load decision tree stored answers
 	setTimeout(function(){
@@ -139,13 +140,23 @@ function loadSearch(){
 /**
  * Load
  */
-function LoadSavedSources() {
+function LoadSavedSourcesandInformation() {
 	setTimeout(function(){
 		var data = dumpedForm.json;
 		for (var i = 0; i < data.length; i++) {
 			if (data[i].htmlId.substring(0, 4) == "src_") {
 				v = data[i].value == "on" ? true : false;
 				$('#'+data[i].htmlId+' input').prop('checked', v).trigger('change');
+			}
+		}
+	}, 250);
+	
+	setTimeout(function(){
+		var data = dumpedForm.json;
+		for (var i = 0; i < data.length; i++) {
+			if (data[i].htmlId.substring(0, 5) == "info_") {
+				v = data[i].value;
+				$('#'+data[i].htmlId+' input').val(v).trigger('change');
 			}
 		}
 	}, 250);
@@ -166,6 +177,19 @@ function loadSources(source)
 	injectElementIntoForm(htmlContent);
 	bindSourcesToTarget(source);
 }
+
+/**
+ * Present all sources if they are available into the HTML page
+ *
+ */
+function loadGeneralInformation(information)
+{
+	htmlContent = getInformationElementHtml(information);
+	injectElementIntoForm(htmlContent);
+	bindInformationToTarget(information);
+}
+
+
 
 /**
  * Load a decision tree element into the HTML page
@@ -192,11 +216,15 @@ function getDecisionTreeElement(id){
 			return decisionTree[i];
 		}
 	}
-	for (var i = 0; i < sources.length; i++) {
-		if(decisionTree[i].id == id){
-			return decisionTree[i];
+	/*if (sources == null) {
+	}
+	else {
+		for (var i = 0; i < sources.length; i++) {
+			if(decisionTree[i].id == id){
+				return decisionTree[i];
+			}
 		}
-	} 
+	} */
 	return undefined;
 }
 
@@ -249,6 +277,18 @@ function bindSourcesToTarget(sources){
 
 	jQuery.each(sources, function(i, source) {
 		sourceCheckEvent("src_" + source.id);
+	});
+
+}
+
+/**
+ * Generic information binding
+ * @param {object} informationElements - lists of all information injected into display
+ */
+function bindInformationToTarget(informationElements){
+
+	jQuery.each(informationElements, function(i, information) {
+		informationTextEvent("info_" + information.id);
 	});
 
 }
@@ -505,6 +545,19 @@ function getSourcesHtmlID(){
 	return elementsId;
 }
 
+/**
+ * Retrieve all id starting by 'info_'
+ * @return {object} list of corresponding id
+ */
+function getInformationHtmlID(){
+	// Add information sources
+	var elementsId = [];
+	$('#work-data-selected').find('[id^="info_"]').map(function(elt){
+		elementsId.push($(this)[0].id);
+	});
+	return elementsId;
+}
+
 
 /**
  * Retrieve a question by giving the retrieved html id
@@ -578,6 +631,14 @@ function dumpHtmlForm(){
 		formData.push(new FormEntry(id, value));
 	});
 	
+	// Add information fields to formData
+	getInformationHtmlID().map(function(id){
+		value = $('#'+id).find('input').val() || undefined;
+		console.log(id, value);
+		formData.push(new FormEntry(id, value));
+	});
+	
+	
 	return {'lg':language, 'formData':formData};
 }
 
@@ -604,6 +665,7 @@ function saveForm(){
 		function cb(status){
 			if(status){
 				$('#form-renderer').notify('Report injected in database', {position:'top-left', className:'success'});
+				console.log('Report injected in database');
 				updateSearchReportId();
 			}
 			else{
