@@ -57,7 +57,7 @@ html_dataModelEditor = `
 		<label>Sources:</label>
 		<ul id="data-sources" class="list-group">
 		</ul>
-		<button class="btn btn-default" onclick="add('source')">Add a source</button>
+		<button class="btn btn-default" onclick="add('source')">Add a source</button>&nbsp;<button class="btn btn-default" onclick="add('sources')">Bulk add source</button>
 	</div>
 	
 	<div>
@@ -193,6 +193,19 @@ function resetDataModel(){
 
 function injectCountryData(){	
 	var countriesHtml = '<ul class="list-group">';
+	countries.sort(function(a, b) {
+	  var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+	  var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+	  // reverse sort.
+	  if (nameA > nameB) {
+		return -1;
+	  }
+	  if (nameA < nameB) {
+		return 1;
+	  }
+	  // names must be equal
+	  return 0;
+	});
 	for (var i = countries.length - 1; i >= 0; i--) {
 		countriesHtml += '<li class="list-group-item" onclick="getWork('+countries[i].id+')">'+countries[i].name+'</li>';
 	}
@@ -273,6 +286,9 @@ function add(elementType){
 			break;
 		case 'source':
 			$('#add-sourceModal').modal('show');
+			break;
+		case 'sources':
+			$('#add-sourcesModal').modal('show');
 			break;
 		case 'information':
 			$('#add-informationModal').modal('show');

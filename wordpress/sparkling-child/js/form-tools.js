@@ -216,13 +216,15 @@ function getDecisionTreeElement(id){
 			return decisionTree[i];
 		}
 	}
-	if (sources != undefined) {
+	/*if (sources == null) {
+	}
+	else {
 		for (var i = 0; i < sources.length; i++) {
 			if(decisionTree[i].id == id){
 				return decisionTree[i];
 			}
 		}
-	} 
+	} */
 	return undefined;
 }
 
@@ -663,6 +665,7 @@ function saveForm(){
 		function cb(status){
 			if(status){
 				$('#form-renderer').notify('Report injected in database', {position:'top-left', className:'success'});
+				console.log('Report injected in database');
 				updateSearchReportId();
 			}
 			else{

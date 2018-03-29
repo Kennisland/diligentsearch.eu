@@ -74,17 +74,22 @@ function getSourcesElementHtml(sources){
 	}
 	
 	var content = '<div id="sources" class="form-sources-input">';
-	content += '<label>You will be directed to the sources below to check for provenance information:</label>';
+	content += '<label>Search the requested information by consulting the sources below. Choose the source or sources you consider relevant to your search and tick the box once consulted:</label>';
 	jQuery.each(sources, function(i, source) {
 		content += '<div id="src_' + source.id + '" class="form-sources-input">';
-		content += '<label class="form-source-check">';
 		content += '<input type="checkbox" value=""></input>';
-		content +=  source.content;
-		content += '</label>';
+		content += '<label class="form-source-check">';
+		// Add link if available.
+		if ('url' in source && source.url != "") {
+			content +=  "<a href=\"" + source.url + "\" target=”_blank”>" + source.content + "</a>";
+		} else {
+			content +=  source.content;	
+		}
 		if(source.details && source.details != ""){
 			escapedDetails = source.details.replace(/'/g, '\'');
 			content += ' <a oncLick="moreInfo(`'+escapedDetails+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
+		content += '</label>';
 		content += '<br>';
 		content += '</div>';
 
@@ -225,6 +230,13 @@ function moreInfo(information){
 function hideInfo(){
 	$('#form-infoModal-content').html('');
 	$('#form-infoModal').modal('hide');
+}
+
+/**
+ * Close the more Save pop-up
+ */
+function hideSaveModal(){
+	$('#form-saveModal').modal('hide');
 }
 
 

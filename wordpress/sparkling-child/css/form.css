@@ -57,6 +57,7 @@ div.form-renderer {
  
 #work-data-selected-save {
 	clear: both;
+	height: 25px;
 }
 
 .form-sources-input > label{
@@ -150,4 +151,26 @@ div.form-renderer {
 	font-weight: 500;
 	color:#46723E;
 	font-family: 'Roboto Slab', serif;
+}
+
+.form-source-check {
+	font-size:14px;
+	font-weight:700;
+	height:20px;
+	line-height:20px;
+	margin-bottom:5px;
+	margin-right:0px;
+	max-width:100%;
+	text-size-adjust:100%;
+}
+
+.form-source-check > label{
+	font-size:14px;
+	font-weight:700;
+	height:20px;
+	line-height:20px;
+	margin-bottom:5px;
+	margin-right:0px;
+	max-width:100%;
+	text-size-adjust:100%;
 }

@@ -25,6 +25,11 @@ html_source = `
 					<br>
 					<textarea id="source-details" type="text" style="min-width:100%; max-width:100%"/>					
 				</div>
+				<div class="form-group">
+					<label for="source-link">Weblink to resource: </label>
+					<br>
+					<textarea id="source-link" type="text" style="min-width:100%; max-width:100%"/>					
+				</div>
 			</div>
 
 			<div class="modal-footer">
@@ -45,11 +50,13 @@ function injectSourceModal(){
 currentSourceIndex = -1;
 currentSourceId = undefined;
 function loadSource(index, resElt){
+	console.log(resElt);
 	currentSourceIndex = index;
 	currentSourceId = resElt.id;
 	$('#source-reference').val(resElt.name);
 	$('#source-content').val(resElt.content);
 	$('#source-details').val(resElt.details);
+	$('#source-link').val(resElt.url);
 	$('#add-sourceModal').modal('show');
 }
 
@@ -69,7 +76,7 @@ function dumpSource(){
 
 	var res = new SourceElt();
 	
-
+	console.log(res);
 	// Save it into db
 	saveData('Source', res, currentSourceId, selectedWork.id, function(success){
 		if(success){
@@ -78,6 +85,7 @@ function dumpSource(){
 			dismissSourceModal();				
 		}
 		else{
+			console.log("Failed to save element within database");
 			$('.modal-header').notify("Failed to save element within database", {position:'bottom-left', className:'error'});
 		}
 	});
@@ -87,6 +95,7 @@ function dismissSourceModal(){
 	$('#source-reference').val('');
 	$('#source-content').val('');
 	$('#source-details').val('');
+	$('#source-link').val('');
 	if(currentSourceIndex != -1){
 		currentSourceIndex = -1;
 	}
@@ -101,6 +110,7 @@ function SourceElt(){
 	this.name	 	= $('#source-reference').val();
 	this.content 	= $('#source-content').val();
 	this.details 	= $('#source-details').val();
+	this.url		= $('#source-link').val();
 };
 
 function deleteSourceElt(){
