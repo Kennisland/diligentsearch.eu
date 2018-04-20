@@ -22,7 +22,8 @@ function getInformationElementHtml(infoElements){
 	jQuery.each(infoElements, function(i, infoElement) {
 		content += '<div id="info_' + infoElement.id + '" class="form-information-input">';
 		content += '<label class="form-information-text">'+infoElement.content+'</label>';
-		content += '<input type="textarea" value=""></input>';
+		content += '<textarea></textarea>';
+		content += '<div class="print-text-area-helper"></div>';
 		if(infoElement.details && infoElement.details != ""){
 			content += ' <a oncLick="moreInfo(`'+infoElement.details+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
@@ -49,7 +50,7 @@ function getInformationElementHtml(infoElements){
  * @param {objects} targets - array of possible targets of this question
  */
 function informationTextEvent(htmlId){
-	var selector = htmlId+' input';
+	var selector = htmlId+' textarea';
 
 	$('#'+selector).on('change', function(){	
 		bindHtmlForPdf($(this));
@@ -72,10 +73,31 @@ function getSourcesElementHtml(sources){
 	if (sources.length == 0) {
 		return "";
 	}
-	
-	var content = '<div id="sources" class="form-sources-input">';
-	content += '<label>Search the requested information by consulting the sources below. Choose the source or sources you consider relevant to your search and tick the box once consulted:</label>';
+		
+	// Double Sort sources into category (if exists), and content
+	sources.sort(function (a, b) {
+		var categoryA = a.category.toUpperCase(); // ignore upper and lowercase
+		var categoryB = b.category.toUpperCase(); // ignore upper and lowercase
+		var contentA = a.content.toUpperCase();
+		var contentB = b.content.toUpperCase();
+		if (categoryA == categoryB) {
+			return (contentA < contentB) ? -1 : (contentA > contentB) ? 1 : 0;
+		}
+		else {
+			return (categoryA < categoryB) ? -1 : 1;
+
+		}
+	});
+		
+	var currentCategory = ''
+	var content = '';
+	content += '<div id="sources" class="form-sources-input">';
+	content += '<label>Search the requested information by consulting the sources below. Choose the source or sources you consider relevant to your search and tick the box once consulted:</label><p></p>';
 	jQuery.each(sources, function(i, source) {
+		if (currentCategory != source.category) {
+			content += '<label>'+ source.category +':</label>';
+			currentCategory = source.category;
+		}
 		content += '<div id="src_' + source.id + '" class="form-sources-input">';
 		content += '<input type="checkbox" value=""></input>';
 		content += '<label class="form-source-check">';
@@ -142,7 +164,8 @@ function getQuestionElementHtml(decisionTreeId, question){
 			content += ' <a oncLick="moreInfo(`'+question.information+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
 		content += '<br>';
-		content += '<input type="text"></input>';
+		content += '<textarea></textarea>';
+		content += '<div class=print-text-area-helper></div>';
 	}
 	else if(question.type == 'check'){
 		content += '<input type="checkbox" value=""></input>';
@@ -309,13 +332,11 @@ function questionListEvent(htmlId, outputs, targets){
 		oldValue = $(this).val();
 
 		var toFollow = undefined;
-		console.log(outputs, $(this).val());
 		for (var i = 0; i < outputs.length; i++) {
 			if(outputs[i].trim() == $(this).val()){
 				toFollow = targets[i];
 			}
 		}
-		console.log(toFollow, targets);
 		handleFollowers(toFollow, targets);
 		bindHtmlForPdf($(this));
 	});
@@ -608,12 +629,6 @@ function addBlock(questions, blockId, blockIdx){
 	bindAddBlock(questions, blockId, blockIdx+1);
 }
 
-
-
-
-
-
-
 /*
 	Result 
 */
@@ -625,9 +640,10 @@ function addBlock(questions, blockId, blockIdx){
  * @return {string} content - html content
  */
 function getResultElementHtml(decisionTreeId, result){
-	var content = '<div id="'+decisionTreeId+'" class="form-group">';
-	content += '<p class="form-result">Result:<br>'+result.content+'</p>';
-	content += '<br>';
+	var content = '<div id="'+decisionTreeId+'" class="work-result">';
+	content += '<hr>';
+	content += '<h2>Result</h2>';
+	content += '<p class="form-result">'+result.content+'</p>';
 	content += "</div>";
 	return content;
 }

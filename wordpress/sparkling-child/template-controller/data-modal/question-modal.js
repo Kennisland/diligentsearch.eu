@@ -250,7 +250,7 @@ function dumpQuestion(){
 			splittedExpr.forEach(function(elt){
 				var argName = elt.trim();
 				if(argName == ""){
-					console.log("garbage");
+					console.log("");
 				}
 				else if(argName == '+' || argName == '-'){
 					question.numerical.operations.push(argName);

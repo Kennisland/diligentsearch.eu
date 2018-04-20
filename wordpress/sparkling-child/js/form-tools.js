@@ -109,7 +109,7 @@ function loadSearch(){
 
 			// According to element to fill in, append the right value at the good place
 			// The 'trigger('change')'' will trigger the next element of the form to display
-			var	isText = $('#'+data[i].htmlId).find('input').length == 1 && $('#'+data[i].htmlId+' input').attr("type") == "text",
+			var	isText = $('#'+data[i].htmlId+' textarea').length == 1,
 				isCheckBox = $('#'+data[i].htmlId).find('input').length == 1 && $('#'+data[i].htmlId+' input').attr("type") == "checkbox",
 				isMultiple = $('#'+data[i].htmlId).find('div input').length > 0,
 				isSelect = $('#'+data[i].htmlId).find('select').length > 0;
@@ -121,7 +121,9 @@ function loadSearch(){
 			}
 			if(isText){
 				v = data[i].value;
-				$('#'+data[i].htmlId+' input').val(v).trigger('change');
+				$('#'+data[i].htmlId+' textarea').val(v);
+				$('#'+data[i].htmlId+' textarea').html(v);
+				//.trigger('change');
 			}
 			if(isMultiple){
 				for (var j = 0; j < data[i].value.length; j++) {
@@ -156,7 +158,7 @@ function LoadSavedSourcesandInformation() {
 		for (var i = 0; i < data.length; i++) {
 			if (data[i].htmlId.substring(0, 5) == "info_") {
 				v = data[i].value;
-				$('#'+data[i].htmlId+' input').val(v).trigger('change');
+				$('#'+data[i].htmlId+' textarea').val(v).trigger('change');
 			}
 		}
 	}, 250);
@@ -259,7 +261,7 @@ function generateElementHtml(nodeElt){
 	}
 	else if(nodeElt.category == 'result'){
 		htmlContent = getResultElementHtml(nodeElt.id, eltToDisplay);
-		injectElementIntoForm(htmlContent);
+		injectElementAfterForm(htmlContent);
 	}
 }
 
@@ -583,8 +585,8 @@ function getQuestionFromHtmlId(id, element){
  */
 function extractQuestionHtmlAnswer(id, question){
 	var value;
-	if(question.type == 'text' || question.type == 'check'){
-		value = $('#'+id).find('input').val() || undefined;
+	if(question.type == 'text' || question.type == 'check' || question.type == 'textarea'){
+		value = $('#'+id).find('textarea').val() || undefined;
 	}
 	else if(question.type == 'list'){
 		value = $('#'+id).find('select').val() || undefined;
@@ -627,14 +629,12 @@ function dumpHtmlForm(){
 	// Add sources to formData
 	getSourcesHtmlID().map(function(id){
 		value = $('#'+id).find('input').val() || undefined;
-		console.log(id, value);
 		formData.push(new FormEntry(id, value));
 	});
 	
 	// Add information fields to formData
 	getInformationHtmlID().map(function(id){
-		value = $('#'+id).find('input').val() || undefined;
-		console.log(id, value);
+		value = $('#'+id).find('textarea').val() || undefined;
 		formData.push(new FormEntry(id, value));
 	});
 	
@@ -667,6 +667,8 @@ function saveForm(){
 				$('#form-renderer').notify('Report injected in database', {position:'top-left', className:'success'});
 				console.log('Report injected in database');
 				updateSearchReportId();
+				showSaveSuccesfull();
+				
 			}
 			else{
 				$('#form-renderer').notify('Failed to save report in database', {position:'top-left', className:'error'});
@@ -728,7 +730,20 @@ function getRandomKey(){
  * Print a pdf version of the html data
  */
 function printPDF(){
+	// Get the textarea's into html
+	// #lvl_5_0-0-454 > textarea
+	$('.form-group textarea').each(function(){
+       helper = $(this).closest('.form-group').find('.print-text-area-helper')
+       helper.html("<pre>" + this.value + "</pre>");
+    });
+    $('.form-information-input textarea').each(function(){
+       helper = $(this).closest('.form-information-input').find('.print-text-area-helper')
+       helper.html("<pre>" + this.value + "</pre>");
+    });
+    // Get all html
 	var htmlContent = $('#work-data-selected').html();
+	//console.log(htmlContent)
 	var pdfKey = dumpedForm.webHook ? dumpedForm.webHook : getRandomKey();
 	ajaxPrintPdf(htmlContent, pdfKey);
 }
+

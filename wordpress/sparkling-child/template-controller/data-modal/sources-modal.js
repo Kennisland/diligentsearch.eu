@@ -46,15 +46,16 @@ function processSources(){
 	for(var i = 0;i < lines.length;i++){
 		line = lines[i];
 		values = line.split('\t');
-		sourceReference = values[0]; 
-		sourceContent 	= values[1];
-		sourceDetails 	= values[2];
-		sourceUrl		= values[3];
-		saveSource(sourceReference, sourceContent, sourceDetails,sourceUrl);
+		categoryLabel	= values[0];
+		sourceReference = values[1]; 
+		sourceContent 	= values[2];
+		sourceDetails 	= values[3];
+		sourceUrl		= values[4];
+		saveSource(sourceReference, sourceContent, sourceDetails, sourceUrl, categoryLabel);
 	}
 }
 
-function saveSource(sourceReference, sourceContent, sourceDetails, sourceUrl){
+function saveSource(sourceReference, sourceContent, sourceDetails, sourceUrl, categoryLabel){
 	var error_log = "";
 	if(sourceReference == ''){
 		error_log += "Reference to this source is empty\n";
@@ -67,8 +68,7 @@ function saveSource(sourceReference, sourceContent, sourceDetails, sourceUrl){
 		return;
 	}
 
-	var res = new BulkSourceElt(sourceReference, sourceContent, sourceDetails, sourceUrl);
-	
+	var res = new BulkSourceElt(sourceReference, sourceContent, sourceDetails, sourceUrl, categoryLabel);
 	console.log('Adding source', res, currentSourceId, selectedWork.id);
 	// Save it into db
 	saveData('Source', res, currentSourceId, selectedWork.id, function(success){
@@ -94,10 +94,12 @@ function dismissSourcesModal(){
 	$('#add-sourcesModal').modal('hide');
 };
 
-function BulkSourceElt(sourceReference, sourceContent, sourceDetails){
+function BulkSourceElt(sourceReference, sourceContent, sourceDetails, sourceUrl, categoryLabel){
 	this.id 		= undefined;
 	this.name	 	= sourceReference;
 	this.content 	= sourceContent;
 	this.details 	= sourceDetails;
 	this.url		= sourceUrl;
+	this.category	= categoryLabel;
+	
 };

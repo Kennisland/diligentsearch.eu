@@ -18,6 +18,10 @@ a {
 	color:#46723E;
 }
 
+button {
+	margin-right: 5px;
+}
+
 div.form-menu {
 	height:10%;
 	width:100%;
@@ -35,8 +39,9 @@ div.form-renderer {
 	width : 100%;
 }
 /*Generic question display*/
-.form-question-check {
-	margin-left: 10px;
+.print-text-area-helper {
+	height: 0px !important;
+	display: none;
 }
 
 .form-question-input > label{
@@ -70,21 +75,9 @@ div.form-renderer {
 	font-size: 15px;
 }
 
-.form-question-input > input{
-	margin-left: 10px;
-}
-
-.form-question-input > select {
-	margin-left: 10px;
-}
-
 .form-question-numeric > div > label{
 	margin-right: 10px;
 	font-size: 15px;
-}
-
-.form-question-numeric > div > input{
-	margin-left: 10px;
 }
 
 /*Block questions display*/
@@ -93,7 +86,6 @@ div.form-renderer {
 	border-style: solid;
 	border-color: #34A301;
 	padding: 5px;
-	margin: 15px;
 }
 
 .form-block-header > label {	
@@ -109,8 +101,9 @@ div.form-renderer {
 .form-block > div > label {
 	margin-right: 10px;
 	color: #46723E;
-	max-width: 60%;	
 	font-size: 12px;
+	margin-right: 10px;
+    width: 100%;
 }
 
 .form-block > div > div > label {
@@ -133,7 +126,7 @@ div.form-renderer {
 }
 
 .form-block > div > select {
-	float: right;
+
 }
 
 .form-block > div > input[type=checkbox] {
@@ -160,8 +153,14 @@ div.form-renderer {
 	line-height:20px;
 	margin-bottom:5px;
 	margin-right:0px;
+	margin-left:5px;
 	max-width:100%;
 	text-size-adjust:100%;
+	color : #6B6B6B;
+}
+
+.form-source-check a {
+	color : #6B6B6B;
 }
 
 .form-source-check > label{

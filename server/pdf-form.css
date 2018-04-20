@@ -5,6 +5,23 @@ html,
 body,
 div.container-fluid  {
 	height: 100%;
+	color: #000 !important;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+	overflow: visible !important;
+	font-family: 'Roboto Slab', serif;
+	display: inline !important;
+	margin-left: 10px;
+}
+
+button {
+    display: none !important;
+  }
+
+img {
+	display: none !important;
 }
 
 h1{
@@ -18,43 +35,52 @@ h2{
     margin-bottom: 10px;
 }
 
-h2, label {
-	color:#46723E;
-	font-family: 'Roboto Slab', serif;
+label {
+	font-size: 15px;
+	font-weight: bold;
 }
 
 a {
-	color:#46723E;
-	visibility: hidden;
+	color: #000;
+	text-decoration: none;
 }
 
-div.form-menu {
-	height:10%;
-	width:60%;
-	margin:5%;
+input {
+	pointer-events:none
 }
-div.form-renderer {
-	height:90%;
-	width:60%;
-	margin:5%;
+
+select {
+	border: none;
+	display: inline-block;
+	appearance: none;
+	-moz-appearance: none;
+	-webkit-appearance: none;
+	border: 0;
+	overflow: show;
+    text-overflow: string; 
+    pointer-events:none;
+    background-color:white;
+}
+
+textarea {
+	display: none !important;
+}
+
+.form-menu {
+	clear: both;
+}
+.form-renderer {
+	clear: both;
 }
 
 .form-group {
 	margin-bottom: 15px;
+	clear: both;
 }
 
-.form-infobox {
-	z-index:99;
-	display:none;
-	position: absolute;
-	left: 65%;
-	width: 30%;
-	height: 300px;
-	background-color:white;
-	padding:10px;
-	border: 1px;
-	border-style:solid;
-	border-color:#34a301;
+.form-group * {
+	display: block;
+	clear: both;
 }
 
 .form-question-check {
@@ -78,73 +104,14 @@ div.form-renderer {
 .form-block {
 	border: 1px;
 	border-style: solid;
-	border-color: #34A301;
 	padding: 5px;
 	margin: 15px;
 }
 
-.form-block > div {
-	margin-top: 5px;
-	margin-bottom: 5px;
-	padding: 5px;
-	overflow:auto;
-}
-
-.form-block > div > label {
-	margin-right: 10px;
-	color: #46723E;
-}
-
-.form-block > div > input {
-	text-align: right;
-	float: right;
-}
-
-.form-block > div > p {
-	text-align: right;
-	float: right;
-}
-
-.form-block > div > select {
-	float: right;
-	text-align: right;
-}
-
-.form-block > div > input[type=checkbox] {
-	float: left;
-}
-
-input[type=text] {
-	border: none;
-	display: inline-block;
-	overflow: show;
-    text-overflow: string; 
-}
-
-select {
-	border: none;
-	display: inline-block;
-	appearance: none;
-	-moz-appearance: none;
-	-webkit-appearance: none;
-	border: 0;
-	overflow: show;
-    text-overflow: string; 
-}
-
-/*.form-block > div {
-	margin-right: 10px;
-	margin-bottom: 5px;
-	float: right;
-}*/
-
 /*Result display*/
 .form-result {
-	min-width:85%;
-	max-width:85%;
 	margin-right: 10px;
 	font-size: 20px;
 	font-weight: 500;
-	color:#46723E;
 	font-family: 'Roboto Slab', serif;
 }
