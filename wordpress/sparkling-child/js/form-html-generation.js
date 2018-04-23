@@ -333,7 +333,9 @@ function questionListEvent(htmlId, outputs, targets){
 
 		var toFollow = undefined;
 		for (var i = 0; i < outputs.length; i++) {
-			if(outputs[i].trim() == $(this).val()){
+			output = outputs[i].trim() 
+			newValue = $(this).val().trim()
+			if(output == newValue){
 				toFollow = targets[i];
 			}
 		}
