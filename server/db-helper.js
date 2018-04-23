@@ -4,7 +4,7 @@
 var mysql     	=	require('mysql');
 var mysqlConfig = 	require('./db-config.js').dbConfig();
 var pool      	=	mysql.createPool({
-	connectionLimit : 100, //important
+	connectionLimit : 90, //important
 	host		: mysqlConfig.host,
 	user		: mysqlConfig.user,
 	password	: mysqlConfig.password,
