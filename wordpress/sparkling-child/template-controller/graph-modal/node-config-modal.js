@@ -199,9 +199,20 @@ function configCategorySelection(){
 // Configure data loading
 function configDataSelection(category){
 	$('#node-data').on('keypress', function(event){
-		event.preventDefault();
-		return false;
+		// No preventing autocomplete.
+		//event.preventDefault();
+		//return false;
 	});
+
+/*				OLD SEARCH
+				source: function(request, response) {
+					response($.map(sources, function(value, key) {
+						return { 
+							label: value.name
+						}
+					}));
+*/
+
 
 	if (category !== "") {
 		var sources = getDataSource(category);
@@ -211,10 +222,11 @@ function configDataSelection(category){
 			$('#node-data').autocomplete({
 				minLength: 0,
 				autocomplete: true,
-				source: function(request, response) {
-					response($.map(sources, function(value, key) {
-						return { 
-							label: value.name
+				source: function(request, response){
+					var search = request.term;
+					response($.map(questions, function(value, key){
+						if(value.name.substr(0, search.length) == search){
+							return { label: value.name	}
 						}
 					}));
 				},
@@ -235,11 +247,12 @@ function configDataSelection(category){
 		} else {
 			// Update datasource of autocomplete
 			$('#node-data').autocomplete("option", "source", function(request, response) {
+				var search = request.term;
 				response($.map(sources, function(value, key) {
-					return { 
-						label: value.name
-					}
-				}));
+					if(value.name.substr(0, search.length) == search){
+							return { label: value.name	}
+						}
+					}));
 			});
 
 			// Update also the select event listener to fit the new sources array
@@ -254,6 +267,7 @@ function configDataSelection(category){
 			});
 
 		}
+		
 	}
 
 }
