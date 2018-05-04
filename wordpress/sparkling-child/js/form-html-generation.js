@@ -274,7 +274,7 @@ function hideSaveModal(){
  * @param {objects} targets - array of possible targets of this question
  */
 function questionTextEvent(htmlId, outputs, targets){
-	var selector = htmlId+' input';
+	var selector = htmlId+' textarea';
 	$('#'+selector).on('change', function(){
 
 		var toFollow = undefined;
