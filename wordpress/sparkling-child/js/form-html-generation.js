@@ -18,7 +18,8 @@ function getInformationElementHtml(infoElements){
 	}
 	
 	var content = '<div id="information" class="form-information-input">';
-	content += '<label>Please fill in the information below to identify the work you are calculating:</label>';
+	content += '<h3>General information</h3>';
+	content += '<label class=no-print>Please fill in the information below to identify the work you are calculating:</label>';
 	jQuery.each(infoElements, function(i, infoElement) {
 		content += '<div id="info_' + infoElement.id + '" class="form-information-input">';
 		content += '<label class="form-information-text">'+infoElement.content+'</label>';
@@ -92,10 +93,11 @@ function getSourcesElementHtml(sources){
 	var currentCategory = ''
 	var content = '';
 	content += '<div id="sources" class="form-sources-input">';
-	content += '<label>Search the requested information by consulting the sources below. Choose the source or sources you consider relevant to your search and tick the box once consulted:</label><p></p>';
+	content += '<h3>Sources</h3>';
+	content += '<label class=no-print>Search the requested information by consulting the sources below. Choose the source or sources you consider relevant to your search and tick the box once consulted:</label><p></p>';
 	jQuery.each(sources, function(i, source) {
 		if (currentCategory != source.category) {
-			content += '<label>'+ source.category +':</label>';
+			content += '<h4>'+ source.category +'</h4>';
 			currentCategory = source.category;
 		}
 		content += '<div id="src_' + source.id + '" class="form-sources-input">';
@@ -159,12 +161,12 @@ function getQuestionElementHtml(decisionTreeId, question){
 	var content = '<div id="'+decisionTreeId+'" class="form-group form-question-input">';
 
 	if(question.type == 'text'){
-		content += '<label>'+question.title+'</label>';
+		content += '<div class=question-label><label>'+question.title+'</label>';
 		if(question.information && question.information != ""){
 			content += ' <a oncLick="moreInfo(`'+question.information+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
-		content += '<br>';
-		content += '<textarea></textarea>';
+		content += '</div>';
+		content += '<textarea></textarea>'; //chevron-circle-right
 		content += '<div class=print-text-area-helper></div>';
 	}
 	else if(question.type == 'check'){
@@ -175,11 +177,11 @@ function getQuestionElementHtml(decisionTreeId, question){
 		}
 	}
 	else if(question.type == 'list'){
-		content += '<label>'+question.title+'</label>';
+		content += '<div class=question-label><label>'+question.title+'</label>';
 		if(question.information && question.information != ""){
-			content += ' <a oncLick="moreInfo(`'+question.information+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
+			content += '<a oncLick="moreInfo(`'+question.information+'`)"><i class="fa fa-info-circle" aria-hidden="true"></i></a>';
 		}
-		content += '<br>';	
+		content += '</div>';
 		content += '<select>';
 		content += '<option val=""></option>';
 		for (var i = 0; i < question.outputs.length; i++) {
@@ -187,7 +189,6 @@ function getQuestionElementHtml(decisionTreeId, question){
 		}
 		content += '</select>';
 	}	
-	content += '<br>';
 	content += "</div>";
 	return content;
 }
@@ -430,8 +431,6 @@ function setUpWarningModal(element){
 				$('#form-warning-modal-redirect').show();
 			}
 		
-
-
 			// Configure modal buttons to perform click, or to just do nothing on the current element
 			$('#form-warning-modal-proceed').off().on('click', function(){
 				element.val("");
@@ -513,7 +512,7 @@ function getBlockElementHtml(decisionTreeId, block, blockIndex){
 
 	// Inject add button
 	var nextBlockIdx = blockIndex+1;
-	content += '<a>Add another answer</a>';
+	content += '<a class=no-print>Add another answer</a>';
 	content += '</div>';
 	return content;
 }
@@ -545,9 +544,9 @@ function getBlockQuestionElementHtml(questions, innerBlockId){
 		
 		//Revert the a tag and the input tag for more information
 		if(eltToDisplay.type != "numeric"){
-			var moreInfo = eltHtml.match(/<a(.*)<\/a>/g) || '';
-			eltHtml = eltHtml.replace(/<a(.*)<\/a>/g, '');
-			eltHtml = eltHtml.replace(/<\/div>/g, '<br>'+moreInfo+'<\/div>');
+			//var moreInfo = eltHtml.match(/<a(.*)<\/a>/g) || '';
+			//eltHtml = eltHtml.replace(/<a(.*)<\/a>/g, '');
+			//eltHtml = eltHtml.replace(/<\/div>/g, '<br>'+moreInfo+'<\/div>');
 		}
 		else{			
 			var arr = eltHtml.split('<label>');

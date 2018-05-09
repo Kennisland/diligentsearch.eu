@@ -1,14 +1,14 @@
 html_formRenderer =`
-	<div id="work-data-selected-save" style="display:none">
-		<button id="work-print-btn" type="button" class="btn btn-primary pull-left" onclick="printPDF()">Get Pdf</button>
-		<button id="work-reset-btn" type="button" class="btn btn-primary pull-left" onclick="showresetCalculator()">Reset</button>
-		<button id="work-save-btn" type="button" class="btn btn-success pull-right" onclick="saveForm()">Save</button>
+	<div id="work-data-selected-save" class="no-print" style="display:none">
+		<button id="work-reset-btn" type="button" class="btn btn-danger pull-left" onclick="showresetCalculator()">Reset calculator</button>
+		<button id="work-print-btn" type="button" class="btn btn-primary pull-left" onclick="printPDF()">Export calculator to PDF</button>
+		<button id="work-save-btn" type="button" class="btn btn-success pull-left" onclick="saveForm()">Save calculator</button>
 	</div>	
 
-	<h2>Search</h2>
+	<h2>Diligent search</h2>
 	<div id="search-report-ref"></div>
 
-	<div class="form-group">	
+	<div class="form-group no-print">	
 		<label for="choose-country">
 			Select the jurisdiction you want to determine an orphan work in:
 		</label>
@@ -18,7 +18,7 @@ html_formRenderer =`
 		</select>
 	</div>
 
-	<div id="country-data-selected" class="form-group" style="display:none">
+	<div id="country-data-selected" class="form-group no-print" style="display:none">
 		<label>
 			Language : 
 		</label>
@@ -29,9 +29,9 @@ html_formRenderer =`
 	</div>	
 
 
-	<div id="language-selected" class="form-group" style="display:none"></div>
+	<div id="language-selected" class="form-group no-print" style="display:none"></div>
 
-	<div id="work-type-selected" class="form-group" style="display:none">
+	<div id="work-type-selected" class="form-group no-print" style="display:none">
 		<label for="choose-work">
 			Of what type of work do you want to determine the orphan work status?
 		</label>
@@ -42,9 +42,10 @@ html_formRenderer =`
 	</div>
 
 
-	<div id="work-data-selected" style="display:none"></div>
+	<div id="work-data-selected" style="display:none">
+	</div>
 
-	<div id="form-warningModal" class="modal fade">
+	<div id="form-warningModal" class="modal fade no-print">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -72,7 +73,7 @@ html_formRenderer =`
 		</div>
 	</div>
 
-	<div id="form-resetModal" class="modal fade">
+	<div id="form-resetModal" class="modal fade no-print">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -95,7 +96,7 @@ html_formRenderer =`
 		</div>
 	</div>
 
-	<div id="form-saveModal" class="modal fade">
+	<div id="form-saveModal" class="modal fade no-print">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -114,7 +115,7 @@ html_formRenderer =`
 		</div>
 	</div>
 
-	<div id="form-infoModal" class="modal fade">
+	<div id="form-infoModal" class="modal fade no-print">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -320,7 +321,6 @@ function injectWorksIntoForm(){
 function bindDecisionTreeData(){
 	oldWorkId = "";
 	$('#choose-work').on('change', function(){
-
 		if($(this).val() != oldWorkId){
 			var workId = $(this).val();
 			if(workId == ""){
@@ -330,6 +330,8 @@ function bindDecisionTreeData(){
 			else{
 				getDataForm(workId);
 				$('#work-data-selected').html('');
+				$('.work-result').html('');
+				$('#work-data-selected').html('<div class="form-group no-print" style="float:left;"><h3>Questions</h3><label class="no_print">Please fill answer the questions below.</label></div>');
 				$('div [id^="work-data-selected"]').show();
 			}			
 			oldWorkId = $(this).val();
