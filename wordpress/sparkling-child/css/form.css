@@ -1,17 +1,24 @@
 h1{
 	text-align:center;
+	font-size: 28px;
 }
 
 h2{
-    font-weight: 700;
-    font-size: 25px;
     margin-top: 20px;
     margin-bottom: 10px;
+    color:#46723E;
+    font-size: 24px;
 }
 
-h2, label {
-	color:#46723E;
-	font-family: 'Roboto Slab', serif;
+h3 {
+	font-size: 18px;
+	margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+label {
+	color:#333;
+	font-weight: 400;
 }
 
 a {
@@ -54,10 +61,9 @@ div.form-renderer {
 	float : right;
 	clear: right;
 	width : 39%;
-	border: 1px;
-    border-style: solid;
-    border-color: #34A301;
+	border: 0px;
     padding: 5px;
+    margin-bottom: 5px;
 }
  
 #work-data-selected-save {
@@ -68,6 +74,7 @@ div.form-renderer {
 .form-sources-input > label{
 	margin-right: 10px;
 	font-size: 15px;
+	max-width: 90%;
 }
 
 .form-sources-input > checkbox{
@@ -84,8 +91,9 @@ div.form-renderer {
 .form-block {
 	border: 1px;
 	border-style: solid;
-	border-color: #34A301;
+	border-color: #333;
 	padding: 5px;
+	margin-bottom: 5px;
 }
 
 .form-block-header > label {	
@@ -100,17 +108,14 @@ div.form-renderer {
 
 .form-block > div > label {
 	margin-right: 10px;
-	color: #46723E;
 	font-size: 12px;
 	margin-right: 10px;
     width: 100%;
 }
 
 .form-block > div > div > label {
-	margin-right: 10px;
-	color: #46723E;
-	max-width: 60%;	
-	font-size: 12px;
+	max-width: 100%;
+    display: inline;	
 }
 
 .form-block > div > input {
@@ -140,15 +145,13 @@ div.form-renderer {
 	min-width:85%;
 	max-width:85%;
 	margin-right: 10px;
-	font-size: 20px;
-	font-weight: 500;
-	color:#46723E;
-	font-family: 'Roboto Slab', serif;
+	font-size: 18px;
+	font-weight: 400;
 }
 
 .form-source-check {
 	font-size:14px;
-	font-weight:700;
+	font-weight: 400;
 	height:20px;
 	line-height:20px;
 	margin-bottom:5px;
@@ -156,20 +159,27 @@ div.form-renderer {
 	margin-left:5px;
 	max-width:100%;
 	text-size-adjust:100%;
-	color : #6B6B6B;
 }
 
-.form-source-check a {
-	color : #6B6B6B;
+.form-source-check label {
+	max-width: 90%;
 }
 
 .form-source-check > label{
 	font-size:14px;
-	font-weight:700;
+	font-weight: 400;
 	height:20px;
 	line-height:20px;
 	margin-bottom:5px;
 	margin-right:0px;
 	max-width:100%;
 	text-size-adjust:100%;
+}
+
+.question-label label {
+	margin-right: 10px;
+}
+
+textarea {
+  resize: vertical; /* user can resize vertically, but width is fixed */
 }
