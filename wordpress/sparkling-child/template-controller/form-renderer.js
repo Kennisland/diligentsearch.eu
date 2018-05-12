@@ -1,8 +1,8 @@
 html_formRenderer =`
 	<div id="work-data-selected-save" class="no-print" style="display:none">
-		<button id="work-reset-btn" type="button" class="btn btn-danger pull-left" onclick="showresetCalculator()">Reset calculator</button>
-		<button id="work-print-btn" type="button" class="btn btn-primary pull-left" onclick="printPDF()">Export calculator to PDF</button>
-		<button id="work-save-btn" type="button" class="btn btn-success pull-left" onclick="saveForm()">Save calculator</button>
+		<button id="work-reset-btn" type="button" class="btn btn-danger pull-left" onclick="showresetCalculator()">Reset search</button>
+		<button id="work-print-btn" type="button" class="btn btn-primary pull-left" onclick="printPDF()">Export search to PDF</button>
+		<button id="work-save-btn" type="button" class="btn btn-success pull-left" onclick="saveForm()">Save search</button>
 	</div>	
 
 	<h2>Diligent search</h2>

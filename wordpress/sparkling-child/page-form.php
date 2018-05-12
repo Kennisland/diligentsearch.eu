@@ -17,7 +17,7 @@ get_header('custom'); ?>
 					<div class="post-inner-content">
 						<article id="post" class="post page type-page status-publish hentry">
 						<header class="entry-header page-header">
-							<h1 class="entry-title">Diligent Search</h1>
+							<h1 class="entry-title"><?php the_title(); ?></h1>
 						</header><!-- .entry-header -->
 
 						<div class="entry-content">
