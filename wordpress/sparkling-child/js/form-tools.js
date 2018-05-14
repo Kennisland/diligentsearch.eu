@@ -730,12 +730,13 @@ function getPDFHeader() {
 	result = "";
 	result += "<div id=print-header>"
 	result += '<div id=print-logo><img src="http://diligentsearch.eu/wp-content/uploads/2017/04/logo-ds.png"/></div>';
-	result += "<p>The diligent search present below has been done using the tools provided by diligentsearch.eu. The Diligent Search Tool enables users with no specialized legal knowledge to carry out diligent searches on behalf of cultural heritage institutions.</p>";
-	result += "<p>The Diligent Search Tool is made possible through the EnDOW (“Enhancing access to 20th Century cultural heritage through Distributed Orphan Works clearance”) project. EnDOW is a collaborative project funded under Heritage Plus, a programme launched by agencies of 18 European countries and the European Commission as part of the Joint Programming Initiative in Cultural Heritage and Global Change.</p>";
+	result += "<p>The diligent search below has been carried out with the Diligent Search Tool engineered by by the EnDOW project. The Diligent Search Tool enables users with no specialized legal knowledge to carry out diligent searches on behalf of cultural heritage institutions.</p>";
+	result += "<p>EnDOW (\"Enhancing access to 20th Century cultural heritage through Distributed Orphan Works clearance\") is a collaborative project funded under Heritage Plus, a programme launched by agencies of 18 European countries and the European Commission as part of the Joint Programming Initiative in Cultural Heritage and Global Change.</p>";
 	result += "<p>More information can be found on diligentsearch.eu</p>";
 	
 	var currentdate = new Date(); 
-	var datetime = "PDF generated on: " + currentdate.getDate() + "/"
+	var datetime = "PDF generated on: " 
+				+ currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/" 
                 + currentdate.getFullYear() + " at "  
                 + currentdate.getHours() + ":"  
@@ -743,7 +744,8 @@ function getPDFHeader() {
                 + currentdate.getSeconds();
 	/*
 	
-	var datetime = "PDF generated on: " + currentdate.getDate()<10?'0':'' + currentdate.getDate() + "/"
+	var datetime = "PDF generated on: " 
+				+ currentdate.getDate()<10?'0':'' + currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)<10?'0':'') + (currentdate.getMonth() +1)  + "/" 
                 + currentdate.getFullYear() + " at "  
                 + currentdate.getHours()<10?'0':'') + currentdate.getHours() + ":"  
