@@ -19,7 +19,7 @@ function getInformationElementHtml(infoElements){
 	
 	var content = '<div id="information" class="form-information-input">';
 	content += '<h3>General information</h3>';
-	content += '<label class=no-print>Please fill in the information below to identify the work you are calculating:</label>';
+	content += '<label class=no-print>Please fill in the information below to identify the work you are researching:</label>';
 	jQuery.each(infoElements, function(i, infoElement) {
 		content += '<div id="info_' + infoElement.id + '" class="form-information-input">';
 		content += '<label class="form-information-text">'+infoElement.content+'</label>';
@@ -326,21 +326,22 @@ function questionListEvent(htmlId, outputs, targets){
 
 	var oldValue = '';
 	$('#'+selector).on('change', function(){
-		setUpListWarningModal($(this), oldValue);
+		setUpListWarningModal($(this), oldValue, outputs, targets);
 		if(oldValue != '' && $(this).val() != oldValue){
 			$('#form-warningModal').modal('show');
 		}
-		oldValue = $(this).val();
-
-		var toFollow = undefined;
-		for (var i = 0; i < outputs.length; i++) {
-			output = outputs[i].trim() 
-			newValue = $(this).val().trim()
-			if(output == newValue){
-				toFollow = targets[i];
-			}
+		else {		
+			oldValue = $(this).val();
+			var toFollow = undefined;
+			for (var i = 0; i < outputs.length; i++) {
+				output = outputs[i].trim() 
+				newValue = $(this).val().trim()
+				if(output == newValue){
+					toFollow = targets[i];
+				}
+			}	
+			handleFollowers(toFollow, targets);
 		}
-		handleFollowers(toFollow, targets);
 		bindHtmlForPdf($(this));
 	});
 }
@@ -460,7 +461,7 @@ function setUpWarningModal(element){
  * Configure a warning modal for html select tags to warn a user who wants to change a field value
  * @param {objects} element - element the user has clicked on
  */
-function setUpListWarningModal(element, oldValue){
+function setUpListWarningModal(element, oldValue, outputs, targets){
 	element.blur();
 
 	// Focus on modal appearance
@@ -470,17 +471,29 @@ function setUpListWarningModal(element, oldValue){
 
 	// Configure modal buttons to perform click, or to just do nothing on the current element
 	$('#form-warning-modal-proceed').off().on('click', function(){
+		oldValue = element.val();
+		// Remove rest of the tree
+		var toFollow = undefined;
+		for (var i = 0; i < outputs.length; i++) {
+			output = outputs[i].trim() 
+			newValue = element.val().trim()
+			if(output == newValue){
+				toFollow = targets[i];
+			}
+		}
+		
+		handleFollowers(toFollow, targets);
+		
 		$('#form-warningModal').modal('hide');
 	});
 
 	// Cancel configuration
 	$('#form-warning-modal-cancel').off().on('click', function(){
-		element.val(oldValue).trigger('change');
+		element.val(oldValue);
+		bindHtmlForPdf(element);
 		$('#form-warningModal').modal('hide');
 	});
 
-	// Display finally the modal
-	// $('#form-warningModal').modal('show');
 }
 
 
@@ -586,12 +599,14 @@ function bindBlockQuestionsToValue(blockId){
 	var oldValue = '';
 	$('#'+blockId+' select').on('change', function(event, isLoading){
 		bindHtmlForPdf($(this));
+		/*
 		setUpListWarningModal($(this), oldValue);
 
 		// Display modal only if it's not a loading operation and the value changed
 		if(!isLoading && oldValue != '' && $(this).val() != oldValue){
 			$('#form-warningModal').modal('show');
 		}
+		*/
 		oldValue = $(this).val();
 	});
 }
